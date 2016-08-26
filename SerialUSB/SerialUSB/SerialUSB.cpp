@@ -43,11 +43,11 @@ int main()
 
 	thrds.create_thread(boost::bind(second_thread));
 	
-	thrds.interrupt_all();
+	//thrds.interrupt_all();
 	thrds.join_all();
 
 	std::cout << "wainting..." << std::endl;
-	boost::this_thread::sleep(boost::posix_time::milliseconds(10));
+	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
 	
 
