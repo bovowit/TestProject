@@ -82,8 +82,8 @@ void CSerialComm::SerialCommRun()
 		char pBuff[10] = { 0, };
 		if(readCommand(pBuff))
 			std::cout << pBuff;
-		else
-			boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+
+		boost::this_thread::sleep(boost::posix_time::milliseconds(1));
 	}
 
 }

@@ -15,7 +15,8 @@ CSerialPort::~CSerialPort()
 bool CSerialPort::OpenPort(string portname)
 {
 	portname = "//./" + portname;
-	m_hComm = CreateFile(LPCTSTR(portname.data()), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0); //시리얼 포트를 오픈한다. 
+	wstring wstr(portname.begin(), portname.end());
+	m_hComm = CreateFile(wstr.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0); //시리얼 포트를 오픈한다. 
 	if (m_hComm == INVALID_HANDLE_VALUE)  //정상적으로 포트가 열렸는지 확인
 	{
 		return false;  //열리지 않았을 경우 false 반환

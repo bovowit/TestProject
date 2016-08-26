@@ -25,7 +25,7 @@ void second_thread()
 	{
 		boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
 		std::cout << "second thread called == " << std::endl;
-		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 	}
 }
 
@@ -37,14 +37,18 @@ int main()
 	int icnt = 8;
 	boost::shared_ptr<CSerialComm> pCount(new CSerialComm);
 
-	boost::thread_group thrds;
-	//for (int i = 0; i < 1; ++i)
-	thrds.create_thread(boost::bind(func_serialthread, boost::cref(icnt), boost::cref(pCount)));
+	//boost::thread_group threads;
+	////for (int i = 0; i < 1; ++i)
+	//threads.create_thread(boost::bind(func_serialthread, boost::cref(icnt), boost::cref(pCount)));
+	//threads.create_thread(boost::bind(second_thread));
+	////thrds.interrupt_all();
+	//threads.join_all();
 
-	thrds.create_thread(boost::bind(second_thread));
-	
-	//thrds.interrupt_all();
-	thrds.join_all();
+	boost::thread thread1(boost::bind(func_serialthread, boost::cref(icnt), boost::cref(pCount)));
+	boost::thread thread2(second_thread);
+	thread1.join();
+	thread2.join();
+
 
 	std::cout << "wainting..." << std::endl;
 	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
