@@ -9,11 +9,17 @@
 class CSerialComm
 {
 public:
+	CSerialPort	m_SerialPort;
+	bool m_bConnected;
+	string m_sPort;
+
+public:
 	CSerialComm();
 	~CSerialComm();
 
-	CSerialPort	serial;
 	int		connect(char* _portNum);
+	int		TryConnect(char* _portNum);
+
 	int		sendCommand(char pos);
 	void	disconnect();
 	bool	readCommand(char * pBuff);

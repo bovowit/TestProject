@@ -24,8 +24,7 @@ bool CSerialPort::OpenPort(string portname)
 		return true;   //제대로 열렸을 경우 true 반환
 }
 
-bool CSerialPort::ConfigurePort(DWORD BaudRate, BYTE ByteSize, DWORD fParity,
-	BYTE Parity, BYTE StopBits)
+bool CSerialPort::ConfigurePort(DWORD BaudRate, BYTE ByteSize, DWORD fParity, BYTE Parity, BYTE StopBits)
 {
 	if ((m_bPortReady = GetCommState(m_hComm, &m_dcb)) == 0) //포트의 상태를 확인. 정상적으로 열리지 않았을 경우 false 반환
 	{
