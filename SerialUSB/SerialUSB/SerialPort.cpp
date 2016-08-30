@@ -15,13 +15,19 @@ CSerialPort::~CSerialPort()
 bool CSerialPort::OpenPort(string portname)
 {
 	portname = "//./" + portname;
-	m_hComm = CreateFile(LPCTSTR(portname.data()), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0); //시리얼 포트를 오픈한다. 
+	wstring wsPortName = L"";
+	wsPortName.assign(portname.begin(), portname.end());
+	m_hComm = CreateFile(LPCWSTR(wsPortName.c_str())/*L"//./COM4"*/, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0); //시리얼 포트를 오픈한다. 
 	if (m_hComm == INVALID_HANDLE_VALUE)  //정상적으로 포트가 열렸는지 확인
 	{
+		std::cout << "connection fail to  : " << portname << std::endl;
 		return false;  //열리지 않았을 경우 false 반환
 	}
 	else
+	{
+		std::cout << "connection succeed to  : " << portname << std::endl;
 		return true;   //제대로 열렸을 경우 true 반환
+	}
 }
 
 bool CSerialPort::ConfigurePort(DWORD BaudRate, BYTE ByteSize, DWORD fParity, BYTE Parity, BYTE StopBits)

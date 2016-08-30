@@ -14,7 +14,7 @@ using namespace std;
 
 void func_serialthread(int a, boost::shared_ptr<CSerialComm> pSerialComm)
 {
-	boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
+	//boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
 	std::cout << "count == " << a << std::endl;
 	pSerialComm->SerialCommRun();
 }
@@ -23,7 +23,7 @@ void second_thread()
 {
 	while (1)
 	{
-		boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
+		//boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
 		std::cout << "second thread called == " << std::endl;
 		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 	}
@@ -41,7 +41,7 @@ int main()
 	//for (int i = 0; i < 1; ++i)
 	thrds.create_thread(boost::bind(func_serialthread, boost::cref(icnt), boost::cref(pCount)));
 
-	thrds.create_thread(boost::bind(second_thread));
+	//thrds.create_thread(boost::bind(second_thread));
 	
 	//thrds.interrupt_all();
 	thrds.join_all();

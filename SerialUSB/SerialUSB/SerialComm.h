@@ -17,8 +17,8 @@ public:
 	CSerialComm();
 	~CSerialComm();
 
-	int		connect(char* _portNum);
-	int		TryConnect(char* _portNum);
+	int		connect(string _portNum);
+	int		TryConnect(string _portNum);
 
 	int		sendCommand(char pos);
 	void	disconnect();

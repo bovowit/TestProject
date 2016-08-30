@@ -11,11 +11,11 @@ CSerialComm::CSerialComm()
 CSerialComm::~CSerialComm() {}
 
 
-int CSerialComm::connect(char* portNum)
+int CSerialComm::connect(string portNum)
 {
 	m_sPort = portNum;	// 포트 넘버 저장
 
-	if (!m_SerialPort.OpenPort(portNum)) //포트를 오픈하고 오픈에 실패하였으면 fail을 반환한다.
+	if (!m_SerialPort.OpenPort(m_sPort)) //포트를 오픈하고 오픈에 실패하였으면 fail을 반환한다.
 		return RETURN_FAIL;
 
 	m_SerialPort.ConfigurePort(CBR_9600, 8, FALSE, NOPARITY, ONESTOPBIT); //포트 기본값을 설정한다.
@@ -25,7 +25,7 @@ int CSerialComm::connect(char* portNum)
 	return RETURN_SUCCESS;
 }
 
-int	CSerialComm::TryConnect(char* _portNum)	// 연결될때까지 10초 동안 반복.
+int	CSerialComm::TryConnect(string _portNum)	// 연결될때까지 10초 동안 반복.
 {
 	int iRet = RETURN_FAIL;
 	int iRetryCnt = 0;
@@ -65,7 +65,8 @@ bool CSerialComm::readCommand(char * pBuff)
 
 void CSerialComm::SerialCommRun()
 {
-	if (!TryConnect("COM3")) //COM3 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
+	string sComPort = "COM4";
+	if (!TryConnect(sComPort)) //COM3 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
 	{
 		std::cout << "connect faliled" << std::endl;
 	}
@@ -84,6 +85,8 @@ void CSerialComm::SerialCommRun()
 			std::cout << pBuff;
 		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+
+			//std::cout << "try read buff" << std::endl;
 	}
 
 }
