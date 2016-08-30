@@ -2,11 +2,13 @@
 #include "serialcomm.h"
 #include <iostream>
 #include <boost/thread/thread.hpp>
+//#include <stdlib.h>
 
 CSerialComm::CSerialComm()
 {
 	m_bConnected = false;
-
+	m_lBaudRate = CBR_9600;
+	m_sPort = "COM3";
 }
 CSerialComm::~CSerialComm() {}
 
@@ -18,10 +20,9 @@ int CSerialComm::connect(string portNum)
 	if (!m_SerialPort.OpenPort(m_sPort)) //포트를 오픈하고 오픈에 실패하였으면 fail을 반환한다.
 		return RETURN_FAIL;
 
-	m_SerialPort.ConfigurePort(CBR_9600, 8, FALSE, NOPARITY, ONESTOPBIT); //포트 기본값을 설정한다.
+	m_SerialPort.ConfigurePort(m_lBaudRate, 8, FALSE, NOPARITY, ONESTOPBIT); //포트 기본값을 설정한다.
 	m_SerialPort.SetCommunicationTimeouts(0, 0, 100, 0, 0); //Timeout값 설정, 세번째 값으로 한번의 패킷을 100 msec 만큼 기다림.
 
-	m_bConnected = true;
 	return RETURN_SUCCESS;
 }
 
@@ -29,11 +30,42 @@ int	CSerialComm::TryConnect(string _portNum)	// 연결될때까지 10초 동안 반복.
 {
 	int iRet = RETURN_FAIL;
 	int iRetryCnt = 0;
-	while (!m_bConnected && iRetryCnt < 3)
-	{
-		iRet = connect(_portNum);
+
+	iRet = connect(_portNum);
+	if(!iRet)
 		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-		iRetryCnt++;
+	iRetryCnt++;
+
+	if (iRet)
+	{
+		cout << _portNum << "  : try send command " << endl;
+		iRet = sendCommand('N');
+		if (iRet)
+		{
+			cout << _portNum << "  : success send command " << endl;
+			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+
+			char _rbuff[100] = { 0, };
+			readCommand(_rbuff);
+			cout << _rbuff << "  : readed command... from arduino  !!" << endl;
+			if (!strcmp("KAIFUN", _rbuff))
+			{
+				iRet = RETURN_SUCCESS;
+				m_bConnected = true;
+				cout << _portNum << "  : succeed connection" << endl;
+			}
+			else
+			{
+				iRet = RETURN_FAIL;
+				cout << _portNum << "  : failed connection" << endl;
+				disconnect();
+			}
+		}
+		else
+		{
+			disconnect();
+			cout << _portNum << "  : failed sendcommnad" << endl;
+		}
 	}
 	return iRet;
 }
@@ -65,13 +97,19 @@ bool CSerialComm::readCommand(char * pBuff)
 
 void CSerialComm::SerialCommRun()
 {
-	string sComPort = "COM4";
-	if (!TryConnect(sComPort)) //COM3 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
+	string sComPort = "";
+	while (1)
 	{
-		std::cout << "connect faliled" << std::endl;
+		for (int i = 1; i < 10; i++)	 //COM1~COM9 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
+		{
+			cout << "COM" << i << "  : try connection" << endl;
+			sComPort = "COM" + to_string(i);
+			if (TryConnect(sComPort))
+			{
+				break;
+			}
+		}
 	}
-	else
-		std::cout << "connect successed" << std::endl;
 
 	// reading은 약속된 사이즈만큼 반복읽기.. ReadByte(BYTE* &resp, UINT size) 사용.
 	// disconnect event나 timeout 이 발생할 경우 처리는? 

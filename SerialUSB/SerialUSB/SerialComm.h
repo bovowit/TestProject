@@ -12,6 +12,7 @@ public:
 	CSerialPort	m_SerialPort;
 	bool m_bConnected;
 	string m_sPort;
+	long m_lBaudRate; // Baud rates at which the communication device operates
 
 public:
 	CSerialComm();
