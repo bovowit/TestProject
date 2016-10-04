@@ -1,11 +1,22 @@
 #include <mthread.h>
 
 // Reserved Command : PC -> Controller
+//  
 
 // Reserved Command : Controller -> PC
 
 // define Pin
-
+#define PIN_GUNFIRE     0
+#define PIN_GUNFIRE     1
+#define PIN_GUNFIRE     2
+#define PIN_GUNFIRE     3
+#define PIN_GUNFIRE     4
+#define PIN_GUNFIRE     5
+#define PIN_GUNFIRE     6
+#define PIN_GUNFIRE     7
+#define PIN_GUNFIRE     8
+#define PIN_GUNFIRE     9
+#define PIN_GUNFIRE     10
 
 ////////////////////////////////////////////////////////////
 String sToken = ";";
@@ -15,17 +26,24 @@ char temp_buff[100];                // 읽기 buff
 int read_buff_pos = 0;              // 
 String sReadData;
 
-
-void buff_reset()
+void SetPinMode()
 {
-    sReadData.remove(0); 
-}
+    pinMode(PIN_GUNFIRE, INPUT);   // 총알의 발사 신호
 
+
+    pinMode(5, OUTPUT);
+  
+}
 void RunCommand(String sCommand)    // PC에서 읽어온 명령어 처리.
 {
   if(!sCommand.compareTo("COMMND_START"))
       digitalWrite(1, HIGH);
   //else if(
+}
+
+void buff_reset()
+{
+    sReadData.remove(0); 
 }
 
 class SensorThread : public Thread
