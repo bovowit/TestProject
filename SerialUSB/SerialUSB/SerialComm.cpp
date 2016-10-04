@@ -46,7 +46,7 @@ int	CSerialComm::TryConnect(string _portNum)	// 연결될때까지 10초 동안 반복.
 			boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 
 			char _rbuff[100] = { 0, };
-			readCommand(_rbuff);
+			readCommand(_rbuff, 6);
 			cout << _rbuff << "  : readed command... from arduino  !!" << endl;
 			if (!strcmp("KAIFUN", _rbuff))
 			{
@@ -84,14 +84,13 @@ void CSerialComm::disconnect() //포트를 다 쓰고 난뒤 닫는 함수
 	m_bConnected = false;
 }
 
-bool CSerialComm::readCommand(char * pBuff)
+bool CSerialComm::readCommand(char * pBuff, UINT length)
 {
-	BYTE byte;
-	if (m_SerialPort.ReadByte(byte))
-		memcpy(pBuff, &byte, 1);
+	BYTE * byte = new BYTE[100];
+	if (m_SerialPort.ReadByte(byte, length))
+		memcpy(pBuff, byte, 1);
 	else
 		return false;
-
 
 }
 
@@ -100,7 +99,7 @@ void CSerialComm::SerialCommRun()
 	string sComPort = "";
 	while (1)
 	{
-		for (int i = 1; i < 10; i++)	 //COM1~COM9 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
+		for (int i = 2; i < 10; i++)	 //COM1~COM9 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
 		{
 			cout << "COM" << i << "  : try connection" << endl;
 			sComPort = "COM" + to_string(i);
@@ -119,7 +118,7 @@ void CSerialComm::SerialCommRun()
 	while (1) //오픈에 성공한 경우 sendCommand()를 통해 계속적으로 데이터를 전송한다. 전송에 실패 할 경우 failed 메시지를 출력한다.
 	{
 		char pBuff[10] = { 0, };
-		if(readCommand(pBuff))
+		if(readCommand(pBuff, 10))
 			std::cout << pBuff;
 		else
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1));

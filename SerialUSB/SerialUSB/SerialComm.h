@@ -23,7 +23,7 @@ public:
 
 	int		sendCommand(char pos);
 	void	disconnect();
-	bool	readCommand(char * pBuff);
+	bool	readCommand(char * pBuff, UINT length);
 
 	void SerialCommRun();
 };
