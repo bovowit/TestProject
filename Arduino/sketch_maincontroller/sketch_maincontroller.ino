@@ -12,11 +12,18 @@ enum COMMAND {
   BTN_START_ON    = 71,
   BTN_CANCEL_OFF  = 100,
   BTN_CANCEL_ON   = 101,
-
   
 };
 
 // Reserved Command : Sensor -> Controller => PC
+#define CRD_ADD_MONEY   "41"
+#define BTN_START       "51"
+#define GUN_SHOT        "61"
+#define BTN_GUN_F1      "81"
+#define BTN_AMMSUPPLY   "91"
+#define BTN_CANCEL      "111"
+
+
 // define Pin (INPUT signal)
 #define PIN_CRD_ADD_MONEY     4
 #define PIN_BTN_START         5
@@ -25,6 +32,9 @@ enum COMMAND {
 #define PIN_BTN_AMMSUPPLY     9
 #define PIN_BTN_CANCEL        11
 
+// define Pin (Output signal)
+#define PIN_START_LIGHT       7
+#define PIN_CANCEL_LIGHT      10
 
 ////////////////////////////////////////////////////////////
 String sCmdBegin = "[CMD]";
@@ -34,14 +44,17 @@ int iCmdEnd = 1;
 int serial_read_length = 0;         // 수신된 데이터 길이
 int serial_max_packet = 90;
 String sReadData;
+bool g_bFlickerStartBtn = false;    // true 이면 스타트 버튼 점멸
+bool g_bFlickerCancelBtn = false;   // true 이면 취소 버튼 점멸
 
 void SetPinMode()
 {
-    pinMode(PIN_CRD_ADD_MONEY, INPUT);   // 총알의 발사 신호
-
-
-    pinMode(5, OUTPUT);
-  
+    pinMode(PIN_CRD_ADD_MONEY, INPUT);    // 지폐 투입
+    pinMode(PIN_BTN_START, INPUT);        // 시작버튼
+    pinMode(PIN_GUN_SHOT, INPUT);         // 총알의 발사 신호
+    pinMode(PIN_BTN_GUN_F1, INPUT);       // 총기의 기능버튼
+    pinMode(PIN_BTN_AMMSUPPLY, INPUT);    // 
+    pinMode(PIN_BTN_CANCEL, INPUT);       // 취소버튼 
 }
 void RunCommand(String sCommand)    // PC에서 읽어온 명령어 처리.
 {
@@ -66,16 +79,23 @@ void RunCommand(String sCommand)    // PC에서 읽어온 명령어 처리.
     case 70:  // 시작버튼 소등 
       digitalWrite(7, LOW);     break;
     case 71:  // 시작버튼 깜박임
-      digitalWrite(7, HIGH);     break;         //====================> 깜박임 처리 필요
+      g_bFlickerStartBtn = true;  // true인 동안 깜박임 처리
+      break;        
     //case 80:  // 8번핀 = 총의 기능1버튼  입력신호
     //case 90:  // 9번핀 = BB버튼 입력 신호
     case 100:   // 취소버튼 소등
       digitalWrite(10, LOW);     break;      
     case 101:  // 취소버튼 깜박임
-      digitalWrite(10, HIGH);     break;      //====================> 깜박임 처리 필요
+      g_bFlickerCancelBtn = true;  // true인 동안 깜박임 처리
     //case 110:  //11번핀 = 취소버튼 눌림 입력신호   
   }
      
+}
+
+void SendCommandToPc(String sCommandID)
+{
+    String sCmd = sCmdBegin + sCommandID + sCmdEnd;
+    Serial.print(sCmd);
 }
 
 void buff_reset()
@@ -98,9 +118,63 @@ SensorThread::SensorThread(int id)
     this->id = id;
 }
  
-bool SensorThread::loop()  // 
+bool SensorThread::loop()  // 센서로부터 데이터 수집 
 {
-     return true;
+    if(digitalRead(PIN_CRD_ADD_MONEY) == HIGH)
+        SendCommandToPc(CRD_ADD_MONEY);
+    if(digitalRead(PIN_BTN_START) == HIGH)
+    {
+        SendCommandToPc(BTN_START);
+        g_bFlickerStartBtn = false;
+    }
+    if(digitalRead(PIN_GUN_SHOT) == HIGH)
+        SendCommandToPc(GUN_SHOT);
+    if(digitalRead(PIN_BTN_GUN_F1) == HIGH)
+        SendCommandToPc(BTN_GUN_F1);
+    if(digitalRead(PIN_BTN_AMMSUPPLY) == HIGH)
+        SendCommandToPc(BTN_AMMSUPPLY);
+    if(digitalRead(PIN_BTN_CANCEL) == HIGH)
+     {
+        SendCommandToPc(BTN_CANCEL);
+        g_bFlickerCancelBtn = false;
+    }
+            
+    return true;
+}
+
+class FlikerThread : public Thread
+{
+public:
+    FlikerThread(int id);
+protected:
+    bool loop();
+private:
+    int id;
+};
+ 
+FlikerThread::FlikerThread(int id)
+{
+    this->id = id;
+}
+ 
+bool FlikerThread::loop()  // 버튼 깜박임 처리
+{
+  int iSleepTime = 1000;
+  
+  if(g_bFlickerStartBtn)
+  {
+      digitalWrite(PIN_START_LIGHT, HIGH);
+      sleep_milli(iSleepTime);
+      digitalWrite(PIN_START_LIGHT, LOW);
+  }
+   if(g_bFlickerCancelBtn)
+  {
+      digitalWrite(PIN_CANCEL_LIGHT, HIGH);
+      sleep_milli(iSleepTime);
+      digitalWrite(PIN_CANCEL_LIGHT, LOW);   
+  } 
+  sleep_milli(iSleepTime);
+  return true;
 }
 
 class SerialReadThread : public Thread
@@ -117,7 +191,7 @@ SerialReadThread::SerialReadThread(int id)
 {
 }
  
-bool SerialReadThread::loop()
+bool SerialReadThread::loop() // PC의 명령 수신 처리
 {
     if (Serial.available() > 0)
     {
@@ -151,10 +225,9 @@ bool SerialReadThread::loop()
 void setup()
 {
     Serial.begin(9600);
-    for(int i = 0; i < 1; i++)
-        main_thread_list->add_thread(new SensorThread(i));
-
     main_thread_list->add_thread(new SerialReadThread(1));
+    main_thread_list->add_thread(new FlikerThread(2));   
+    main_thread_list->add_thread(new SensorThread(3));
 
     Serial.println("Running Main Controller...");
     Serial.setTimeout(100);
