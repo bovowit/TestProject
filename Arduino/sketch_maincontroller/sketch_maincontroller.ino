@@ -55,12 +55,17 @@ void SetPinMode()
     pinMode(PIN_BTN_GUN_F1, INPUT);       // 총기의 기능버튼
     pinMode(PIN_BTN_AMMSUPPLY, INPUT);    // 
     pinMode(PIN_BTN_CANCEL, INPUT);       // 취소버튼 
+
+    pinMode(PIN_START_LIGHT, OUTPUT);
+    pinMode(PIN_CANCEL_LIGHT, OUTPUT);
 }
 void RunCommand(String sCommand)    // PC에서 읽어온 명령어 처리.
 {
   Serial.println(sCommand);
   switch(sCommand.toInt())
   {
+    case 00:
+      Serial.println("echo test : [CMD]00;");  break;
     case 10:   // 공급모터 OFF
       digitalWrite(1, LOW);     break;
     case 11:   // 공급모터 ON
@@ -95,7 +100,7 @@ void RunCommand(String sCommand)    // PC에서 읽어온 명령어 처리.
 void SendCommandToPc(String sCommandID)
 {
     String sCmd = sCmdBegin + sCommandID + sCmdEnd;
-    Serial.print(sCmd);
+    Serial.println(sCmd);
 }
 
 void buff_reset()
@@ -120,6 +125,9 @@ SensorThread::SensorThread(int id)
  
 bool SensorThread::loop()  // 센서로부터 데이터 수집 
 {
+    //int itemp = digitalRead(PIN_CRD_ADD_MONEY);
+    //Serial.print("4Pin Input Val : "); Serial.println(itemp);
+    
     if(digitalRead(PIN_CRD_ADD_MONEY) == HIGH)
         SendCommandToPc(CRD_ADD_MONEY);
     if(digitalRead(PIN_BTN_START) == HIGH)
@@ -138,7 +146,7 @@ bool SensorThread::loop()  // 센서로부터 데이터 수집
         SendCommandToPc(BTN_CANCEL);
         g_bFlickerCancelBtn = false;
     }
-            
+    sleep_milli(10);        
     return true;
 }
 
@@ -225,6 +233,7 @@ bool SerialReadThread::loop() // PC의 명령 수신 처리
 void setup()
 {
     Serial.begin(9600);
+    SetPinMode();   
     main_thread_list->add_thread(new SerialReadThread(1));
     main_thread_list->add_thread(new FlikerThread(2));   
     main_thread_list->add_thread(new SensorThread(3));
