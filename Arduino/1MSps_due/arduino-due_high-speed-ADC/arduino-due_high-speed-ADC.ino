@@ -11,7 +11,7 @@
 
 volatile int bufn,obufn;
 uint16_t buf[4][256];   // 4 buffers of 256 readings
-
+long s_time = 0;
 void ADC_Handler(){     // move DMA pointers to next buffer
   int f=ADC->ADC_ISR;
   if (f&(1<<27)){
@@ -22,6 +22,8 @@ void ADC_Handler(){     // move DMA pointers to next buffer
 }
 
 void setup(){
+  Serial.begin(9600);
+  
   SerialUSB.begin(0);
   while(!SerialUSB);
   pmc_enable_periph_clk(ID_ADC);
@@ -40,10 +42,19 @@ void setup(){
   bufn=obufn=1;
   ADC->ADC_PTCR=1;
   ADC->ADC_CR=2;
-}
 
+  s_time = micros();
+}
+int retry = 0;
 void loop(){
-  while(obufn==bufn); // wait for buffer to be full
-  SerialUSB.write((uint8_t *)buf[obufn],512); // send it - 512 bytes = 256 uint16_t
-  obufn=(obufn+1)&3;    
+  while(retry < 0)
+  {
+    digitalRead(4);
+    retry++;
+  }
+  long dtime = micros() - s_time;
+  Serial.println(dtime);
+  //while(obufn==bufn); // wait for buffer to be full
+  //SerialUSB.write((uint8_t *)buf[obufn],512); // send it - 512 bytes = 256 uint16_t
+  //obufn=(obufn+1)&3;    
 }
