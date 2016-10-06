@@ -1,6 +1,15 @@
+// 프로토콜 규칙
+//PC에서 "[CMD]10;" 명령입력시, Amm_Supply_Off 명령이 수행됨
+//       "[CMD]11;" 명령입력시 , Amm_Supply_ON 명령이 수행됨 
+// 숫자의 앞은 핀 넘버, 뒷자리 0/1 은 off/On 을 의미함.
+// 아두이노에서 PC로도 동일하게 명령어 전송됨.
+
+// 개발 참고
+// 세개의 thread (sub routine) 이 동작함. PC로부터 명령어 읽어 처리/센서 값 읽기/버튼의 점멸 신호 등.
+
 #include <mthread.h>
 
-// Reserved Command : PC -> Controller
+// Reserved Command : PC -> Controller 
 enum COMMAND {
   AMM_SUPPLY_OFF  = 10,
   AMM_SUPPLY_ON   = 11,
@@ -136,53 +145,66 @@ SensorThread::SensorThread(int id)
     this->id = id;
 }
 
-bool g_bCrdAddMoney = false; 
-bool g_bBtnStart = false;
-bool g_bGunShot = false;
-bool g_bBtlGunF1 = false;
-bool g_bBtnAmmSupply = false;
-bool g_bBtlCalcel = false;
-bool SensorThread::loop()  // 센서로부터 데이터 수집, 수집주기가 빨라서 계속 신호 감지될 가능성 처리.
+int g_iCrdAddMoney = 0; 
+int g_iBtnStart = 0;
+int g_iGunShot = 0;
+int g_iBtnGunF1 = 0;
+int g_iBtnAmmSupply = 0;
+int g_iBtnCalcel = 0;
+int g_BaseDelayCount = 200; // 한번 신호 수신 후 milli second 동안 신호 무시
+bool SensorThread::loop()   // 센서로부터 데이터 수집, 수집주기가 빨라서 계속 신호 감지될 가능성 처리.
 {
-    if(digitalRead(PIN_CRD_ADD_MONEY) == HIGH && g_bCrdAddMoney == false)
+    if(digitalRead(PIN_CRD_ADD_MONEY) == HIGH || g_iCrdAddMoney > 0)
     {
-        g_bCrdAddMoney = true;
+      if(g_iCrdAddMoney == 0)
         SendCommandToPc(CRD_ADD_MONEY);
+      g_iCrdAddMoney++;
+      if(g_iCrdAddMoney > g_BaseDelayCount)
+        g_iCrdAddMoney = 0;
     }
-    if(digitalRead(PIN_BTN_START) == HIGH && g_bBtnStart == false)
+    if(digitalRead(PIN_BTN_START) == HIGH || g_iBtnStart > 0)
     {
-        g_bBtnStart = true;
-        SendCommandToPc(BTN_START);
         g_bFlickerStartBtn = false;
+        if(g_iBtnStart == 0)
+          SendCommandToPc(BTN_START);
+        g_iBtnStart++;
+        if(g_iBtnStart > g_BaseDelayCount)
+          g_iBtnStart = 0;
     }
-    if(digitalRead(PIN_GUN_SHOT) == HIGH && g_bGunShot == false)
+    if(digitalRead(PIN_GUN_SHOT) == HIGH || g_iGunShot > 0)
     {
-        g_bGunShot = true;
-        SendCommandToPc(GUN_SHOT);
+        if(g_iGunShot == 0)
+          SendCommandToPc(GUN_SHOT);
+        g_iGunShot++;
+        if(g_iGunShot > g_BaseDelayCount)
+          g_iGunShot = 0;
     }
-    if(digitalRead(PIN_BTN_GUN_F1) == HIGH && g_bBtlGunF1 == false)
+    if(digitalRead(PIN_BTN_GUN_F1) == HIGH || g_iBtnGunF1 > 0)
     {
-        g_bBtlGunF1 = true;
-        SendCommandToPc(BTN_GUN_F1);
+        if(g_iBtnGunF1 == 0)
+          SendCommandToPc(BTN_GUN_F1);
+        g_iBtnGunF1++;
+        if(g_iBtnGunF1 > g_BaseDelayCount)
+          g_iBtnGunF1 = 0;
     }
-    if(digitalRead(PIN_BTN_AMMSUPPLY) == HIGH && g_bBtnAmmSupply == false)
+    if(digitalRead(PIN_BTN_AMMSUPPLY) == HIGH || g_iBtnAmmSupply > 0)
     {
-        g_bBtnAmmSupply = true;
-        SendCommandToPc(BTN_AMMSUPPLY);
+        if(g_iBtnAmmSupply == 0)
+          SendCommandToPc(BTN_AMMSUPPLY);
+        g_iBtnAmmSupply++;  
+        if(g_iBtnAmmSupply > g_BaseDelayCount)
+          g_iBtnAmmSupply = 0;
     }
-    if(digitalRead(PIN_BTN_CANCEL) == HIGH)
+    if(digitalRead(PIN_BTN_CANCEL) == HIGH || g_iBtnCalcel > 0)
      {
-        g_bBtlCalcel = true;
-        SendCommandToPc(BTN_CANCEL);
         g_bFlickerCancelBtn = false;
+        if(g_iBtnCalcel == 0)
+          SendCommandToPc(BTN_CANCEL);
+        g_iBtnCalcel++;
+        if(g_iBtnCalcel > g_BaseDelayCount)
+          g_iBtnCalcel = 0;
     }
-    sleep_milli(10);
-    g_bCrdAddMoney = false;
-    g_bBtnStart = false;
-    g_bGunShot = false;
-    g_bBtlGunF1 = false;
-    g_bBtnAmmSupply = false;
-    g_bBtlCalcel = false;            
+    sleep_milli(1);
     return true;
 }
 
