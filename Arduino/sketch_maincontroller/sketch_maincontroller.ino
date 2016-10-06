@@ -12,7 +12,6 @@ enum COMMAND {
   BTN_START_ON    = 71,
   BTN_CANCEL_OFF  = 100,
   BTN_CANCEL_ON   = 101,
-  
 };
 
 // Reserved Command : Sensor -> Controller => PC
@@ -25,6 +24,10 @@ enum COMMAND {
 
 
 // define Pin (INPUT signal)
+#define PIN_AMM_SUPPLY        1
+#define PIN_TRIGGER           2
+#define PIN_GUN_CAMSLEEP      3
+
 #define PIN_CRD_ADD_MONEY     4
 #define PIN_BTN_START         5
 #define PIN_GUN_SHOT          6
@@ -59,42 +62,52 @@ void SetPinMode()
     pinMode(PIN_START_LIGHT, OUTPUT);
     pinMode(PIN_CANCEL_LIGHT, OUTPUT);
 }
+
 void RunCommand(String sCommand)    // PC에서 읽어온 명령어 처리.
 {
   Serial.println(sCommand);
   switch(sCommand.toInt())
   {
     case 00:
-      Serial.println("echo test : [CMD]00;");  break;
+      Serial.println("echo test : [CMD]00;");  
+      break;
     case 10:   // 공급모터 OFF
-      digitalWrite(1, LOW);     break;
+      digitalWrite(PIN_AMM_SUPPLY, LOW);     
+      break;
     case 11:   // 공급모터 ON
-      digitalWrite(1, HIGH);    break;
+      digitalWrite(PIN_AMM_SUPPLY, HIGH);    
+      break;
     case 20:  // 에어모터 = 방아쇠제어
-      digitalWrite(2, LOW);     break;
+      digitalWrite(PIN_TRIGGER, LOW);     
+      break;
     case 21:
-      digitalWrite(2, HIGH);    break;
+      digitalWrite(PIN_TRIGGER, HIGH);    
+      break;
     case 30:  // 총구 카메라 
-      digitalWrite(3, LOW);     break;
+      digitalWrite(PIN_GUN_CAMSLEEP, LOW);     
+      break;
     case 31:
-      digitalWrite(3, HIGH);    break;
+      digitalWrite(PIN_GUN_CAMSLEEP, HIGH);    
+      break;
     //case 40:  // 4번핀 = 지폐인식 입력신호
     //case 50:  // 5번핀 = 시작버튼 눌림 입력신호
     //case 60:  // 6번핀 = 총구의 광센서 입력신호
     case 70:  // 시작버튼 소등 
-      digitalWrite(7, LOW);     break;
+      digitalWrite(PIN_START_LIGHT, LOW);     
+      break;
     case 71:  // 시작버튼 깜박임
       g_bFlickerStartBtn = true;  // true인 동안 깜박임 처리
       break;        
     //case 80:  // 8번핀 = 총의 기능1버튼  입력신호
     //case 90:  // 9번핀 = BB버튼 입력 신호
     case 100:   // 취소버튼 소등
-      digitalWrite(10, LOW);     break;      
+      digitalWrite(PIN_CANCEL_LIGHT, LOW);     
+      break;      
     case 101:  // 취소버튼 깜박임
       g_bFlickerCancelBtn = true;  // true인 동안 깜박임 처리
+      break;
     //case 110:  //11번핀 = 취소버튼 눌림 입력신호   
   }
-     
 }
 
 void SendCommandToPc(String sCommandID)
@@ -122,31 +135,54 @@ SensorThread::SensorThread(int id)
 {
     this->id = id;
 }
- 
-bool SensorThread::loop()  // 센서로부터 데이터 수집 
+
+bool g_bCrdAddMoney = false; 
+bool g_bBtnStart = false;
+bool g_bGunShot = false;
+bool g_bBtlGunF1 = false;
+bool g_bBtnAmmSupply = false;
+bool g_bBtlCalcel = false;
+bool SensorThread::loop()  // 센서로부터 데이터 수집, 수집주기가 빨라서 계속 신호 감지될 가능성 처리.
 {
-    //int itemp = digitalRead(PIN_CRD_ADD_MONEY);
-    //Serial.print("4Pin Input Val : "); Serial.println(itemp);
-    
-    if(digitalRead(PIN_CRD_ADD_MONEY) == HIGH)
-        SendCommandToPc(CRD_ADD_MONEY);
-    if(digitalRead(PIN_BTN_START) == HIGH)
+    if(digitalRead(PIN_CRD_ADD_MONEY) == HIGH && g_bCrdAddMoney == false)
     {
+        g_bCrdAddMoney = true;
+        SendCommandToPc(CRD_ADD_MONEY);
+    }
+    if(digitalRead(PIN_BTN_START) == HIGH && g_bBtnStart == false)
+    {
+        g_bBtnStart = true;
         SendCommandToPc(BTN_START);
         g_bFlickerStartBtn = false;
     }
-    if(digitalRead(PIN_GUN_SHOT) == HIGH)
+    if(digitalRead(PIN_GUN_SHOT) == HIGH && g_bGunShot == false)
+    {
+        g_bGunShot = true;
         SendCommandToPc(GUN_SHOT);
-    if(digitalRead(PIN_BTN_GUN_F1) == HIGH)
+    }
+    if(digitalRead(PIN_BTN_GUN_F1) == HIGH && g_bBtlGunF1 == false)
+    {
+        g_bBtlGunF1 = true;
         SendCommandToPc(BTN_GUN_F1);
-    if(digitalRead(PIN_BTN_AMMSUPPLY) == HIGH)
+    }
+    if(digitalRead(PIN_BTN_AMMSUPPLY) == HIGH && g_bBtnAmmSupply == false)
+    {
+        g_bBtnAmmSupply = true;
         SendCommandToPc(BTN_AMMSUPPLY);
+    }
     if(digitalRead(PIN_BTN_CANCEL) == HIGH)
      {
+        g_bBtlCalcel = true;
         SendCommandToPc(BTN_CANCEL);
         g_bFlickerCancelBtn = false;
     }
-    sleep_milli(10);        
+    sleep_milli(10);
+    g_bCrdAddMoney = false;
+    g_bBtnStart = false;
+    g_bGunShot = false;
+    g_bBtlGunF1 = false;
+    g_bBtnAmmSupply = false;
+    g_bBtlCalcel = false;            
     return true;
 }
 
