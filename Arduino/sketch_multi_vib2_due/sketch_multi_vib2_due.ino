@@ -2,7 +2,7 @@
 
 #include <mthread.h>
 int sensor_count = 2;
-int sensitivity = 2;
+int sensitivity = 90;
 long stime = 0;
 long dtime = 0;
 int sensor_value[4] = {0, };
@@ -72,7 +72,7 @@ bool ManagerThread::loop()
       }
     }
 
-    if(sensor_value[0] > 50 && sensor_value[1] > 50)
+    if(sensor_value[0] > sensitivity && sensor_value[1] > sensitivity)
     {
       retry++;  Serial.print(retry);
       Serial.print("  [V0] "); Serial.print(sensor_value[0]); 
@@ -87,7 +87,7 @@ bool ManagerThread::loop()
         stime = dtime = 0;
       }      
 
-      delay(3000);
+      delay(1000);
       //sleep_milli(100);
     }
     //sleep_micro(1000000);
@@ -97,7 +97,7 @@ void setup()
 {
      analogReadResolution(MAX_ADC_RESOLUTION); //
     
-     adc_init(ADC, SystemCoreClock, ADC_FREQ_MAX*2, 1); //~313000 samples per second, A/D readings kaput
+     //adc_init(ADC, SystemCoreClock, ADC_FREQ_MAX*2, 1); //~313000 samples per second, A/D readings kaput
       //adc_init(ADC, SystemCoreClock, ADC_FREQ_MAX*2, 2); //~288 000 samples per second, A/D readings now have about 10% deviation
       ////adc_init(ADC, SystemCoreClock, ADC_FREQ_MAX*2, 3); //~267000 samples per second, A/D readings OK, the best compromise I got
       //adc_init(ADC, SystemCoreClock, ADC_FREQ_MAX*2, 4); //~220000 samples per second, A/D readings OK
