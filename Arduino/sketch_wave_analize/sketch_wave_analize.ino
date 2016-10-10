@@ -6,22 +6,31 @@ unsigned long sTime = 0;
 long dTime = 0;
 bool bBlast = false;
 
-const int sensitivity = 600;
+int sensitivity = 50;
 
 void setup() 
 {
   Serial.begin(9600);
 
   Serial.print("Start analize Blast Wave !!  : ");
-  Serial.println(sensitivity);
 }
 
 void loop()
 {
+   if (Serial.available() > 0)
+    {
+        char temp_buff[30] = {0, };          
+        int length = Serial.readBytes(temp_buff, 30);
+        String sReadData = temp_buff;
+        sensitivity = sReadData.toInt();
+        Serial.print("Tot Cmd Data : "); Serial.println(sReadData);
+    }
+
+  
   highretrycnt = 0;
   sTime = 0;
   //bBlast = false;
-  for (int i = 0; i < 10000; i++)
+  for (int i = 0; i < 1000; i++)
     arrValue[i] = 0;
 
   int tempVal = analogRead(A0);
@@ -30,7 +39,7 @@ void loop()
     //bBlast = true;
     sTime = micros();
     lowretrycnt = 0;
-    while (highretrycnt < 10000 -1)
+    while (highretrycnt < 1000 -1)
     {
       tempVal = analogRead(A0);
       arrValue[highretrycnt] = tempVal;
@@ -48,9 +57,9 @@ void loop()
       }
     }
 
-    if (lowretrycnt == 10)
+    if (lowretrycnt < 10)
       Serial.println("fail anlized wave.......................");
-
+    Serial.print(micros()); Serial.println("===micros===");
     Serial.print("WAVE in count : "); Serial.println(highretrycnt);
     Serial.print("due time : "); Serial.println(dTime);
     for (int i = 0; i < highretrycnt; i++)
@@ -63,6 +72,7 @@ void loop()
       Serial.print("|");
       Serial.print(arrValue[i]);
     }
+    Serial.println("|");
   }
-  delay(3000);
+  //delay(3000);
 }
