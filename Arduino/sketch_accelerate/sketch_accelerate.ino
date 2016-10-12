@@ -5,9 +5,9 @@
 #define MAX_ADC_RESOLUTION 10
 
 // config value
-const int gSensorCnt = 4;
+const int gSensorCnt = 2;
 const int gMeasureCnt = 100;
-int gSensitivity = 300;
+int gSensitivity = 100;
 const int gCalibrationValue = 6;      // 6micro seconds : 보정은 불가능
 const int gBlastCycle = 1000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
 
@@ -15,7 +15,7 @@ const int gBlastCycle = 1000;       // 400 microseconds X 6mm = 2400mm : 최대 
 struct base
 {
   int value;
-  unsigned long time;
+  unsigned long utime;
 };
 base arrAccel[gSensorCnt][gMeasureCnt];
 int valueIndex[gSensorCnt];
@@ -54,7 +54,7 @@ void loop()
     valueIndex[tempPin] = 0;
     for (int j = 0; j < gMeasureCnt; j++)
     {
-      arrAccel[i][j].time = 0;
+      arrAccel[i][j].utime = 0;
       arrAccel[i][j].value = 0;
     }
   }
@@ -67,7 +67,7 @@ void loop()
       bBlast = true;
       sTime = micros();
       arrAccel[tempPin][valueIndex[tempPin]].value = tempValue;
-      arrAccel[tempPin][valueIndex[tempPin]].time = sTime;
+      arrAccel[tempPin][valueIndex[tempPin]].utime = sTime;
       valueIndex[tempPin]++;
       break;
     }
@@ -76,40 +76,47 @@ void loop()
   int iRetryCnt = 0;
   while(bBlast && dueTime < gBlastCycle)      // 첫번째 신호가 감지된 후 일정 시간 동안 각 센서의 값을 gMeasureCnt 번씩 저장.
   {
-    if (iRetryCnt >= gMeasureCnt * 4)     // 센서의 숫자 x 측정횟수 만큼만 반복해서 측정하면, 4개의 센서 데이터 배열을 모두 채움.
+    if (iRetryCnt >= gMeasureCnt * gSensorCnt)     // 센서의 숫자 x 측정횟수 만큼만 반복해서 측정하면, 4개의 센서 데이터 배열을 모두 채움.
       break;
-    for (tempPin ; tempPin < 4; tempPin++)    // 첫번째 신호가 감지된 핀 다음부터 계속
+    for (tempPin ; tempPin < gSensorCnt; tempPin++)    // 첫번째 신호가 감지된 핀 다음부터 계속
     {
       if (valueIndex[tempPin] >= gMeasureCnt) // arrAccel를 gMeasureCnt 만큼 채우면 더이상 해당 핀의 데이터 수집 안함. 데이터 수집이 더 효율적이 됨.
         continue;
       tempValue = analogRead(tempPin);
+      Serial.print(tempValue); Serial.print("==========="); Serial.println(tempPin);      
       if (abs(tempValue) > gSensitivity)
       {
         arrAccel[tempPin][valueIndex[tempPin]].value = tempValue;
-        arrAccel[tempPin][valueIndex[tempPin]].time = micros();
+        arrAccel[tempPin][valueIndex[tempPin]].utime = micros();
         valueIndex[tempPin]++;
       }
     }
-    dueTime = sTime - micros();
+    dueTime = micros() - sTime;
     tempPin = 0;                // 첫번째 센서로 셋팅
     iRetryCnt++;
   }
 
-  Serial.print("Measured Accleration : "); Serial.println(iMeasuredCnt);
-  int i = 0;
-  int j = 0;
-  for (i = 0; i < gSensorCnt; i++)
+  if(bBlast)
   {
-    Serial.print("Sensor : "); Serial.print(i); Serial.print("  First time : "); Serial.println(arrAccel[i][0].time);
-    for (j = 0; j < gMeasureCnt; j++)
+    Serial.print("Measured Accleration : "); Serial.println(iMeasuredCnt);
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < gSensorCnt; i++)
     {
-      Serial.print(arrAccel[i][j].value); Serial.print("|");
-      if (arrAccel[i][j].value < gSensitivity)
-        break;
+      Serial.print("Sensor : "); Serial.print(i); Serial.print("  First time : "); Serial.println(arrAccel[i][0].utime);
+      for (j = 0; j < gMeasureCnt; j++)
+      {
+        Serial.print(arrAccel[i][j].value); Serial.print("|");
+        if (arrAccel[i][j].value < gSensitivity)
+          break;
+      }
+      Serial.println("[E]");
+      unsigned long _dueTime = arrAccel[i][j-1].utime - arrAccel[i][0].utime;
+      Serial.print("Due Time : "); Serial.println(_dueTime);
     }
-    Serial.println("[E]");
-    unsigned long _dueTime = arrAccel[i][j-1].time - arrAccel[i][0].time;
-    Serial.print("Due Time : "); Serial.println(_dueTime);
+    Serial.println("---------------------------------------------");
   }
-  Serial.println("---------------------------------------------");
+  
+  bBlast = false;
+  dueTime = 0;
 }
