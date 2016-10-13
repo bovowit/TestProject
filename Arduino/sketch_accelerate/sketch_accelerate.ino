@@ -5,11 +5,11 @@
 #define MAX_ADC_RESOLUTION 10
 
 // config value
-const int gSensorCnt = 4;
+const int gSensorCnt = 2;
 const int gMeasureCnt = 100;
 int gSensitivity = 100;
 const int gCalibrationValue = 6;      // 6micro seconds : 보정은 불가능
-const int gBlastCycle = 10000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
+const int gBlastCycle = 100000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
 
 // data
 struct base
@@ -40,8 +40,7 @@ void loop()
     gSensitivity = sReadData.toInt();
     Serial.print("Sensitivity value input : "); Serial.println(sReadData);
   }
-  iMeasuredCnt++;
-
+ 
   bool bBlast = false;
   int tempValue = 0;
   int tempPin = 0;
@@ -69,8 +68,11 @@ void loop()
       arrAccel[tempPin][valueIndex[tempPin]].utime = sTime;
       (valueIndex[tempPin])++;
       tempPin++;
+      iMeasuredCnt++;
       break;
     }
+    else 
+      tempPin++;
   }
   
   int iRetryCnt = 0;
@@ -114,6 +116,8 @@ void loop()
       unsigned long _dueTime = arrAccel[i][j-1].utime - arrAccel[i][0].utime;
       Serial.print("Due Time : "); Serial.println(_dueTime);
     }
+    int intertime = (arrAccel[0][0]).utime - (arrAccel[1][0]).utime;
+    Serial.print("Inter time : "); Serial.println(intertime);
     Serial.println("---------------------------------------------");
   }
   
