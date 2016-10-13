@@ -5,11 +5,11 @@
 #define MAX_ADC_RESOLUTION 10
 
 // config value
-const int gSensorCnt = 2;
+const int gSensorCnt = 4;
 const int gMeasureCnt = 100;
 int gSensitivity = 100;
 const int gCalibrationValue = 6;      // 6micro seconds : 보정은 불가능
-const int gBlastCycle = 1000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
+const int gBlastCycle = 10000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
 
 // data
 struct base
@@ -42,7 +42,6 @@ void loop()
   }
   iMeasuredCnt++;
 
-
   bool bBlast = false;
   int tempValue = 0;
   int tempPin = 0;
@@ -51,7 +50,7 @@ void loop()
 
   for (int i = 0; i < gSensorCnt; i++)      // 초기화
   {
-    valueIndex[tempPin] = 0;
+    valueIndex[i] = 0;
     for (int j = 0; j < gMeasureCnt; j++)
     {
       arrAccel[i][j].utime = 0;
@@ -59,7 +58,7 @@ void loop()
     }
   }
 
-  for (tempPin = 0; tempPin < gSensorCnt; tempPin++)    // 첫번째 신호 감지 후 값을 저장, bBlast 플랫그 셋팅.
+  for (tempPin = 0; tempPin < gSensorCnt; )    // 첫번째 신호 감지 후 값을 저장, bBlast 플랫그 셋팅.
   {
     tempValue = abs(analogRead(tempPin));
     if (tempValue > gSensitivity) // && abs(tempValue < gSensitivity * 10)) // 최대값 설정은 하지 않음.
@@ -68,7 +67,8 @@ void loop()
       sTime = micros();
       arrAccel[tempPin][valueIndex[tempPin]].value = tempValue;
       arrAccel[tempPin][valueIndex[tempPin]].utime = sTime;
-      valueIndex[tempPin]++;
+      (valueIndex[tempPin])++;
+      tempPin++;
       break;
     }
   }
@@ -83,12 +83,12 @@ void loop()
       if (valueIndex[tempPin] >= gMeasureCnt) // arrAccel를 gMeasureCnt 만큼 채우면 더이상 해당 핀의 데이터 수집 안함. 데이터 수집이 더 효율적이 됨.
         continue;
       tempValue = analogRead(tempPin);
-      Serial.print(tempValue); Serial.print("==========="); Serial.println(tempPin);      
-      if (abs(tempValue) > gSensitivity)
+      //Serial.print(tempValue); Serial.print("==========="); Serial.println(tempPin);      
+      if (tempValue > gSensitivity)
       {
         arrAccel[tempPin][valueIndex[tempPin]].value = tempValue;
         arrAccel[tempPin][valueIndex[tempPin]].utime = micros();
-        valueIndex[tempPin]++;
+        (valueIndex[tempPin])++;
       }
     }
     dueTime = micros() - sTime;
