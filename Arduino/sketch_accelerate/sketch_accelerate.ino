@@ -6,10 +6,10 @@
 
 // config value
 const int gSensorCnt = 2;
-const int gMeasureCnt = 100;
+const int gMeasureCnt = 10;
 int gSensitivity = 100;
-const int gCalibrationValue = 6;      // 6micro seconds : 보정은 불가능
-const int gBlastCycle = 100000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
+//const int gCalibrationValue = 6;      // 6micro seconds : 보정은 불가능
+const int gBlastCycle = 10000;       // 400 microseconds X 6mm = 2400mm : 최대 대각선 길이보다 커야 함  +  파장길이고려해야 신호 섞이지 않음
 
 // data
 struct base
@@ -59,7 +59,7 @@ void loop()
 
   for (tempPin = 0; tempPin < gSensorCnt; )    // 첫번째 신호 감지 후 값을 저장, bBlast 플랫그 셋팅.
   {
-    tempValue = abs(analogRead(tempPin));
+    tempValue = analogRead(tempPin);
     if (tempValue > gSensitivity) // && abs(tempValue < gSensitivity * 10)) // 최대값 설정은 하지 않음.
     {
       bBlast = true;

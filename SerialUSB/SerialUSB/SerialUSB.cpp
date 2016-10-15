@@ -49,13 +49,12 @@ int main()
 	thread1.join();
 	thread2.join();
 
-<<<<<<< HEAD
-=======
+
 	//thrds.create_thread(boost::bind(second_thread));
 	
 	//thrds.interrupt_all();
-	thrds.join_all();
->>>>>>> 440d74aa8379250fdb11eccdf848600a957afe0f
+	//thrds.join_all();
+
 
 	std::cout << "wainting..." << std::endl;
 	boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
