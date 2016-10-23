@@ -28,14 +28,24 @@ void loop()
 
     for (int i = 0; i<1; i++) {
     while ((ADC->ADC_ISR & 0x80) == 0);
-    while ((ADC->ADC_ISR & 0x80) == 0);// wait for 2 conversions
-    while ((ADC->ADC_ISR & 0x80) == 0);// wait for 3 conversions
-    while ((ADC->ADC_ISR & 0x80) == 0);// wait for 4 conversions
+    while ((ADC->ADC_ISR & 0xC0) == 0);// wait for 2 conversions
+    while ((ADC->ADC_ISR & 0xE0) == 0);// wait for 3 conversions
+    while ((ADC->ADC_ISR & 0xF0) == 0);// wait for 4 conversions
     a0 = ADC->ADC_CDR[7];              // read data on A0 pin
     a1 = ADC->ADC_CDR[6];              // read data on A1 pin
     a2 = ADC->ADC_CDR[5];              // read data on A2 pin
     a3 = ADC->ADC_CDR[4];              // read data on A3 pin
   }
+/*
+    if ((ADC->ADC_ISR & 0x80) == 1)
+       a0 = ADC->ADC_CDR[7];  
+    if ((ADC->ADC_ISR & 0x40) == 1)
+        a1 = ADC->ADC_CDR[6];
+    if ((ADC->ADC_ISR & 0x20) == 1)
+        a2 = ADC->ADC_CDR[5];
+    if ((ADC->ADC_ISR & 0x10) == 1)
+        a3 = ADC->ADC_CDR[4];              // read data on A3 pin
+*/
   unsigned long tbase = micros();
 
   if(a0 > gSensitivity && t0 == 0)

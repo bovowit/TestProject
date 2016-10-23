@@ -1,4 +1,6 @@
-#include<Wire.h>
+
+#include <Wire.h>
+
 const int MPU=0x68;  //MPU 6050 의 I2C 기본 주소
 int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
 long start_time = 0;
@@ -12,8 +14,10 @@ void setup(){
   Serial.begin(9600);
 }
 
+unsigned long stime = 0;
 void loop()
 {
+  stime = micros();
   Wire.beginTransmission(MPU);    //데이터 전송시작
   Wire.write(0x3B);               // register 0x3B (ACCEL_XOUT_H), 큐에 데이터 기록
   Wire.endTransmission(false);    //연결유지
@@ -28,12 +32,15 @@ void loop()
   GyY=Wire.read()<<8|Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
   GyZ=Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
 
-  int base_value = 400;
+  unsigned long duetime = micros() - stime;
+  int base_value = 1000;
   if(abs(GyX) > base_value || abs(GyY) > base_value || abs(GyZ) > base_value)
   {
+    Serial.print(duetime);
     Serial.print(" | GyX = "); Serial.print(GyX);
     Serial.print(" | GyY = "); Serial.print(GyY);
     Serial.print(" | GyZ = "); Serial.println(GyZ);
+  
     delay(10);
   }
   delayMicroseconds(3);
