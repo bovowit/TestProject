@@ -5,6 +5,7 @@ unsigned long firsttime = 0;
 
 void setup() 
 {
+  empty();
   Serial.begin(9600);
   int t = analogRead(0); t = analogRead(1); t = analogRead(2); t = analogRead(3);
 
