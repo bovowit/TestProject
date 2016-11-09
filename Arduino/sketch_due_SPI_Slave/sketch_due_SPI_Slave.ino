@@ -39,7 +39,7 @@ byte transfer(uint8_t _pin, uint8_t _data) {
 #define PRREG(x) Serial.print(#x" 0x"); Serial.println(x,HEX)
 
 void prregs() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   while(!Serial);
   PRREG(REG_SPI0_MR);
   PRREG(REG_SPI0_CSR);
@@ -49,15 +49,18 @@ void prregs() {
 
 #define SS 10
 void setup() {
+  Serial.begin(115200);
+  
   slaveBegin(SS);
   prregs();  // debug
 }
 
 void loop() {
   byte in;
-  static byte out=0x83;
-
-  in = transfer(SS, out);
+  static byte out='R';//0x83;
+ Serial.print("Send Master : "); Serial.println(out);
+  in = SPI.transfer(out);
+  Serial.print("Sended Master : "); Serial.println(out);
   //in = SPI.transfer(SS, 0x83) ;
   out = in;
 }
