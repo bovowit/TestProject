@@ -1,28 +1,23 @@
+/**********************************************
+  MASTER
+**********************************************/
+
 #include <SPI.h>
-void setup (void)
+
+#define SS 10
+
+void setup() 
 {
   Serial.begin(115200);
-  Serial.println("start");
-  SPI.begin (); // SPI 통신 초기화
-  digitalWrite(SS, HIGH); // 슬레이브가 선택되지 않은 상태로 유지
-  // 안정적인 전송을 위해 분주비를 높여 전송 속도를 낮춤
-  SPI.setClockDivider(SPI_CLOCK_DIV16);
-  Serial.print("SPI Master Setup - SS = ");
-  Serial.println(SS);
-}
-void loop (void)
-{
-  if(Serial.available()){
-    char data = Serial.read(); // 데이터 입력 확인
-    if(data == 'K'){
-      digitalWrite(SS, LOW); // 슬레이브를 선택한다.
-      Serial.print("Selected Slave : "); Serial.println(SS);
-      
-      // 1바이트 데이터 수신을 위해 의미 없는 1바이트 데이터를 전송한다.
-      char received = SPI.transfer(0);
-      digitalWrite(SS, HIGH); // 슬레이브 선택을 해제한다.
-      Serial.println(received);
-    }
-  }
+   SPI.begin();
+   pinMode(SS,OUTPUT);
+   digitalWrite(SS,LOW);
 }
 
+void loop()
+{
+   byte recv = SPI.transfer(SS, 'E');
+   Serial.println(recv);
+   //SPI.transfer(SS,(byte)'M', SPI_CONTINUE);
+   delay(10);
+}
