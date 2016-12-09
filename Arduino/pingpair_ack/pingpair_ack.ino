@@ -32,6 +32,7 @@ role_e role = role_pong_back;                                              // Th
 byte counter = 1;
 byte data[32];
 byte rBuff[100];
+bool bRead = false;
 
 void setup() 
 {
@@ -52,8 +53,14 @@ void setup()
   radio.startListening();                 // Start listening
   radio.printDetails();                   // Dump the configuration of the rf unit for debugging
 
+  srand(analogRead(A0));
+  Serial.print("[SEND]");
   for (int i = 0; i<32; i++) 
-    data[i] = random(255);               //Load the buffer with random data
+  {
+    data[i] = rand()%30 + 65;               //Load the buffer with random data
+    Serial.print((char)data[i]);
+  }
+  Serial.println("[END]");
 }
 
 void loop(void) 
@@ -66,11 +73,12 @@ void loop(void)
     byte gotByte;
     unsigned long time = micros();                          // Take the time, and send it.  This will block until complete   
                                                             //Called when STANDBY-I mode is engaged (User is finished sending)
-    //if (!radio.write(&counter, 1)) 
-    if (!radio.writeFast(&data, 32)) 
+    int idx = counter%32;
+    if (!radio.writeFast(data[idx], 32)) 
       Serial.println(F("failed."));
     else 
     {
+      printf("---- Send %s, \n\r", data[idx]);
       if (!radio.available()) 
         Serial.println(F("Blank Payload Received."));
       else 
@@ -79,7 +87,7 @@ void loop(void)
         {
           unsigned long tim = micros();
           radio.read(&gotByte, 1);
-          printf("Got response %d, round-trip delay: %lu microseconds\n\r", gotByte, tim - time);
+          printf("echo %s, respance: %lu usec\n\r", (char)gotByte, tim - time);
           counter++;
         }
       }
@@ -94,13 +102,24 @@ void loop(void)
     byte gotByte;                                       // Dump the payloads until we've gotten everything
     while (radio.available(&pipeNo)) 
     {
+      bRead = true;
       //radio.read(&gotByte, 1);
       //radio.writeAckPayload(pipeNo, &gotByte, 1);
       radio.read(&rBuff, 32);
       radio.writeAckPayload(pipeNo, &rBuff, 1);
     }
-    String sData(rBuff[0]);
-    Serial.print("[RECV]"); Serial.println(sData);
+    if(bRead == true)
+    {
+      Serial.print("[RECV]");
+      for(int i = 0; i < 32; i++)
+      {
+        Serial.print((char)rBuff[i]);
+        Serial.print("|");
+      }
+      //String sData(rBuff[0]);
+      Serial.println("[END]");
+      bRead = false;
+    }
   }
 
   // Change roles

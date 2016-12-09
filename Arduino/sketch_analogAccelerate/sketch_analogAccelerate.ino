@@ -1,4 +1,4 @@
-int sensitivity = 650;
+int sensitivity = 800;
 int noise = sensitivity - 150;
 int invalidtime = 1500;
 unsigned long stime = 0;
