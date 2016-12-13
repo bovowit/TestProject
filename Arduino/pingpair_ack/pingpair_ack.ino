@@ -16,11 +16,12 @@ role_e role = role_pong_back;                                              // Th
 byte counter = 1;
 byte data[32] = { 0, };
 byte rBuff[32] = { 0, };
-int sensitivity = 10;
+int sensitivity = 700;
 unsigned long synctime = 300000; // 30 msec
 unsigned long stime = 0;
 unsigned long currenttime = 0;
 bool bOneShot = false;
+bool bRead = false;
 
 void setup()
 {
@@ -63,12 +64,14 @@ void loop(void)
       //}
     }
 
-    int _value = analogRead(A0);
-    if (_value > sensitivity && bOneShot == false)
+    int _valuex = analogRead(A0);
+    int _valuey = analogRead(A1);
+    int _valuez = analogRead(A2);
+    if ((_valuex > sensitivity || _valuey > sensitivity || _valuez > sensitivity) && bOneShot == false)
     {
       bOneShot = true;
       stime = micros();
-      printf("Detected Impact - %d : time %d \n\r", _value, stime);
+      printf("Detected Impact - %d - %d - %d : time %d \n\r", _valuex, _valuey, _valuez, stime);
     }
     else
     {
@@ -80,14 +83,29 @@ void loop(void)
       return;
     }
 
-    //memcpy(data, stime, sizeof(stime));
-    radio.stopListening();                                  // First, stop listening so we can talk.
-    if (!radio.writeFast(&stime, 32))// &data, 32))
+    memcpy(data, &stime, sizeof(stime));
+    Serial.print("====send===");
+    for(int i = 0; i < 32; i++)
     {
-      Serial.println(F("failed. clear data "));
-      memset(&data, 0, sizeof(stime));
+         Serial.print(data[i]); Serial.print(" | ");
     }
+    Serial.println("");
 
+    radio.stopListening();                              // First, stop listening so we can talk.
+    /*radio.write(&data[0], 2);
+    delay(1);
+    radio.write(&data[1], 2);
+    delay(1);
+    radio.write(&data[2], 2);
+    delay(1);
+    radio.write(&data[3], 2);
+    delay(1);
+    */
+    if (!radio.write(data, 25))
+    {
+      Serial.println(F("failed sending. clear data "));
+    }
+    memset(data, 0, sizeof(stime));
   }
 
 
@@ -96,16 +114,29 @@ void loop(void)
   {
     byte pipeNo;
     byte gotByte;                                       // Dump the payloads until we've gotten everything
-    while (radio.available(&pipeNo))
+    while (radio.available(&pipeNo) && bRead == false)
     {
-      radio.read(&rBuff, 32);
+      bRead = true;
+      radio.read(rBuff, 25);
       //radio.writeAckPayload(pipeNo, &rBuff, 1);
     }
-    unsigned long impact_time = 0;
-    memcpy(&impact_time, rBuff, sizeof(unsigned long));
-    if(impact_time > 0)
+    if(bRead == true)
     {
-      Serial.print("[RECV] "); Serial.print(impact_time); Serial.print(" : "); Serial.println((char*)&rBuff);
+      Serial.print("=========recv"); 
+      for(int i = 0; i < 32; i++)
+      {
+        Serial.print(rBuff[i]); Serial.print(" : ");
+      }
+      Serial.println("");
+      
+      unsigned long impact_time = 0;
+      memcpy(&impact_time, rBuff, sizeof(unsigned long));
+      if(impact_time > 0)
+      {
+        printf("[RECV] Impact time = %d   : %s \r\n", impact_time, rBuff);
+        memset(rBuff, 0, 32);
+      }
+      bRead = false;
     }
   }
 
