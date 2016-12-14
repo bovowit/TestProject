@@ -10,6 +10,7 @@ typedef enum { role_sensor = 1, role_controller } role_e;
 role_e g_role = role_controller;
 //const int mymode = 1;  // 1 메인 컨트롤러, 2 센서 데이터 수집장치
 const int myindex = 0; // 0~ 센서의 갯수만큼 위치에 따라 차례로 설정해야 함.
+const int sensorcnt = 4;
 
 // translate
 RF24 radio(7, 8);
@@ -17,7 +18,6 @@ const uint64_t pipes[4][2] = { {0xFF00FF0000, 0xFF00FF0001}, {0xFF00FF0010, 0xFF
 const char* role_friendly_name[] = { "invalid", "Main controller", "Sensor data" };
 
 // data
-const int sensorcnt = 1;
 const int sensorbuffsize = 32;
 const int buffsize = 32;
 byte counter = 1;
@@ -79,9 +79,9 @@ void BasePipeSetting(role_e role)
   else if(role == role_controller)
   {
     radio.openReadingPipe(0, pipes[0][1]);
-    //radio.openReadingPipe(1, pipes[1][1]);
-    //radio.openReadingPipe(2, pipes[2][1]);
-    //radio.openReadingPipe(3, pipes[3][1]);
+    radio.openReadingPipe(1, pipes[1][1]);
+    radio.openReadingPipe(2, pipes[2][1]);
+    radio.openReadingPipe(3, pipes[3][1]);
     radio.openWritingPipe(pipes[myindex][0]); // 필요할때마다 open.
     radio.startListening();
     Serial.println("Base Pipe Setting : role_controller");
@@ -153,6 +153,7 @@ void loop(void)
     uint8_t  sensorIndex = -1;
     while (radio.available(&sensorIndex))
     {
+       Serial.print((unsigned long)sensorIndex);   Serial.println(" : Pipe... recv availabled");
       if(sensorIndex > sensorcnt || sensorIndex < 0)
       {
         Serial.print((unsigned long)sensorIndex);
@@ -163,9 +164,9 @@ void loop(void)
       if(iReadSensorCnt == 0)
         startreadingtime = micros();
       iReadSensorCnt++;
-      radio.read(recv[sensorIndex], sensorbuffsize);
+       radio.read(recv[sensorIndex], sensorbuffsize);
       // 테스트에 센서가 1개 밖에 없으므로 여기서 .. 
-      Serial.print("=========recv : "); Serial.print(recv[sensorIndex][0]);Serial.print(recv[sensorIndex][1]);Serial.print(recv[sensorIndex][2]);Serial.print(recv[sensorIndex][3]); Serial.print(recv[sensorIndex][4]);Serial.print(recv[sensorIndex][5]);
+      Serial.print(" =========recv : "); Serial.print(recv[sensorIndex][0]);Serial.print(recv[sensorIndex][1]);Serial.print(recv[sensorIndex][2]);Serial.print(recv[sensorIndex][3]); Serial.print(recv[sensorIndex][4]);Serial.print(recv[sensorIndex][5]);
       Serial.print(" : "); Serial.println("sensorIndex");
       //radio.writeAckPayload(pipeNo, &rBuff, 1);
     }
