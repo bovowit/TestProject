@@ -82,7 +82,7 @@ void BasePipeSetting(role_e role)
     radio.openReadingPipe(1, pipes[1][1]);
     radio.openReadingPipe(2, pipes[2][1]);
     radio.openReadingPipe(3, pipes[3][1]);
-    radio.openWritingPipe(pipes[myindex][0]); // 필요할때마다 open.
+    //radio.openWritingPipe(pipes[myindex][0]); // 필요할때마다 open.
     radio.startListening();
     Serial.println("Base Pipe Setting : role_controller");
   }
@@ -123,15 +123,8 @@ void loop(void)
       }
       return;
     }
-
+    
     memcpy(data, &stime, sizeof(stime));
-    Serial.print("====send===");
-    for(int i = 0; i < buffsize; i++)
-    {
-      Serial.print(data[i]); Serial.print(" | ");
-    }
-    Serial.println("");
-
     radio.stopListening();               // First, stop listening so we can talk.
     if (!radio.write(data, sensorbuffsize))
     {
@@ -165,9 +158,11 @@ void loop(void)
         startreadingtime = micros();
       iReadSensorCnt++;
        radio.read(recv[sensorIndex], sensorbuffsize);
+
       // 테스트에 센서가 1개 밖에 없으므로 여기서 .. 
-      Serial.print(" =========recv : "); Serial.print(recv[sensorIndex][0]);Serial.print(recv[sensorIndex][1]);Serial.print(recv[sensorIndex][2]);Serial.print(recv[sensorIndex][3]); Serial.print(recv[sensorIndex][4]);Serial.print(recv[sensorIndex][5]);
-      Serial.print(" : "); Serial.println("sensorIndex");
+      unsigned long _time;
+      memcpy(&_time, recv[sensorIndex], sizeof(unsigned long));
+      Serial.print("Impact Time : "); Serial.println(_time);
       //radio.writeAckPayload(pipeNo, &rBuff, 1);
     }
 
@@ -176,7 +171,8 @@ void loop(void)
     {
       if(iReadSensorCnt < 3)    // 주어진 시간에 3개 이상의 센서 값을 읽지 못한 경우.
       {
-        Serial.println("not enough gather sensor data.. so reset data");
+        Serial.print(iReadSensorCnt);
+        Serial.println(" : not enough gather sensor data.. so reset data");
         iReadSensorCnt = 0;
         startreadingtime = 0;
         return;
