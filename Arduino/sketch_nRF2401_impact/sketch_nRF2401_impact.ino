@@ -55,9 +55,9 @@ void setup()
   radio.setAutoAck(1);                    // Ensure autoACK is enabled
   radio.enableAckPayload();               // Allow optional ack payloads
 
-  //uint8_t dpsize = radio.getDynamicPayloadSize();
-  //printf("DynamicPayloadSize = %d \r\n", dpsize);
-  //radio.enableDynamicPayloads()       //
+                      //uint8_t dpsize = radio.getDynamicPayloadSize();
+                      //printf("DynamicPayloadSize = %d \r\n", dpsize);
+                      //radio.enableDynamicPayloads()       //
 
   radio.setRetries(0, 15);                 // Smallest time between retries, max no. of retries
   radio.setPayloadSize(buffsize);
@@ -203,7 +203,7 @@ void loop(void)
     unsigned long _curtime = micros();
     if ((iReadSensorCnt >= sensorcnt || _curtime - startreadingtime > synctime) && iReadSensorCnt > 0)
     {
-      if (iReadSensorCnt < 3)    // 주어진 시간에 3개 이상의 센서 값을 읽지 못한 경우.
+      if (iReadSensorCnt < 2)    // 주어진 시간에 3개 이상의 센서 값을 읽지 못한 경우.
       {
         Serial.print(iReadSensorCnt);
         Serial.println(" : not enough gather sensor data.. so reset data");
@@ -216,11 +216,11 @@ void loop(void)
       startreadingtime = 0;
 
       // 적당히 모아서 PC로 전송.
-
-      Serial.print("=========recv : ");
+      Serial.print("/")
       for (int i = 0; i < buffsize; i++)
       {
-        Serial.print(recv[i][0]); Serial.print(" : ");
+        Serial.print(recv[i]); 
+        Serial.print("|");
       }
       Serial.println("");
 
@@ -230,7 +230,6 @@ void loop(void)
       }
     }
 
-    //if(_curtime > ULONG_MAX - 100000 )    // 주기적인 calibration ...
 
   }
 
