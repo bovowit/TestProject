@@ -75,13 +75,14 @@ void SyncTimerCallback()
   Serial.println("Start sync timer... all sensor ");
   radio.stopListening();
   _timesync_start_time = millis();
-  for (int i = 0; i < sensorcnt; i++)
+  for (int i = 0; i < 2; i++)
   {
+    radio.openWritingPipe(pipes[i][0]);
     if (!radio.write(sCmdTimeSync.c_str(), sCmdTimeSync.length()))
     {
       Serial.println(F("failed sending. time sync command "));
-      sync_timer.setInterval(3000, SyncTimerCallback);
-      sync_timer.restartTimer(_timer_id);
+      //sync_timer.setInterval(3000, SyncTimerCallback);
+      //sync_timer.restartTimer(_timer_id);
 
       radio.startListening();
       return;
@@ -89,16 +90,15 @@ void SyncTimerCallback()
   }
   radio.startListening();
 
-  sync_timer.setInterval(3600000, SyncTimerCallback); // time sync가 실패할 경우 3초 후 재실행.
-  sync_timer.restartTimer(_timer_id);
-
+  //sync_timer.setInterval(3600000, SyncTimerCallback);
+  //sync_timer.restartTimer(_timer_id);
 }
 
 void BaseSetting(role_e role)
 {
   if (role == role_sensor)
   {
-    radio.openReadingPipe(1, pipes[myindex][0]);
+    radio.openReadingPipe(0, pipes[myindex][0]);
     radio.openWritingPipe(pipes[myindex][1]);
     radio.startListening();
     Serial.println("Base Pipe Setting : role_sensor");
@@ -113,8 +113,9 @@ void BaseSetting(role_e role)
     radio.startListening();
     Serial.println("Base Pipe Setting : role_controller");
 
-    _timer_id = sync_timer.setInterval(3600000, SyncTimerCallback);
-    sync_timer.restartTimer(_timer_id);
+    _timer_id = sync_timer.setInterval(3000, SyncTimerCallback);
+    Serial.print(_timer_id); Serial.println(" : Timer Started");
+    //sync_timer.restartTimer(_timer_id);
   }
 }
 
@@ -176,6 +177,8 @@ void loop(void)
   //
   if (g_role == role_controller)
   {
+    sync_timer.run();
+    
     byte gotByte;
     uint8_t  sensorIndex = -1;
     while (radio.available(&sensorIndex))
@@ -216,10 +219,12 @@ void loop(void)
       startreadingtime = 0;
 
       // 적당히 모아서 PC로 전송.
-      Serial.print("/")
-      for (int i = 0; i < buffsize; i++)
+      Serial.print("/");
+      for (int i = 0; i < 4; i++)
       {
-        Serial.print(recv[i]); 
+        unsigned long _time;
+        memcpy(&_time, recv[i], sizeof(unsigned long));
+        Serial.print(_time); 
         Serial.print("|");
       }
       Serial.println("");
