@@ -1,5 +1,7 @@
 
 #include <SPI.h>
+#include <SimpleTimer.h>
+#include <Limits.h>
 #include "nRF24L01.h"
 #include "RF24.h"
 #include "printf.h"
@@ -14,13 +16,17 @@ const int sensorcnt = 4;
 
 // translate
 RF24 radio(7, 8);
-const uint64_t pipes[4][2] = { {0xFF00FF0000, 0xFF00FF0001}, {0xFF00FF0010, 0xFF00FF0011}, {0xFF00FF0020, 0xFF00FF0021}, {0xFF00FF0030, 0xFF00FF0031} };
+const uint64_t pipes[4][2] = { { 0xFF00FF0000, 0xFF00FF0001 },{ 0xFF00FF0010, 0xFF00FF0011 },{ 0xFF00FF0020, 0xFF00FF0021 },{ 0xFF00FF0030, 0xFF00FF0031 } };
 const char* role_friendly_name[] = { "invalid", "Main controller", "Sensor data" };
+const String sCmdTimeSync = "_TIME_SYNC_";
+unsigned long _timesync_start_time = 0;
+
+SimpleTimer sync_timer;
+int _timer_id = 0;
 
 // data
 const int sensorbuffsize = 32;
 const int buffsize = 32;
-byte counter = 1;
 byte data[sensorbuffsize] = { 0, };    // 송신용
 byte command[buffsize] = { 0, };  // 일반 수신용 (명령어 등)
 byte recv[sensorcnt][sensorbuffsize];
@@ -29,7 +35,7 @@ int sensitivity = 700;
 unsigned long synctime = 300000; // 30 msec
 unsigned long stime = 0;
 unsigned long startreadingtime = 0;
-unsigned long currenttime = 0;
+unsigned long base_sync_time = 0;
 bool bOneShot = false;
 int iReadSensorCnt = 0;
 
@@ -37,7 +43,7 @@ void setup()
 {
   Serial.begin(115200);
   printf_begin();
-  if(g_role == role_controller)
+  if (g_role == role_controller)
     Serial.println(F("*** Selected MainController mode ***"));
   else
   {
@@ -52,31 +58,52 @@ void setup()
   //uint8_t dpsize = radio.getDynamicPayloadSize();
   //printf("DynamicPayloadSize = %d \r\n", dpsize);
   //radio.enableDynamicPayloads()       //
-  
-  radio.setRetries(0, 15);                 // Smallest time between retries, max no. of retries
 
-  //radio.setPayloadSize(1);                // Here we are sending 1-byte payloads to test the call-response speed
+  radio.setRetries(0, 15);                 // Smallest time between retries, max no. of retries
   radio.setPayloadSize(buffsize);
 
-  BasePipeSetting(g_role);
-  //radio.openWritingPipe(pipes[1]);        // Both radios listen on the same pipes by default, and switch when writing
-  //radio.openReadingPipe(1, pipes[0]);
-  //radio.startListening();                 // Start listening
+  BaseSetting(g_role);
   radio.printDetails();                   // Dump the configuration of the rf unit for debugging
 
   stime = micros();
 }
 
-void BasePipeSetting(role_e role)
+// time sync가 실패할 경우 3초 마다 반복 실행, 성공하면 1시간 마다 재실행 하도록 수정.
+// 메시지 전송만으로 성공한 것으로 처리하지만.. 추후 응답 확인 및 최소 갯수 응답 설정 필요.
+void SyncTimerCallback()
 {
-  if(role == role_sensor)
+  Serial.println("Start sync timer... all sensor ");
+  radio.stopListening();
+  _timesync_start_time = millis();
+  for (int i = 0; i < sensorcnt; i++)
+  {
+    if (!radio.write(sCmdTimeSync.c_str(), sCmdTimeSync.length()))
+    {
+      Serial.println(F("failed sending. time sync command "));
+      sync_timer.setInterval(3000, SyncTimerCallback);
+      sync_timer.restartTimer(_timer_id);
+
+      radio.startListening();
+      return;
+    }
+  }
+  radio.startListening();
+
+  sync_timer.setInterval(3600000, SyncTimerCallback); // time sync가 실패할 경우 3초 후 재실행.
+  sync_timer.restartTimer(_timer_id);
+
+}
+
+void BaseSetting(role_e role)
+{
+  if (role == role_sensor)
   {
     radio.openReadingPipe(1, pipes[myindex][0]);
     radio.openWritingPipe(pipes[myindex][1]);
     radio.startListening();
     Serial.println("Base Pipe Setting : role_sensor");
   }
-  else if(role == role_controller)
+  else if (role == role_controller)
   {
     radio.openReadingPipe(0, pipes[0][1]);
     radio.openReadingPipe(1, pipes[1][1]);
@@ -85,6 +112,9 @@ void BasePipeSetting(role_e role)
     //radio.openWritingPipe(pipes[myindex][0]); // 필요할때마다 open.
     radio.startListening();
     Serial.println("Base Pipe Setting : role_controller");
+
+    _timer_id = sync_timer.setInterval(3600000, SyncTimerCallback);
+    sync_timer.restartTimer(_timer_id);
   }
 }
 
@@ -97,10 +127,10 @@ void loop(void)
       radio.read(&command, buffsize);
       printf("RECV command : %s from master \n\r", (char*)&command);
       String sCmd((char*)command);
-      if (! sCmd.equals("_TIME_SYNC_")) // (sCmd == "_TIME_SYNC_") // sCmd.compareTo("_");
+      if (!sCmd.equals("_TIME_SYNC_")) // (sCmd == "_TIME_SYNC_") // sCmd.compareTo("_");
       {
-        currenttime = micros();
-        radio.write(&currenttime, 8);
+        base_sync_time = micros() - (myindex * 2); // 전송 속도 보정 - 센서 순서로 2 micro seconds 
+        //radio.write("_TS__OK_", 8);   // 추후 처리.
         Serial.println("answer sync time ............");
       }
     }
@@ -123,15 +153,19 @@ void loop(void)
       }
       return;
     }
-    
-    memcpy(data, &stime, sizeof(stime));
+
+    //memcpy(data, &stime, sizeof(stime));
+    // delta time & rollover 처리
+    unsigned long _delta_time = stime - _timesync_start_time;
+    if (_delta_time < 0)
+      _delta_time += ULONG_MAX;
+
     radio.stopListening();               // First, stop listening so we can talk.
-    if (!radio.write(data, sensorbuffsize))
+    if (!radio.write(&_delta_time, sizeof(_delta_time)))// data, sensorbuffsize))
     {
       Serial.println(F("failed sending. clear data "));
     }
-    memset(data, 0, sensorbuffsize);
-
+    //memset(data, 0, sensorbuffsize);
     radio.startListening();       // 메인보드로부터 명령어를 받기 위해.
   }
 
@@ -146,30 +180,30 @@ void loop(void)
     uint8_t  sensorIndex = -1;
     while (radio.available(&sensorIndex))
     {
-       Serial.print((unsigned long)sensorIndex);   Serial.println(" : Pipe... recv availabled");
-      if(sensorIndex > sensorcnt || sensorIndex < 0)
+      Serial.print((unsigned long)sensorIndex);   Serial.println(" : Pipe... recv availabled");
+      if (sensorIndex > sensorcnt || sensorIndex < 0)
       {
         Serial.print((unsigned long)sensorIndex);
         Serial.println(" : receive from Invalid sensor index.... ");
         break;
       }
 
-      if(iReadSensorCnt == 0)
+      if (iReadSensorCnt == 0)
         startreadingtime = micros();
       iReadSensorCnt++;
-       radio.read(recv[sensorIndex], sensorbuffsize);
+      radio.read(recv[sensorIndex], sensorbuffsize);
 
       // 테스트에 센서가 1개 밖에 없으므로 여기서 .. 
       unsigned long _time;
       memcpy(&_time, recv[sensorIndex], sizeof(unsigned long));
-      Serial.print("Impact Time : "); Serial.println(_time);
+      Serial.print("Impact Delta Time : "); Serial.println(_time);
       //radio.writeAckPayload(pipeNo, &rBuff, 1);
     }
 
-    unsigned long _curtime =  micros();
-    if((iReadSensorCnt >= sensorcnt || _curtime - startreadingtime > synctime) && iReadSensorCnt > 0)
+    unsigned long _curtime = micros();
+    if ((iReadSensorCnt >= sensorcnt || _curtime - startreadingtime > synctime) && iReadSensorCnt > 0)
     {
-      if(iReadSensorCnt < 3)    // 주어진 시간에 3개 이상의 센서 값을 읽지 못한 경우.
+      if (iReadSensorCnt < 3)    // 주어진 시간에 3개 이상의 센서 값을 읽지 못한 경우.
       {
         Serial.print(iReadSensorCnt);
         Serial.println(" : not enough gather sensor data.. so reset data");
@@ -184,21 +218,21 @@ void loop(void)
       // 적당히 모아서 PC로 전송.
 
       Serial.print("=========recv : ");
-      for(int i = 0; i < buffsize; i++)
+      for (int i = 0; i < buffsize; i++)
       {
         Serial.print(recv[i][0]); Serial.print(" : ");
       }
       Serial.println("");
 
-      for(int i = 0; i < sensorcnt; i++)
+      for (int i = 0; i < sensorcnt; i++)
       {
         memset(recv[i], 0, sensorbuffsize);
       }
     }
 
     //if(_curtime > ULONG_MAX - 100000 )    // 주기적인 calibration ...
-    
+
   }
-  
+
 }
 
