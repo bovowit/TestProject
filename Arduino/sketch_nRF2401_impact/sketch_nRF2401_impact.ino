@@ -9,7 +9,7 @@
 typedef enum { role_sensor = 1, role_controller } role_e;
 
 // 필수 데이터 셋팅
-role_e g_role = role_controller;
+role_e g_role = role_sensor;
 //const int mymode = 1;  // 1 메인 컨트롤러, 2 센서 데이터 수집장치
 const int myindex = 0; // 0~ 센서의 갯수만큼 위치에 따라 차례로 설정해야 함.
 const int sensorcnt = 4;
@@ -98,7 +98,7 @@ void BaseSetting(role_e role)
 {
   if (role == role_sensor)
   {
-    radio.openReadingPipe(0, pipes[myindex][0]);
+    radio.openReadingPipe(myindex, pipes[myindex][0]);
     radio.openWritingPipe(pipes[myindex][1]);
     radio.startListening();
     Serial.println("Base Pipe Setting : role_sensor");
@@ -123,6 +123,7 @@ void loop(void)
 {
   if (g_role == role_sensor)
   {
+     radio.startListening(); 
     if (radio.available())
     {
       radio.read(&command, buffsize);
