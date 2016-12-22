@@ -1,4 +1,3 @@
-﻿
 #include <RF24_config.h>
 #include <SPI.h>
 #include <SimpleTimer.h>
@@ -10,7 +9,7 @@
 typedef enum { role_sensor = 1, role_controller } role_e;
 
 // 필수 데이터 셋팅
-role_e g_role = role_sensor;
+role_e g_role = role_controller;
 //const int mymode = 1;  // 1 메인 컨트롤러, 2 센서 데이터 수집장치
 const int myindex = 0; // 0~ 센서의 갯수만큼 위치에 따라 차례로 설정해야 함.
 const int sensorcnt = 4;
@@ -19,7 +18,7 @@ const int sensorcnt = 4;
 RF24 radio(7, 8);
 const uint64_t pipes[4][2] = { { 0xFF00FF0000, 0xFF00FF0001 },{ 0xFF00FF0010, 0xFF00FF0011 },{ 0xFF00FF0020, 0xFF00FF0021 },{ 0xFF00FF0030, 0xFF00FF0031 } };
 const char* role_friendly_name[] = { "invalid", "Main controller", "Sensor data" };
-const String sCmdTimeSync = "_TIME_SYNC_";
+const String sCmdTimeSync = "_TS_";
 unsigned long _timesync_start_time = 0;
 
 SimpleTimer sync_timer;
@@ -44,7 +43,7 @@ void BaseSetting(role_e role)
 {
 	if (role == role_sensor)
 	{
-		radio.openReadingPipe(myindex, pipes[myindex][0]);
+		radio.openReadingPipe(0, pipes[myindex][0]);
 		radio.openWritingPipe(pipes[myindex][1]);
 		radio.startListening();
 		Serial.println("Base Pipe Setting : role_sensor");
@@ -55,7 +54,7 @@ void BaseSetting(role_e role)
 		radio.openReadingPipe(1, pipes[1][1]);
 		radio.openReadingPipe(2, pipes[2][1]);
 		radio.openReadingPipe(3, pipes[3][1]);
-		//radio.openWritingPipe(pipes[myindex][0]); // 필요할때마다 open.
+		radio.openWritingPipe(pipes[myindex][0]); // 필요할때마다 open.
 		radio.startListening();
 		Serial.println("Base Pipe Setting : role_controller");
 
@@ -83,9 +82,9 @@ void setup()
 
 	//uint8_t dpsize = radio.getDynamicPayloadSize();
 	//printf("DynamicPayloadSize = %d \r\n", dpsize);
-	//radio.enableDynamicPayloads()       //
+	//radio.enableDynamicPayloads() ;      //
 
-	radio.setRetries(0, 15);                 // Smallest time between retries, max no. of retries
+	radio.setRetries(0, 3);                 // Smallest time between retries, max no. of retries
 	radio.setPayloadSize(buffsize);
 
 	BaseSetting(g_role);
@@ -96,6 +95,7 @@ void setup()
 
 // time sync가 실패할 경우 3초 마다 반복 실행, 성공하면 1시간 마다 재실행 하도록 수정.
 // 메시지 전송만으로 성공한 것으로 처리하지만.. 추후 응답 확인 및 최소 갯수 응답 설정 필요.
+char buff[] = "_TS_";
 void SyncTimerCallback()
 {
 	Serial.println("Start sync timer... all sensor ");
@@ -105,16 +105,21 @@ void SyncTimerCallback()
 	for (int i = 0; i < 2; i++)
 	{
 		radio.openWritingPipe(pipes[i][0]);
-		if (radio.write(sCmdTimeSync.c_str(), sCmdTimeSync.length()))
-			isendcnt++;
+		//if (radio.write(sCmdTimeSync.c_str(), sCmdTimeSync.length()))
+    if (radio.write(buff, 4))
+			++isendcnt;
 	}
-	if (isendcnt < 2)
-		Serial.println(F("failed sending. time sync command "));
+
+	if (isendcnt != 2)
+  {
+    Serial.println(isendcnt);
+		Serial.println(F("   - failed sending. time sync command "));
+  }
 	else
 	{
 		Serial.println(F("success sending. time sync command to all sensor"));
-		//sync_timer.setInterval(3600000, SyncTimerCallback);
-		//sync_timer.restartTimer(_timer_id);
+		sync_timer.setInterval(3600000, SyncTimerCallback);
+		sync_timer.restartTimer(_timer_id);
 	}
 	radio.startListening();
 
@@ -128,14 +133,15 @@ void loop(void)
 		if (radio.available())
 		{
 			Serial.println("signaled receive command....");
-			radio.read(&command, buffsize);
-			printf("RECV command : %s from master \n\r", (char*)&command);
+			radio.read(command, buffsize);
+			//printf("RECV command : %s from master \n\r", (char*)&command);
 			String sCmd((char*)command);
-			if (!sCmd.equals("_TIME_SYNC_")) // (sCmd == "_TIME_SYNC_") // sCmd.compareTo("_");
+			if (!sCmd.equals("_TS_")) // (sCmd == "_TIME_SYNC_") // sCmd.compareTo("_");
 			{
-				base_sync_time = micros() - (myindex * 2); // 전송 속도 보정 - 센서 순서로 2 micro seconds 
-														   //radio.write("_TS__OK_", 8);   // 추후 처리.
+				base_sync_time = micros() - (myindex * 10); // 전송 속도 보정 - 센서 순서로 2 micro seconds 
+				//radio.write("_TS__OK_", 8);   // 추후 처리.
 				Serial.println("answer sync time ............");
+        memset(command, 0, buffsize);
 			}
 		}
 
@@ -160,7 +166,7 @@ void loop(void)
 
 		//memcpy(data, &stime, sizeof(stime));
 		// delta time & rollover 처리
-		unsigned long _delta_time = stime - _timesync_start_time;
+		unsigned long _delta_time = stime - base_sync_time;
 		if (_delta_time < 0)
 			_delta_time += ULONG_MAX;
 
