@@ -9,14 +9,14 @@
 typedef enum { role_sensor = 1, role_controller } role_e;
 
 // 필수 데이터 셋팅
-role_e g_role = role_controller;
+role_e g_role = role_sensor;
 //const int mymode = 1;  // 1 메인 컨트롤러, 2 센서 데이터 수집장치
-const int myindex = 0; // 0~ 센서의 갯수만큼 위치에 따라 차례로 설정해야 함.
+const int myindex = 1; // 0~ 센서의 갯수만큼 위치에 따라 차례로 설정해야 함.
 const int sensorcnt = 4;
 
 // translate
 RF24 radio(7, 8);
-const uint64_t pipes[4][2] = { { 0xFF00FF0000, 0xFF00FF0001 },{ 0xFF00FF0010, 0xFF00FF0011 },{ 0xFF00FF0020, 0xFF00FF0021 },{ 0xFF00FF0030, 0xFF00FF0031 } };
+const uint64_t pipes[4][2] = { { 0xFF0A00, 0xFF0A01 },{ 0xFF0A10, 0xFF0A11 },{ 0xFF0A20, 0xFF0A21 },{ 0xFF0A30, 0xFF0A31 } };
 const char* role_friendly_name[] = { "invalid", "Main controller", "Sensor data" };
 const String sCmdTimeSync = "_TS_";
 unsigned long _timesync_start_time = 0;
@@ -43,7 +43,7 @@ void BaseSetting(role_e role)
 {
 	if (role == role_sensor)
 	{
-		radio.openReadingPipe(0, pipes[myindex][0]);
+		radio.openReadingPipe(myindex, pipes[myindex][0]);
 		radio.openWritingPipe(pipes[myindex][1]);
 		radio.startListening();
 		Serial.println("Base Pipe Setting : role_sensor");
@@ -84,7 +84,7 @@ void setup()
 	//printf("DynamicPayloadSize = %d \r\n", dpsize);
 	//radio.enableDynamicPayloads() ;      //
 
-	radio.setRetries(0, 3);                 // Smallest time between retries, max no. of retries
+	radio.setRetries(0, 10);                 // Smallest time between retries, max no. of retries
 	radio.setPayloadSize(buffsize);
 
 	BaseSetting(g_role);
@@ -96,27 +96,53 @@ void setup()
 // time sync가 실패할 경우 3초 마다 반복 실행, 성공하면 1시간 마다 재실행 하도록 수정.
 // 메시지 전송만으로 성공한 것으로 처리하지만.. 추후 응답 확인 및 최소 갯수 응답 설정 필요.
 char buff[] = "_TS_";
+bool _flag = true;
+int isendcnt = 0;
 void SyncTimerCallback()
 {
 	Serial.println("Start sync timer... all sensor ");
 	radio.stopListening();
 	_timesync_start_time = millis();
-	int isendcnt = 0;
-	for (int i = 0; i < 2; i++)
+	//for (int i = 0; i < 2; i++)
+ if(!_flag)
 	{
-		radio.openWritingPipe(pipes[i][0]);
+		radio.openWritingPipe(pipes[2][0]);
 		//if (radio.write(sCmdTimeSync.c_str(), sCmdTimeSync.length()))
     if (radio.write(buff, 4))
+    {
+      _flag = !_flag;
 			++isendcnt;
+      Serial.print(0);
+      Serial.println(F("  - success sending. time sync command "));
+      return;
+    }
+    Serial.print(0);
+    Serial.println(F("  - failed sending. time sync command "));    
+	}
+ if(_flag)
+ {
+    radio.openWritingPipe(pipes[1][0]);
+    //if (radio.write(sCmdTimeSync.c_str(), sCmdTimeSync.length()))
+    if (radio.write(buff, 4))
+    {
+      _flag = !_flag;
+      ++isendcnt;
+      Serial.print(1);
+      Serial.println(F("  - success sending. time sync command "));      
+      return;
+    }
+    Serial.print(1);
+    Serial.println(F("  - failed sending. time sync command "));    
 	}
 
 	if (isendcnt != 2)
   {
-    Serial.println(isendcnt);
-		Serial.println(F("   - failed sending. time sync command "));
+    //Serial.print(isendcnt);
+		//Serial.println(F("   - failed sending. time sync command "));
   }
 	else
 	{
+    isendcnt = 0;
 		Serial.println(F("success sending. time sync command to all sensor"));
 		sync_timer.setInterval(3600000, SyncTimerCallback);
 		sync_timer.restartTimer(_timer_id);
