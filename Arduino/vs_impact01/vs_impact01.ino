@@ -85,6 +85,18 @@ void BaseSetting(role_e role)
 void TimeInterrupt()	// 센스쪽에서 발생. 
 {
 	base_sync_time = micros();
+	if (myindex == 0)
+	{
+		digitalWrite(gTimeSyncRecvPin0, HIGH);
+		delayMicroseconds(10);
+		digitalWrite(gTimeSyncRecvPin0, LOW);
+	}
+	if (myindex == 1)
+	{
+		digitalWrite(gTimeSyncRecvPin1, HIGH);
+		delayMicroseconds(10);
+		digitalWrite(gTimeSyncRecvPin1, LOW);
+	}
 }
 void TimeInterruptRecv0()
 {
