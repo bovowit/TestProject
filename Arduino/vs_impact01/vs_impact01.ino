@@ -20,11 +20,10 @@ const char sCmdTimeSync[] = "_RS_";					// 리셋명령.
 
 // 디지털핀 시그널을 통해 시간 동기화
 int gTimeSyncPin = 9;		// 두에의 경우 모든 핀에 인터럽트 가능.
-int gTimeSyncRecvPin0 = 2;	// 우노의 경우 2, 3번만 인터럽트 가능 => 메가로 변경 필요(2, 3, 21, 20, 19, 18)
-int gTimeSyncRecvPin1 = 3;
-int gTimeSyncRecvPin2 = 4;
-int gTimeSyncRecvPin3 = 5;
+int gTimeSyncRecvPin[4] = {2, 3, 21, 20};	// 우노의 경우 2, 3번만 인터럽트 가능 => 메가로 변경 필요(2, 3, 21, 20, 19, 18)
 
+int gTimeSyncRecvCnt = 0;
+bool gFirstTimeSync = true;
 SimpleTimer sync_timer;
 int _timer_id = 0;
 
@@ -54,7 +53,7 @@ void BaseSetting(role_e role)
 
 		pinMode(gTimeSyncPin, INPUT_PULLUP);	// 인터럽트 핀.
 		attachInterrupt(digitalPinToInterrupt(gTimeSyncPin), TimeInterrupt, RISING);
-		pinMode(gTimeSyncRecvPin0, OUTPUT);
+		pinMode(gTimeSyncRecvPin[myindex], OUTPUT);
 	}
 	else if (role == role_controller)
 	{
@@ -67,14 +66,14 @@ void BaseSetting(role_e role)
 		Serial.println("Base Pipe Setting : role_controller");
 
 		pinMode(gTimeSyncPin, OUTPUT);
-		pinMode(gTimeSyncRecvPin0, INPUT_PULLUP);	// 인터럽트 핀으로 사용
-		pinMode(gTimeSyncRecvPin1, INPUT_PULLUP);
-		pinMode(gTimeSyncRecvPin2, INPUT_PULLUP);
-		pinMode(gTimeSyncRecvPin3, INPUT_PULLUP);
-		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin0), TimeInterruptRecv0, RISING);
-		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin1), TimeInterruptRecv1, RISING);
-		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin2), TimeInterruptRecv2, RISING);
-		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin3), TimeInterruptRecv3, RISING);
+		pinMode(gTimeSyncRecvPin[0], INPUT_PULLUP);	// 인터럽트 핀으로 사용
+		pinMode(gTimeSyncRecvPin[1], INPUT_PULLUP);
+		pinMode(gTimeSyncRecvPin[2], INPUT_PULLUP);
+		pinMode(gTimeSyncRecvPin[3], INPUT_PULLUP);
+		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[0]), TimeInterruptRecv0, RISING);
+		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[1]), TimeInterruptRecv1, RISING);
+		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[2]), TimeInterruptRecv2, RISING);
+		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[3]), TimeInterruptRecv3, RISING);
 
 		_timer_id = sync_timer.setInterval(3000, SyncTimerCallback);
 		Serial.print(_timer_id); Serial.println(" : Timer Started");
@@ -82,37 +81,34 @@ void BaseSetting(role_e role)
 	}
 }
 
-void TimeInterrupt()	// 센스쪽에서 발생. 
+void 
+()	// 센스쪽에서 발생. 
 {
 	base_sync_time = micros();
-	if (myindex == 0)
-	{
-		digitalWrite(gTimeSyncRecvPin0, HIGH);
-		delayMicroseconds(10);
-		digitalWrite(gTimeSyncRecvPin0, LOW);
-	}
-	if (myindex == 1)
-	{
-		digitalWrite(gTimeSyncRecvPin1, HIGH);
-		delayMicroseconds(10);
-		digitalWrite(gTimeSyncRecvPin1, LOW);
-	}
+	digitalWrite(gTimeSyncRecvPin[myindex], HIGH);
+	delayMicroseconds(1);
+	digitalWrite(gTimeSyncRecvPin[myindex], LOW);
+  Serial.print("TS_REQ : "); Serial.print(myindex); Serial.print("  so, Set basetime - "); Serial.println(base_sync_time);
 }
 void TimeInterruptRecv0()
 {
 	gTimeSyncRecvCnt++;
+  Serial.println("Recv Timesync ACK form sensor 0");
 }
 void TimeInterruptRecv1()
 {
 	gTimeSyncRecvCnt++;
+  Serial.println("Recv Timesync ACK form sensor 1");
 }
 void TimeInterruptRecv2()
 {
 	gTimeSyncRecvCnt++;
+  Serial.println("Recv Timesync ACK form sensor 2");
 }
 void TimeInterruptRecv3()
 {
 	gTimeSyncRecvCnt++;
+  Serial.println("Recv Timesync ACK form sensor 3");
 }
 
 void setup()
@@ -146,8 +142,6 @@ void setup()
 }
 
 // timer 이벤트가 발생하면 디지털 핀 High setting
-int gTimeSyncRecvCnt = 0;
-bool gFirstTimeSync = true;
 void SyncTimerCallback()
 {
 	gTimeSyncRecvCnt = 0;
@@ -162,7 +156,7 @@ void SyncTimerCallback()
 	// 타이머 
 	Serial.println("InitTimer -- Digital pin HIGH for Time Sync Interrupt");
 	digitalWrite(gTimeSyncPin, HIGH);
-	delayMicroseconds(10);
+	delayMicroseconds(1);
 	digitalWrite(gTimeSyncPin, LOW);
 }
 
@@ -223,7 +217,7 @@ void loop(void)
 	// 첫번째 신호가 수집된후 10ms 이상이 지나면 데이터 무효화, 새로운 타격으로 처리.
 	if (g_role == role_controller)
 	{
-		if (gTimeSyncRecvCnt == sensorcnt)
+		if (gTimeSyncRecvCnt == sensorcnt && gFirstTimeSync == true)
 		{
 			sync_timer.disable(_timer_id);
 			Serial.println(F("success time sync.. so reset long timer setting"));
