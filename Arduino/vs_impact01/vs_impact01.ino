@@ -22,7 +22,7 @@ const char sCmdTimeSync[] = "_RS_";					// 리셋명령.
 int gTimeSyncPin = 9;		// 두에의 경우 모든 핀에 인터럽트 가능.
 int gTimeSyncRecvPin[4] = {2, 3, 21, 20};	// 우노의 경우 2, 3번만 인터럽트 가능 => 메가로 변경 필요(2, 3, 21, 20, 19, 18)
 
-int gTimeSyncRecvCnt = 0;
+volatile int gTimeSyncRecvCnt = 0;
 bool gFirstTimeSync = true;
 SimpleTimer sync_timer;
 int _timer_id = 0;
@@ -68,9 +68,10 @@ void BaseSetting(role_e role)
 		pinMode(gTimeSyncPin, OUTPUT);
 		pinMode(gTimeSyncRecvPin[0], INPUT_PULLUP);	// 인터럽트 핀으로 사용
 		pinMode(gTimeSyncRecvPin[1], INPUT_PULLUP);
-		pinMode(gTimeSyncRecvPin[2], INPUT_PULLUP);
+ 		pinMode(gTimeSyncRecvPin[2], INPUT_PULLUP);
 		pinMode(gTimeSyncRecvPin[3], INPUT_PULLUP);
-		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[0]), TimeInterruptRecv0, RISING);
+    // 두에는 핀 번호를 인터럽트로 사용
+    attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[0]), TimeInterruptRecv0, RISING);
 		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[1]), TimeInterruptRecv1, RISING);
 		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[2]), TimeInterruptRecv2, RISING);
 		attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[3]), TimeInterruptRecv3, RISING);
@@ -81,12 +82,11 @@ void BaseSetting(role_e role)
 	}
 }
 
-void 
-()	// 센스쪽에서 발생. 
+void TimeInterrupt()	// 센스쪽에서 발생. 
 {
 	base_sync_time = micros();
 	digitalWrite(gTimeSyncRecvPin[myindex], HIGH);
-	delayMicroseconds(1);
+	//delayMicroseconds(1);
 	digitalWrite(gTimeSyncRecvPin[myindex], LOW);
   Serial.print("TS_REQ : "); Serial.print(myindex); Serial.print("  so, Set basetime - "); Serial.println(base_sync_time);
 }
@@ -139,6 +139,8 @@ void setup()
 	radio.printDetails();                   // Dump the configuration of the rf unit for debugging
 
 	stime = micros();
+
+  delay(1000);
 }
 
 // timer 이벤트가 발생하면 디지털 핀 High setting
