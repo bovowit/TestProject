@@ -166,18 +166,18 @@ void loop(void)
 {
 	if (g_role == role_sensor)
 	{
-		if (radio.available())				// 반응속도 저하 요인이 될수 있음. 체크 후 제거 검토.
-		{
-			radio.read(command, buffsize);
-			printf("RECV command : %s from master \n\r", (char*)&command);
-			String sCmd((char*)command);
-			if (!sCmd.equals("_RS_"))		// 리셋처리..
-			{
-				// reset....
-				Serial.println("recv Reset command........");
-			}
-			memset(command, 0, buffsize);
-		}
+		//// 반응속도 저하 요인이 될수 있음. -> Hardware interrupt로 리셋처리..
+		//if (radio.available())				
+		//{
+		//	radio.read(command, buffsize);
+		//	printf("RECV command : %s from master \n\r", (char*)&command);
+		//	String sCmd((char*)command);
+		//	if (!sCmd.equals("_RS_"))		// 리셋처리..
+		//	{
+		//		Serial.println("recv Reset command........");
+		//	}
+		//	memset(command, 0, buffsize);
+		//}
 
 		int _valuex = analogRead(A0);
 		int _valuey = analogRead(A1);
