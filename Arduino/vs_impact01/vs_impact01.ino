@@ -35,7 +35,7 @@ byte command[buffsize] = { 0, };  // 일반 수신용 (명령어 등)
 byte recv[sensorcnt][sensorbuffsize];
 
 int sensitivity = 650;
-unsigned long synctime = 300000; // 300 msec
+unsigned long synctime = 3000000; // 300 msec
 unsigned long stime = 0;
 unsigned long startreadingtime = 0;
 unsigned long base_sync_time = 0;
@@ -219,7 +219,7 @@ void loop(void)
 	// 첫번째 신호가 수집된후 10ms 이상이 지나면 데이터 무효화, 새로운 타격으로 처리.
 	if (g_role == role_controller)
 	{
-		if (gTimeSyncRecvCnt == sensorcnt && gFirstTimeSync == true)
+		if (gTimeSyncRecvCnt >= sensorcnt && gFirstTimeSync == true)
 		{
 			sync_timer.disable(_timer_id);
 			Serial.println(F("success time sync.. so reset long timer setting"));
@@ -248,11 +248,13 @@ void loop(void)
 				startreadingtime = micros();
 			iReadSensorCnt++;
 			radio.read(recv[sensorIndex], sensorbuffsize);
-
+        unsigned long _time;
+        memcpy(&_time, recv[sensorIndex], sizeof(unsigned long));
+        Serial.print("RT : "); Serial.println(_time);
 		}
 
 		unsigned long _curtime = micros();
-		if ((iReadSensorCnt >= sensorcnt || _curtime - startreadingtime > synctime) && iReadSensorCnt > 0)
+		if ((iReadSensorCnt = sensorcnt || _curtime - startreadingtime > synctime) && iReadSensorCnt > 0)
 		{
 			if (iReadSensorCnt < sensorcnt)    // 주어진 시간에 3개 이상의 센서 값을 읽지 못한 경우.
 			{
