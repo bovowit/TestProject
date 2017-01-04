@@ -40,9 +40,9 @@ void BaseSetting(role_e role)
 	for (int i = 0; i < sensorcnt; i++)
 		pinMode(gTimeSyncRecvPin[i], INPUT_PULLUP); // 인터럽트 핀으로 사용
 	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[0]), TimeInterruptRecv0, RISING);
-	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[1]), TimeInterruptRecv0, RISING);
-	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[2]), TimeInterruptRecv0, RISING);
-	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[3]), TimeInterruptRecv0, RISING);
+	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[1]), TimeInterruptRecv1, RISING);
+	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[2]), TimeInterruptRecv2, RISING);
+	attachInterrupt(digitalPinToInterrupt(gTimeSyncRecvPin[3]), TimeInterruptRecv3, RISING);
 
    _timer_id = sync_timer.setInterval(60000, KeepAliveCallback);	// 1분 타이머
     Serial.print(_timer_id); Serial.println(" : keep alive Timer Started");
@@ -51,6 +51,8 @@ void BaseSetting(role_e role)
 
 void SensorInterrupt()  // 센스쪽에서 발생. 리셋등에 활용
 {
+  digitalWrite(gTimeSyncRecvPin[myindex], HIGH);
+  digitalWrite(gTimeSyncRecvPin[myindex], LOW);
 }
 
 volatile unsigned long recvtime[4] = {0, };
@@ -58,13 +60,13 @@ void TimeInterruptRecv0()
 {
   recvtime[0] = micros();
   iReadSensorCnt++;
-  //Serial.print(recvtime[0]);  Serial.println("  interrupt pin2");
+  Serial.print(recvtime[0]);  Serial.println("  interrupt pin2");
 }
 void TimeInterruptRecv1()
 {
   recvtime[1] = micros();
   iReadSensorCnt++;
-  //Serial.print(recvtime[1]); Serial.println("  interrupt pin3");
+  Serial.print(recvtime[1]); Serial.println("  interrupt pin3");
 }
 void TimeInterruptRecv2()
 {
@@ -97,22 +99,29 @@ void setup()
 // Keep alive check
 void KeepAliveCallback()
 {
+  digitalWrite(gTimeSyncPin, HIGH);
+  digitalWrite(gTimeSyncPin, LOW);
+  Serial.println("controller timer event.. ");
 }
 
+int _valuex, _valuey, _valuez;
 void loop(void)
 {
   if (g_role == role_sensor)
   {
-    int _valuex = analogRead(A0);
-    int _valuey = analogRead(A1);
-    int _valuez = analogRead(A2);     // 효율성을 위해 확인 후 제거.. Z축은 무의미한 값일듯.
+    _valuex = analogRead(A0);
+    _valuey = analogRead(A1);
+    _valuez = analogRead(A2);     // 효율성을 위해 확인 후 제거.. Z축은 무의미한 값일듯.
     if ((_valuex > sensitivity || _valuey > sensitivity || _valuez > sensitivity) && bOneShot == false)
     {
        bOneShot = true;
        stime = micros();
        digitalWrite(gTimeSyncRecvPin[myindex], HIGH);
        digitalWrite(gTimeSyncRecvPin[myindex], LOW);
-       Serial.print("imapct sensor : "); Serial.println(gTimeSyncRecvPin[myindex]);
+       Serial.print("imapct sensor : "); Serial.print(gTimeSyncRecvPin[myindex]);
+       Serial.print("  Value : "); Serial.print(_valuex); Serial.print(" - ");
+       Serial.print(_valuey); Serial.print(" - ");
+       Serial.print(_valuez); Serial.println("");
     }
     if (bOneShot)
     {
@@ -130,7 +139,7 @@ void loop(void)
   // 첫번째 신호가 수집된후 30ms 이상이 지나면 데이터 무효화, 새로운 타격으로 처리.
   if (g_role == role_controller)
   {
-
+    sync_timer.run();
 	  if (iReadSensorCnt > 0)
 	  {
 		  if (startreadingtime == 0)
@@ -150,7 +159,7 @@ void loop(void)
 			  iReadSensorCnt = 0;
 			  startreadingtime = 0;
 			  recvtime[0] = recvtime[1] = recvtime[2] = recvtime[3] = 0;
-			  Serial.print("---------------- clear ImpactTime  ");
+			  Serial.println("---------------- clear ImpactTime  ");
 		  }
       }
  
