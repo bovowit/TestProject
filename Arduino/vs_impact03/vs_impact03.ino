@@ -1,8 +1,8 @@
 
 // defaule setting 
 const int gSensorCnt = 2;
-int gSensitivity = 650;
-int validation_time = 1000000;	// 1ÃÊ
+int gSensitivity = 670;
+int validation_time = 1000000;	// 1ï¿½ï¿½
 
 bool gArrSensorFlag[gSensorCnt] = { false, };
 unsigned long gArrImpactTime[gSensorCnt] = { 0, };
@@ -28,7 +28,7 @@ void ClearData()
 void setup()
 {
 	Serial.begin(115200);
-	int t = analogRead(0); t = analogRead(1);		// ÀÜ·ù°ª Å¬¸®¾î
+	int t = analogRead(0); t = analogRead(1);		// ï¿½Ü·ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
 
 	ADC->ADC_MR |= 0x80; // these lines set free running mode on adc 7 and adc 6 (pin A0 and A1 - see Due Pinout Diagram thread)
 	ADC->ADC_CR = 2;
@@ -47,14 +47,17 @@ void loop()
 		Serial.print("Sensitivity value input : "); Serial.println(sReadData);
 	}
 
+  int _value = 0;
+  int _value1 = 0;
+  
 	//for (int i = 0; i < gSensorCnt; i++) 
 	{
 		//while ((ADC->ADC_ISR & 0x80) == 0);
 		//while ((ADC->ADC_ISR & 0xC0) == 0);// wait for 2 conversions
 		//while ((ADC->ADC_ISR & 0xE0) == 0);// wait for 3 conversions
 		//while ((ADC->ADC_ISR & 0xF0) == 0);// wait for 4 conversions
-		//gArrSensorValue[0] = ADC->ADC_CDR[7];              // read data on A0 pin
-		//gArrSensorValue[1] = ADC->ADC_CDR[6];              // read data on A1 pin
+		//_value =  ADC->ADC_CDR[7];              // read data on A0 pin
+		//_value1 = ADC->ADC_CDR[6];              // read data on A1 pin
 		//gArrSensor[2] = ADC->ADC_CDR[5];              // read data on A2 pin
 		//gArrSensor[3] = ADC->ADC_CDR[4];              // read data on A3 pin
 	}
@@ -68,38 +71,53 @@ void loop()
 	if ((ADC->ADC_ISR & 0x10) == 1)
 	a3 = ADC->ADC_CDR[4];              // read data on A3 pin
 	*/
-
 	//int _value = 0;
-	for (int i = 0; i < gSensorCnt; i++)
-	{
-		if (gArrSensorFlag[i] == true)
-			continue;
-		if (analogRead(i) > gSensitivity)		// °ªÀÌ µµÂøÇÏÁö ¾ÊÀº °Í¸¸ ÀÐ°ÔÇÏ¿© È¿À²ÀûÀ¸·Î Ã³¸®.
-		{
-			gArrSensorFlag[i] = true;
-			gArrImpactTime[i] = micros();
-			recevied_count++;
+  //int _value1 = 0;
 
+
+	//for (int i = 0; i < gSensorCnt; i++)
+	{
+		//if (gArrSensorFlag[i] == true)
+		//	continue;
+    _value = analogRead(0);
+    _value1 = analogRead(1);
+		if (gArrSensorFlag[0] == false && _value > gSensitivity)		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Í¸ï¿½ ï¿½Ð°ï¿½ï¿½Ï¿ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½.
+		{
+			gArrSensorFlag[0] = true;
+			gArrImpactTime[0] = micros();
+			recevied_count++;
+      Serial.print(0); Serial.print(" Sensor Value = "); Serial.print(_value); Serial.print(" : "); Serial.println(gArrImpactTime[0]);
 			if (uiImpactStartTime == 0)
 				uiImpactStartTime = micros();
 		}
+    if (gArrSensorFlag[1] == false && _value1 > gSensitivity)    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Í¸ï¿½ ï¿½Ð°ï¿½ï¿½Ï¿ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½.
+    {
+      gArrSensorFlag[1] = true;
+      gArrImpactTime[1] = micros() - 70;
+      recevied_count++;
+      Serial.print(1); Serial.print(" Sensor Value = "); Serial.print(_value1); Serial.print(" : "); Serial.println(gArrImpactTime[1]);
+      if (uiImpactStartTime == 0)
+        uiImpactStartTime = micros();
+    }
+  
 	}
 	if (recevied_count == gSensorCnt)
 	{
+    iRetryCnt++;
 		Serial.print(iRetryCnt); Serial.println("  --- Seccesed Impact Index ---");
 		Serial.print("RX : ");
 		int _due_time = 0;
 		//for (int i = 0; i < gSensorCnt; i++)
 		{
 			_due_time = gArrImpactTime[0] - gArrImpactTime[1];
-			Serial.print(_due_time);
+			Serial.println(_due_time);
 		}
-
+    delay(1000);
 		ClearData();
 	}
 	else
 	{
-		if (uiImpactStartTime > 0 && micros() - uiImpactStartTime > validation_time)	// Å¸ÀÓÀÇ ·Ñ¿À¹ö Ã³¸® ÇÊ¿ä.
+		if (uiImpactStartTime > 0 && micros() - uiImpactStartTime > validation_time)	// Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¿ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½Ê¿ï¿½.
 		{
 			ClearData();
 			Serial.println(" failed receve all sensor .. so clear data");
