@@ -1,7 +1,7 @@
 
 // defaule setting 
 const int gSensorCnt = 2;
-int gSensitivity = 670;
+int gSensitivity = 625;
 int validation_time = 1000000;	// 1��
 
 bool gArrSensorFlag[gSensorCnt] = { false, };
@@ -33,7 +33,9 @@ void setup()
 	ADC->ADC_MR |= 0x80; // these lines set free running mode on adc 7 and adc 6 (pin A0 and A1 - see Due Pinout Diagram thread)
 	ADC->ADC_CR = 2;
 	ADC->ADC_CHER = 0xC0; // this is (1<<7) | (1<<6) for adc 7 and adc 6     
-	//ADC->ADC_CHER = 0xF0; // this is (1<<7) | (1<<6) for adc 7 and adc 4                                     
+	//ADC->ADC_CHER = 0xF0; // this is (1<<7) | (1<<6) for adc 7 and adc 4          
+
+  ClearData();
 }
 
 void loop()
@@ -81,21 +83,21 @@ void loop()
 		//	continue;
     _value = analogRead(0);
     _value1 = analogRead(1);
-		if (gArrSensorFlag[0] == false && _value > gSensitivity)		// ���� �������� ���� �͸� �а��Ͽ� ȿ�������� ó��.
+		if (gArrSensorFlag[0] == false && abs(_value - 636) > 15)		// ���� �������� ���� �͸� �а��Ͽ� ȿ�������� ó��.
 		{
 			gArrSensorFlag[0] = true;
 			gArrImpactTime[0] = micros();
 			recevied_count++;
-      Serial.print(0); Serial.print(" Sensor Value = "); Serial.print(_value); Serial.print(" : "); Serial.println(gArrImpactTime[0]);
+      //Serial.print(0); Serial.print(" Sensor Value = "); Serial.print(_value); Serial.print(" : "); Serial.println(gArrImpactTime[0]);
 			if (uiImpactStartTime == 0)
 				uiImpactStartTime = micros();
 		}
-    if (gArrSensorFlag[1] == false && _value1 > gSensitivity)    // ���� �������� ���� �͸� �а��Ͽ� ȿ�������� ó��.
+    if (gArrSensorFlag[1] == false && abs(_value1 - 632) > 15)    // ���� �������� ���� �͸� �а��Ͽ� ȿ�������� ó��.
     {
       gArrSensorFlag[1] = true;
-      gArrImpactTime[1] = micros() - 70;
+      gArrImpactTime[1] = micros()-3;
       recevied_count++;
-      Serial.print(1); Serial.print(" Sensor Value = "); Serial.print(_value1); Serial.print(" : "); Serial.println(gArrImpactTime[1]);
+      //Serial.print(1); Serial.print(" Sensor Value = "); Serial.print(_value1); Serial.print(" : "); Serial.println(gArrImpactTime[1]);
       if (uiImpactStartTime == 0)
         uiImpactStartTime = micros();
     }
@@ -105,7 +107,7 @@ void loop()
 	{
     iRetryCnt++;
 		Serial.print(iRetryCnt); Serial.println("  --- Seccesed Impact Index ---");
-		Serial.print("RX : ");
+		Serial.print("RX(interval) : ");
 		int _due_time = 0;
 		//for (int i = 0; i < gSensorCnt; i++)
 		{

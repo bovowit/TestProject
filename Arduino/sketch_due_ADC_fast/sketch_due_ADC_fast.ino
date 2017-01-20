@@ -6,7 +6,7 @@ unsigned long  t0 = 0, t1 = 0, t2 = 0, t3 = 0;
 
 void setup() 
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   int t = analogRead(0); t = analogRead(1); t = analogRead(2); t = analogRead(3);
 
   ADC->ADC_MR |= 0x80; // these lines set free running mode on adc 7 and adc 6 (pin A0 and A1 - see Due Pinout Diagram thread)
@@ -26,11 +26,11 @@ void loop()
     Serial.print("Sensitivity value input : "); Serial.println(sReadData);
   }
 
-    for (int i = 0; i<1; i++) {
+    for (int i = 0; i<2; i++) {
     while ((ADC->ADC_ISR & 0x80) == 0);
     while ((ADC->ADC_ISR & 0xC0) == 0);// wait for 2 conversions
-    while ((ADC->ADC_ISR & 0xE0) == 0);// wait for 3 conversions
-    while ((ADC->ADC_ISR & 0xF0) == 0);// wait for 4 conversions
+    //while ((ADC->ADC_ISR & 0xE0) == 0);// wait for 3 conversions
+    //while ((ADC->ADC_ISR & 0xF0) == 0);// wait for 4 conversions
     a0 = ADC->ADC_CDR[7];              // read data on A0 pin
     a1 = ADC->ADC_CDR[6];              // read data on A1 pin
     a2 = ADC->ADC_CDR[5];              // read data on A2 pin
@@ -73,7 +73,7 @@ void loop()
       t3 = tbase;
   }  
 
-  if(q0 > 0 && q1 > 0 && q2 > 0 && q3 > 0)
+  if(q0 > 0 || q1 > 0 || q2 > 0 || q3 > 0)
   {
     //Serial.print("1000 pairs of conversions in "); Serial.print(t); Serial.println(" micros");
     Serial.print(firsttime); Serial.print(" : "); Serial.println(t1);

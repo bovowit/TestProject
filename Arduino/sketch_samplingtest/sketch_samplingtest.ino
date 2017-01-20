@@ -24,9 +24,9 @@ void loop() {
   
  
   bstarted = false;
-  ax = analogRead(A2);
-  ay = 0;//analogRead(A4);
-  az = analogRead(A5);
+  ax = analogRead(A0);
+  ay = analogRead(A1);
+  az = analogRead(A2);
   arrx[0] = ax;
   arry[0] = ay;
   arrz[0] = az;
@@ -35,9 +35,9 @@ void loop() {
     bstarted = true;
     for(int i = 1; i < measurecnt; i++)
     {
-      ax = analogRead(A2);
-      ay = 0;//analogRead(A4);
-      az = analogRead(A5);
+      ax = analogRead(A0);
+      ay = analogRead(A1);
+      az = analogRead(A2);
       arrx[i] = ax;
       arry[i] = ay;
       arrz[i] = az;

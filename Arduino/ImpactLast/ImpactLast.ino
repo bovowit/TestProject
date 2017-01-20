@@ -1,4 +1,3 @@
-﻿
 const int gSensorCount = 2;
 const int gImpactGap = 10;		// 충격판단값 - 기준값에서 +- 변화폭
 int gBaseValue[gSensorCount];	// 기준값 - 안정모드에서 각 센스 z 값 평균
@@ -44,5 +43,6 @@ void calibration()
 
 void loop() 
 {
-  
+  delay(3000);
+  calibration();
 }
