@@ -8,7 +8,7 @@ unsigned long gImpactStartTime = 0;
 int gAverageSensingTime = 0;	// 센서값을 읽는데 소요된 시간, 소요시간/센싱횟수 ===================> 오차 줄이기위한 부동소숫점 연산 체크
 int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인덱스 (시간 = index * gAverageSensingTime)
 
-const int gOslioCount = 200;
+const int gOslioCount = 400;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
 int gRunMode = MODE_STREAM;
@@ -17,9 +17,9 @@ void setup()
 {
 	//Serial.begin(115200);
 	Serial.begin(250000);
-	calibration();
-
-
+	calibration();      // 잔류 전류 제거 목적
+  calibration();      // 실제 평균값 측정
+  
 }
 
 void clear()
@@ -57,16 +57,19 @@ void calibration()
 
 void displayFlotter()
 {
-	for (int i = 0; i < 10; i++)
-		Serial.println(gBaseValue[0]); 
-
+	for (int i = 0; i < 20; i++)
+  {
+		Serial.print(gBaseValue[0]); 
+    Serial.print(" ");
+    Serial.println(gBaseValue[1]);
+  }
 	int idx = 0;
 	for (int retry = 0; retry < gOslioCount; retry++)
 	{
 		for (idx = 0; idx < gSensorCount-1; idx++)
 		{
 			Serial.print(gSensorValue[idx][retry]);
-			Serial.print("");
+			Serial.print(" ");
 		}
 		Serial.println(gSensorValue[idx][retry]);
 	}
@@ -104,20 +107,21 @@ void RunStream()
 {
 	int idx = 0;
 	int _trig = 0;
-	for (idx = 0; idx < gSensorCount; idx++)
+	for (idx = 0; idx < gSensorCount-1; idx++)
 	{
 		Serial.print(analogRead(idx));
-		Serial.print("");
+		Serial.print(" ");
 	}
 	_trig = analogRead(idx);
 	Serial.println(_trig);
 
 	if (abs(_trig > gBaseValue[0]) > 30)
 	{
-		!bTrig;
 		if(bTrig)
 			delay(10000);
-	}
+    !bTrig;
+  }
+ //delay(1);
 }
 
 // 각 센서에서 최고값을 기록한 인덱스 저장, 최소값 이하일 경우 실패
@@ -154,8 +158,8 @@ bool CalculateFirstPickTime()
 {
 	for (int idx = 0; idx < gSensorCount; idx++)
 	{
-		int iFirstMinVal = 0;
-		int iFirstMaxVal = 0;
+		int iFirstMinVal = gBaseValue[idx];
+		int iFirstMaxVal = gBaseValue[idx];
 		int iLowCount = 0;
 		int iHighCount = 0;
 		for (int retry = 0; retry < gOslioCount; retry++)
@@ -182,6 +186,7 @@ bool CalculateFirstPickTime()
 			}
 		}
 	}
+  return true;
 }
 
 int _rcnt = 0;
@@ -195,7 +200,8 @@ void loop()
 			if (gImpactStartTime == 0)
 				return;
 
-			if (CalculateMaxSensingTime() == false)
+			//if (CalculateMaxSensingTime() == false)
+      if(CalculateFirstPickTime() == false)
 			{
 				Serial.println("=== failed impact sensing ======");
 				clear();
@@ -234,6 +240,12 @@ void loop()
 		case MODE_STREAM:
 		{
 			RunStream();
+      _rcnt++;
+      if(_rcnt > gOslioCount)
+      {
+        _rcnt = 0;
+        delay(10000);
+      }
 		}
 	}
 
