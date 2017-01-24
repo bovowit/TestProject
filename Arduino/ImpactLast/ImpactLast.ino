@@ -152,7 +152,36 @@ bool CalculateMaxSensingTime()
 // 빠른 종파로 충격 시작을 감지하고, 횡파가 도달한 시간 즉 최대 충격값을 기준으로 시간 측정
 bool CalculateFirstPickTime()
 {
-
+	for (int idx = 0; idx < gSensorCount; idx++)
+	{
+		int iFirstMinVal = 0;
+		int iFirstMaxVal = 0;
+		int iLowCount = 0;
+		int iHighCount = 0;
+		for (int retry = 0; retry < gOslioCount; retry++)
+		{
+			if (gBaseValue[idx] > gSensorValue[idx][retry] && iFirstMinVal > gSensorValue[idx][retry])	// 하강
+			{
+				iFirstMinVal = gSensorValue[idx][retry];
+				iLowCount++;
+				if (iHighCount > 10)		// 하강그래프에서 상승이 10회 이상 또는 그 반대일 경우 피크로 처리.
+				{
+					gArrImpactSensingIndex[idx] = retry;
+					continue;
+				}
+			}
+			else if (gBaseValue[idx] < gSensorValue[idx][retry] && iFirstMaxVal < gSensorValue[idx][retry]) // 상승
+			{
+				iFirstMaxVal = gSensorValue[idx][retry];
+				iHighCount++;
+				if (iLowCount > 10)		
+				{
+					gArrImpactSensingIndex[idx] = retry;
+					continue;
+				}
+			}
+		}
+	}
 }
 
 int _rcnt = 0;
