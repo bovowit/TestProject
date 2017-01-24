@@ -10,8 +10,8 @@ int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인
 
 const int gOslioCount = 200;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
-enum { MODE_IMPACT, MODE_OSILLO};// 0 : first impact, 1 : osillo, 
-int gRunMode = MODE_OSILLO;	
+enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
+int gRunMode = MODE_STREAM;
 
 void setup() 
 {
@@ -57,18 +57,18 @@ void calibration()
 
 void displayFlotter()
 {
-//	for (int i = 0; i < 20; i++)
-//		Serial.println(gBaseValue[0]);
-	for (int idx = 0; idx < gSensorCount; idx++)
+	for (int i = 0; i < 10; i++)
+		Serial.println(gBaseValue[0]); 
+
+	int idx = 0;
+	for (int retry = 0; retry < gOslioCount; retry++)
 	{
-    for (int i = 0; i < 10; i++)
-      Serial.println(gBaseValue[idx]); 
-		for (int retry = 1; retry < gOslioCount; retry++)
+		for (idx = 0; idx < gSensorCount-1; idx++)
 		{
-			Serial.println(gSensorValue[idx][retry]);
+			Serial.print(gSensorValue[idx][retry]);
+			Serial.print("");
 		}
-		for (int i = 0; i < 10; i++)
-			Serial.println(gBaseValue[idx]);
+		Serial.println(gSensorValue[idx][retry]);
 	}
 }
 
@@ -99,6 +99,26 @@ void RunOsillo()
 	gAverageSensingTime = (micros() - gImpactStartTime) / (gOslioCount * gSensorCount);  
 }
 
+bool bTrig = false;
+void RunStream()
+{
+	int idx = 0;
+	int _trig = 0;
+	for (idx = 0; idx < gSensorCount; idx++)
+	{
+		Serial.print(analogRead(idx));
+		Serial.print("");
+	}
+	_trig = analogRead(idx);
+	Serial.println(_trig);
+
+	if (abs(_trig > gBaseValue[0]) > 30)
+	{
+		!bTrig;
+		if(bTrig)
+			delay(10000);
+	}
+}
 
 // 각 센서에서 최고값을 기록한 인덱스 저장, 최소값 이하일 경우 실패
 // 각 센서가 최고값을 기록한 시간 계산
@@ -129,49 +149,63 @@ bool CalculateMaxSensingTime()
 	return true;
 }
 
+// 빠른 종파로 충격 시작을 감지하고, 횡파가 도달한 시간 즉 최대 충격값을 기준으로 시간 측정
+bool CalculateFirstPickTime()
+{
+
+}
+
 int _rcnt = 0;
 void loop()
 {
-	if (gRunMode == MODE_IMPACT)
+	switch (gRunMode)
 	{
-		RunOsillo();
-		if (gImpactStartTime == 0)
-			return;
-     
-		if (CalculateMaxSensingTime() == false)
+		case MODE_IMPACT:
 		{
-			Serial.println("=== failed impact sensing ======");   
+			RunOsillo();
+			if (gImpactStartTime == 0)
+				return;
+
+			if (CalculateMaxSensingTime() == false)
+			{
+				Serial.println("=== failed impact sensing ======");
+				clear();
+				return;
+			}
+
+			_rcnt++;
+			Serial.print(_rcnt);
+			Serial.print(" : ");
+			Serial.print(gAverageSensingTime);
+			Serial.print(" : IMP = ");
+			for (int idx = 0; idx < gSensorCount; idx++)
+			{
+				Serial.print(gArrImpactSensingIndex[idx]);
+				Serial.print(" - ");
+			}
+			Serial.println("");
+			delay(100);
+
+			//SendImpactTime();
+			//CalculateImpactPointer();
+
 			clear();
-			return;
+			break;
 		}
-
-		_rcnt++;
-		Serial.print(_rcnt); 
-    Serial.print(" : ");
-    Serial.print(gAverageSensingTime);
-		Serial.print(" : IMP = ");
-		for (int idx = 0; idx < gSensorCount; idx++)
+		case MODE_OSILLO:
 		{
-			Serial.print(gArrImpactSensingIndex[idx]);
-			Serial.print(" - ");
+			RunOsillo();
+			if (gImpactStartTime > 0)
+			{
+				displayFlotter();
+				clear();
+			}
+			break;
 		}
-		Serial.println("");
-		delay(100);
-
-		//SendImpactTime();
-		//CalculateImpactPointer();
-
-		clear();
-
+		case MODE_STREAM:
+		{
+			RunStream();
+		}
 	}
 
-	if (gRunMode == MODE_OSILLO)
-	{
-		RunOsillo();
-		if (gImpactStartTime > 0)
-		{
-			displayFlotter();
-			clear();
-		}
-	}
 }
