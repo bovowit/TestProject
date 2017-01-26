@@ -156,6 +156,7 @@ bool CalculateMaxSensingTime()
 // 빠른 종파로 충격 시작을 감지하고, 횡파가 도달한 시간 즉 최대 충격값을 기준으로 시간 측정
 bool CalculateFirstPickTime()
 {
+	int iPickCount = 0;
 	for (int idx = 0; idx < gSensorCount; idx++)
 	{
 		int iFirstMinVal = gBaseValue[idx];
@@ -164,29 +165,44 @@ bool CalculateFirstPickTime()
 		int iHighCount = 0;
 		for (int retry = 0; retry < gOslioCount; retry++)
 		{
-			if (gBaseValue[idx] > gSensorValue[idx][retry] && iFirstMinVal > gSensorValue[idx][retry])	// 하강
+			if (iFirstMinVal > gSensorValue[idx][retry])	// 하강
 			{
 				iFirstMinVal = gSensorValue[idx][retry];
+				iLowCount = 0;
+			}
+			else		
+			{
 				iLowCount++;
-				if (iHighCount > 10)		// 하강그래프에서 상승이 10회 이상 또는 그 반대일 경우 피크로 처리.
+				if (iLowCount > 10)	// 하강중에 상승이 연속해서 10회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
-					continue;
+					iPickCount++;
+					break;
 				}
 			}
-			else if (gBaseValue[idx] < gSensorValue[idx][retry] && iFirstMaxVal < gSensorValue[idx][retry]) // 상승
+			
+			
+			if (iFirstMaxVal < gSensorValue[idx][retry])	// 상승
 			{
 				iFirstMaxVal = gSensorValue[idx][retry];
-				iHighCount++;
-				if (iLowCount > 10)		
+				iHighCount = 0;
+			}
+			else
+			{
+				if (iHighCount > 10) // 상승중에 상승이 연속해서 10회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
-					continue;
+					iPickCount++;
+					break;
 				}
 			}
 		}
 	}
-  return true;
+
+	if (iPickCount < gSensorCount)
+		return false;
+
+	return true;
 }
 
 int _rcnt = 0;
@@ -201,7 +217,7 @@ void loop()
 				return;
 
 			//if (CalculateMaxSensingTime() == false)
-      if(CalculateFirstPickTime() == false)
+			if(CalculateFirstPickTime() == false)
 			{
 				Serial.println("=== failed impact sensing ======");
 				clear();
