@@ -1,6 +1,6 @@
 const int gSensorCount = 2;
-const int gImpactGap = 15;		// 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 5;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gImpactGap = 50;		// 충격판단값 - 기준값에서 +- 변화폭
+const int gInvalidSensingValue = 20;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 
 int gBaseValue[gSensorCount];	// 기준값 - 안정모드에서 각 센스 z 값 평균
 
@@ -8,10 +8,10 @@ unsigned long gImpactStartTime = 0;
 int gAverageSensingTime = 0;	// 센서값을 읽는데 소요된 시간, 소요시간/센싱횟수 ===================> 오차 줄이기위한 부동소숫점 연산 체크
 int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인덱스 (시간 = index * gAverageSensingTime)
 
-const int gOslioCount = 400;
+const int gOslioCount = 300;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
-int gRunMode = MODE_STREAM;
+int gRunMode = MODE_OSILLO;
 
 void setup() 
 {
@@ -73,6 +73,13 @@ void displayFlotter()
 		}
 		Serial.println(gSensorValue[idx][retry]);
 	}
+
+  for (int i = 0; i < 20; i++)
+  {
+    Serial.print(gBaseValue[0]); 
+    Serial.print(" ");
+    Serial.println(gBaseValue[1]);
+  }
 }
 
 void RunOsillo()
@@ -118,7 +125,7 @@ void RunStream()
 	if (abs(_trig > gBaseValue[0]) > 30)
 	{
 		if(bTrig)
-			delay(10000);
+			delay(1000);
     !bTrig;
   }
  //delay(1);
@@ -189,7 +196,7 @@ bool CalculateFirstPickTime()
 			}
 			else
 			{
-				if (iHighCount > 10) // 상승중에 상승이 연속해서 10회 이상 나타날때.. 피크로 인식
+				if (iHighCount > 10) // 상승중에 하강이 연속해서 10회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
 					iPickCount++;
@@ -250,6 +257,7 @@ void loop()
 			{
 				displayFlotter();
 				clear();
+        calibration();
 			}
 			break;
 		}
@@ -260,7 +268,7 @@ void loop()
       if(_rcnt > gOslioCount)
       {
         _rcnt = 0;
-        delay(10000);
+       // delay(3000);
       }
 		}
 	}
