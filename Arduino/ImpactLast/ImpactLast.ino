@@ -1,6 +1,8 @@
 const int gSensorCount = 2;
-const int gImpactGap = 50;		// 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 20;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gImpactGap = 100;		        // 충격판단값 - 기준값에서 +- 변화폭
+const int gInvalidSensingValue = 30;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+//const int gImpactGap = 100;           // 자이로센서의 경우 적용
+//const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
 
 int gBaseValue[gSensorCount];	// 기준값 - 안정모드에서 각 센스 z 값 평균
 
@@ -8,15 +10,15 @@ unsigned long gImpactStartTime = 0;
 int gAverageSensingTime = 0;	// 센서값을 읽는데 소요된 시간, 소요시간/센싱횟수 ===================> 오차 줄이기위한 부동소숫점 연산 체크
 int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인덱스 (시간 = index * gAverageSensingTime)
 
-const int gOslioCount = 300;
+const int gOslioCount = 100;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
-int gRunMode = MODE_OSILLO;
+int gRunMode = MODE_IMPACT;
 
 void setup() 
 {
-	//Serial.begin(115200);
-	Serial.begin(250000);
+	Serial.begin(115200);
+	//Serial.begin(250000);
 	calibration();      // 잔류 전류 제거 목적
   calibration();      // 실제 평균값 측정
   
@@ -44,10 +46,11 @@ void calibration()
 		for (int i = 0; i < 100; i++)
 		{
 			_totalvalue += analogRead(idx);
-			delay(1);
+			//delay(1);
 		}
 		gBaseValue[idx] = int(_totalvalue / 100);
-
+    //gBaseValue[idx] = 80;
+    
 		if (gRunMode == MODE_IMPACT)
 		{
 			Serial.print(idx); Serial.print(" Sensor Caliburation value = "); Serial.println(gBaseValue[idx]);
@@ -61,7 +64,9 @@ void displayFlotter()
   {
 		Serial.print(gBaseValue[0]); 
     Serial.print(" ");
-    Serial.println(gBaseValue[1]);
+    Serial.print(gBaseValue[1]); 
+    Serial.print(" ");   
+    Serial.println(gBaseValue[2]);
   }
 	int idx = 0;
 	for (int retry = 0; retry < gOslioCount; retry++)
@@ -78,7 +83,9 @@ void displayFlotter()
   {
     Serial.print(gBaseValue[0]); 
     Serial.print(" ");
-    Serial.println(gBaseValue[1]);
+    Serial.print(gBaseValue[1]); 
+    Serial.print(" ");   
+    Serial.println(gBaseValue[2]);
   }
 }
 
@@ -103,6 +110,7 @@ void RunOsillo()
 			{
 				gSensorValue[idx][retry] = analogRead(idx);
 			}
+      //delayMicroseconds(100);
 		}
 	}
 	
@@ -122,7 +130,7 @@ void RunStream()
 	_trig = analogRead(idx);
 	Serial.println(_trig);
 
-	if (abs(_trig > gBaseValue[0]) > 30)
+	if (abs(_trig - gBaseValue[0]) > 30)
 	{
 		if(bTrig)
 			delay(1000);
@@ -138,21 +146,35 @@ bool CalculateMaxSensingTime()
 	int _maxval = 0;
 	int _delta = 0;
 	int _base = 0;
+	int _decreasecnt = 0;
 	for (int idx = 0; idx < gSensorCount; idx++)
 	{
 		_base = gBaseValue[idx];
 		for (int retry = 0; retry < gOslioCount; retry++)
 		{
-			_delta = abs(_base - gSensorValue[idx][retry]);
+			//_delta = abs(_base - gSensorValue[idx][retry]);
+			_delta = gSensorValue[idx][retry] - _base;
 			if (_delta < gInvalidSensingValue)
-				continue;
-			if(_delta > _maxval)
 			{
+				_decreasecnt++;				// 피크 이후 하강 체크
+				continue;
+			}
+			if (_delta > _maxval)
+			{
+				_decreasecnt = 0;			// 최대값 갱신할때 하강체크 리셋
 				_maxval = _delta;
 				gArrImpactSensingIndex[idx] = retry;
 			}
+			else
+				_decreasecnt++;
+
+			if (_decreasecnt > 20)
+			{
+				break;
+			}
 		}
-		if (gArrImpactSensingIndex[idx] == 0)	// 최소기준값보다 큰 충격값이 없을 경우 => 무효화.
+
+		if (gArrImpactSensingIndex[idx] == 0)	// 하나의 센서에서라도 최소기준값보다 큰 충격값이 없을 경우 => 무효화.
 			return false;
 		_delta = 0;
 		_maxval = 0;
@@ -223,8 +245,8 @@ void loop()
 			if (gImpactStartTime == 0)
 				return;
 
-			//if (CalculateMaxSensingTime() == false)
-			if(CalculateFirstPickTime() == false)
+			if (CalculateMaxSensingTime() == false)
+			//if(CalculateFirstPickTime() == false)
 			{
 				Serial.println("=== failed impact sensing ======");
 				clear();
@@ -257,7 +279,7 @@ void loop()
 			{
 				displayFlotter();
 				clear();
-        calibration();
+				calibration();
 			}
 			break;
 		}
