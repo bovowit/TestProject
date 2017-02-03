@@ -1,6 +1,6 @@
 const int gSensorCount = 3;
-const int gImpactGap = 800;		        // 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 10;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gImpactGap = 200;		        // 충격판단값 - 기준값에서 +- 변화폭
+const int gInvalidSensingValue = 50;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 //const int gImpactGap = 30;           // 자이로센서의 경우 적용
 //const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
 
@@ -19,7 +19,8 @@ void setup()
 {
 	Serial.begin(115200);
 	//Serial.begin(250000);
-	calibration();      // 잔류 전류 제거 목적
+	//calibration();      
+  empty();            // 잔류 전류 제거 목적
 	calibration();      // 실제 평균값 측정
   
 }
@@ -36,6 +37,21 @@ void clear()
 		gArrImpactSensingIndex[idx] = 0;
 	}
 
+}
+void empty()
+{
+      int idx = 0;
+  for (int retry = 0; retry < 100; retry++)
+  {
+    for (idx = 0; idx < gSensorCount-1; idx++)
+    {
+      gBaseValue[idx] = analogRead(idx);
+      Serial.print(gBaseValue[idx]);
+      Serial.print(" ");
+    }
+      gBaseValue[idx] = analogRead(idx);
+    Serial.println(gBaseValue[idx]);
+  }
 }
 
 void calibration()
@@ -55,6 +71,10 @@ void calibration()
 		{
 			Serial.print(idx); Serial.print(" Sensor Caliburation value = "); Serial.println(gBaseValue[idx]);
 		}
+   else 
+   {
+    
+   }
 	}
 }
 
@@ -267,8 +287,7 @@ void loop()
 			}
 			Serial.println("");
 			delay(100);
-      
-      calibration();
+
 			//SendImpactTime();
 			//CalculateImpactPointer();
 
