@@ -13,7 +13,7 @@ int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인
 const int gOslioCount = 100;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
-int gRunMode = MODE_OSILLO;
+int gRunMode = MODE_IMPACT;
 
 void setup() 
 {
@@ -69,7 +69,7 @@ void calibration()
     
 		if (gRunMode == MODE_IMPACT)
 		{
-			Serial.print(idx); Serial.print(" Sensor Caliburation value = "); Serial.println(gBaseValue[idx]);
+			//Serial.print(idx); Serial.print(" Sensor Caliburation value = "); Serial.println(gBaseValue[idx]);
 		}
    else 
    {
@@ -270,12 +270,16 @@ void loop()
 			if (CalculateMaxSensingTime() == false)
 			//if(CalculateFirstPickTime() == false)
 			{
-				Serial.println("=== failed impact sensing ======");
+				//Serial.println("=== failed impact sensing ======");
 				clear();
 				return;
 			}
-
-			_rcnt++;
+      char buff[30] = {0, };
+      sprintf(buff, "%3d:%3d:%3d:", gArrImpactSensingIndex[0]*4, gArrImpactSensingIndex[1]*4, gArrImpactSensingIndex[2]*4);
+      Serial.write(buff, 12);
+      //Serial.println(buff);
+      delay(100);
+			/*_rcnt++;
 			Serial.print(_rcnt);
 			Serial.print(" : ");
 			Serial.print(gAverageSensingTime);
@@ -287,7 +291,8 @@ void loop()
 			}
 			Serial.println("");
 			delay(100);
-
+       */
+       
 			//SendImpactTime();
 			//CalculateImpactPointer();
 

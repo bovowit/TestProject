@@ -24,7 +24,8 @@ void second_thread()
 	while (1)
 	{
 		//boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
-		std::cout << "second thread called == " << std::endl;
+
+		//std::cout << "second thread called == " << std::endl;
 		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 	}
 }

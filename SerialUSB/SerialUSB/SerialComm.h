@@ -20,6 +20,7 @@ public:
 
 	int		connect(string _portNum);
 	int		TryConnect(string _portNum);
+	int		TryConnectSimple(string _portNum);
 
 	int		sendCommand(char pos);
 	void	disconnect();

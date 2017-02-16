@@ -152,11 +152,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\BLAST_LOGIC1\BLAST_LOGIC1\TdEye.h" />
     <ClInclude Include="SerialComm.h" />
     <ClInclude Include="SerialPort.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\BLAST_LOGIC1\BLAST_LOGIC1\TdEye.cpp" />
     <ClCompile Include="SerialComm.cpp" />
     <ClCompile Include="SerialPort.cpp" />
     <ClCompile Include="SerialUSB.cpp" />
