@@ -13,7 +13,7 @@ int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인
 const int gOslioCount = 100;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
-int gRunMode = MODE_IMPACT;
+int gRunMode = MODE_OSILLO;
 
 void setup() 
 {
