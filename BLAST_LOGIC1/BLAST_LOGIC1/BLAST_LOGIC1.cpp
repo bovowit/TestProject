@@ -28,7 +28,8 @@ int main()
 	//oTE.SetImpact(4, 5000, 2000, 1000, 0);
 	//oTE.SetImpact(5, 5000, 2000, 1000, 400 / 6);
 
-	oTE.SetImpact("0:40:60:");
+	//oTE.SetImpact("24:125:140:");
+	oTE.SetImpact("200:200:100:");
 
 	//string sSensorData = "0,5000,2000,1000,125:1,6000,3000,3000,89:2,5000,2000,1000,90";
 

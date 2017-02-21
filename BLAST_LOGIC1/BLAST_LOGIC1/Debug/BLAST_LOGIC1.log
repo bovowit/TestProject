@@ -1,17 +1,2 @@
-﻿Build started 2017-02-12 오전 8:26:35.
-     1>Project "D:\BLAST\TestProject\BLAST_LOGIC1\BLAST_LOGIC1\BLAST_LOGIC1.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         D:\VS2015\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\BLAST_LOGIC1.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt BLAST_LOGIC1.cpp
-         BLAST_LOGIC1.cpp
-     1>d:\blast\testproject\blast_logic1\blast_logic1\tdeye.h(25): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-     1>d:\blast\testproject\blast_logic1\blast_logic1\tdeye.h(69): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-       Link:
-         D:\VS2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\BLAST\TestProject\BLAST_LOGIC1\Debug\BLAST_LOGIC1.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\BLAST\TestProject\BLAST_LOGIC1\Debug\BLAST_LOGIC1.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\BLAST\TestProject\BLAST_LOGIC1\Debug\BLAST_LOGIC1.lib" /MACHINE:X86 Debug\BLAST_LOGIC1.obj
-         Debug\stdafx.obj
-         Debug\TdEye.obj
-         BLAST_LOGIC1.vcxproj -> D:\BLAST\TestProject\BLAST_LOGIC1\Debug\BLAST_LOGIC1.exe
-     1>Done Building Project "D:\BLAST\TestProject\BLAST_LOGIC1\BLAST_LOGIC1\BLAST_LOGIC1.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:00.89
+﻿  stdafx.cpp
+c:\nova\testproject\blast_logic1\blast_logic1\stdafx.cpp : fatal error C1041: 프로그램 데이터베이스 'C:\Nova\TestProject\BLAST_LOGIC1\BLAST_LOGIC1\Debug\vc140.idb'을(를) 열 수 없습니다. 여러 CL.EXE에서 동일한 .PDB 파일에 쓰는 경우 /FS를 사용하십시오.
