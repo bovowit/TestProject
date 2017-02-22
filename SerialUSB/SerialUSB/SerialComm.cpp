@@ -165,6 +165,9 @@ void CSerialComm::SerialCommRun()
 		bRet = oTE.HitPoint(hPoint);
 
 		cout << "Hit Point : " << hPoint.x << ", " << hPoint.y << endl;
+
+		oTE.ClearImpact();
+
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 
 		//else

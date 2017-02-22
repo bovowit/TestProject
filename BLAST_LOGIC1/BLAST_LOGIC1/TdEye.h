@@ -53,7 +53,7 @@ public:
 	//svCP 6개 : 센터를 중심으로 각 사분면의 좌표 4개와 중심좌료 2개.
 	vector<CPoint> vBasePos;
 
-	Config() { speed = 3000; width = 400; height = 400; cycle_time = 10000; impact_limit = 1000; _init(); }
+	Config() { speed = 2500; width = 400; height = 400; cycle_time = 10000; impact_limit = 1000; _init(); }
 	// Config() { speed = 5710(종파), 3430(횡파); width = 1439.0; width = 809.4; }	// 강화유리, 65인치 TV크기
 
 	void _init()

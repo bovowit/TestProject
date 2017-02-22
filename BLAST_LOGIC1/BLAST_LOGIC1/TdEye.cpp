@@ -48,6 +48,7 @@ bool TdEye::SetImpact(int iIndex, int iX, int iY, int iZ, int iDeltaTime)
 void TdEye::ClearImpact()
 {
 	m_vImpact.clear();
+	m_vLines.clear();
 }
 
 // 두 원의 교점 찾기 기본 알고리즘

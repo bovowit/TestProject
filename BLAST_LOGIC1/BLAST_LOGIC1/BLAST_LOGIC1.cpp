@@ -28,35 +28,42 @@ int main()
 	//oTE.SetImpact(4, 5000, 2000, 1000, 0);
 	//oTE.SetImpact(5, 5000, 2000, 1000, 400 / 6);
 
-
-	oTE.SetImpact("152:124:24:");
-	//oTE.SetImpact("120:32:112:");
-	//oTE.SetImpact("376:356:24:");
-
-
-	//string sSensorData = "0,5000,2000,1000,125:1,6000,3000,3000,89:2,5000,2000,1000,90";
-
-	//SelectSensorPair();	// 나중에 구현.
-	//  두개의 센서로부터 원의 교점을 잇는 직선을 구해서 저장
-	oTE.CalCrossCircleFix(0, 1);	
-	oTE.CalCrossCircleFix(0, 2);
-	oTE.CalCrossCircleFix(1, 2);
-
-	// 세개의 선으로부터 각 선의 교점 3개를 구해서 저장
-	bool bRet = oTE.CheckCross();
-	if (bRet == false)
+	vector<string> str = { "32:124:192:", "156:24:120:", };
+	for (auto itr : str)
 	{
-		cout << "not enough impact point..";
-		std::this_thread::sleep_for(std::chrono::seconds(10000));
-		return 0;
+		oTE.SetImpact(itr);
+		//oTE.SetImpact("120:32:112:");
+		//oTE.SetImpact("376:356:24:");
+
+
+		//string sSensorData = "0,5000,2000,1000,125:1,6000,3000,3000,89:2,5000,2000,1000,90";
+
+		//SelectSensorPair();	// 나중에 구현.
+		//  두개의 센서로부터 원의 교점을 잇는 직선을 구해서 저장
+		oTE.CalCrossCircleFix(0, 1);
+		oTE.CalCrossCircleFix(0, 2);
+		oTE.CalCrossCircleFix(1, 2);
+
+		// 세개의 선으로부터 각 선의 교점 3개를 구해서 저장
+		bool bRet = oTE.CheckCross();
+		if (bRet == false)
+		{
+			cout << "not enough impact point..";
+			std::this_thread::sleep_for(std::chrono::seconds(10000));
+			return 0;
+		}
+
+		CPoint hPoint;
+		// 저장된 세개의 교점의 무게중심 (타격 지점)을 구함.
+		bRet = oTE.HitPoint(hPoint);
+
+		cout << "Hit Point : " << hPoint.x << ", " << hPoint.y << endl;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		
+		oTE.ClearImpact();
 	}
-
-	CPoint hPoint;
-	// 저장된 세개의 교점의 무게중심 (타격 지점)을 구함.
-	bRet = oTE.HitPoint(hPoint);
-
-	cout << "Hit Point : " << hPoint.x << ", " << hPoint.y << endl;
 	std::this_thread::sleep_for(std::chrono::seconds(10000));
+
     return 0;
 }
 
