@@ -102,7 +102,7 @@ bool TdEye::CalCrossCircleFix(int sensor_index1, int sensor_index2)
 {
 	CPoint IP1, IP2;
 	int i = 0;
-	int iExpDist = m_Config.half_distance;
+	int iExpDist = m_Config.half_distance + 50;
 	if (_CalCrossCircle(sensor_index1, sensor_index2, iExpDist, IP1, IP2))
 	{
 		// IP1, IP2간 거리가 너무 짧은 경우 .. 한번더 확장해서 계산 

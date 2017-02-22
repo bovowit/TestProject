@@ -1,5 +1,5 @@
 const int gSensorCount = 3;
-const int gImpactGap = 200;		        // 충격판단값 - 기준값에서 +- 변화폭
+const int gImpactGap = 100;		        // 충격판단값 - 기준값에서 +- 변화폭
 const int gInvalidSensingValue = 50;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 //const int gImpactGap = 30;           // 자이로센서의 경우 적용
 //const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
@@ -210,47 +210,49 @@ bool CalculateFirstPickTime()
 	int iPickCount = 0;
 	for (int idx = 0; idx < gSensorCount; idx++)
 	{
-		int iFirstMinVal = gBaseValue[idx];
-		int iFirstMaxVal = gBaseValue[idx];
+		int iFirstMinVal = gBaseValue[idx] - 50;
+		int iFirstMaxVal = gBaseValue[idx] + 80;
 		int iLowCount = 0;
 		int iHighCount = 0;
 		for (int retry = 0; retry < gOslioCount; retry++)
 		{
+      /*// 압전센서는 하강이 없음. (zero base)
 			if (iFirstMinVal > gSensorValue[idx][retry])	// 하강
 			{
 				iFirstMinVal = gSensorValue[idx][retry];
-				iLowCount = 0;
+				iHighCount = 0;
 			}
-			else		
+			else if(iFirstMinVal + 100 > gSensorValue[idx][retry])
 			{
-				iLowCount++;
-				if (iLowCount > 10)	// 하강중에 상승이 연속해서 10회 이상 나타날때.. 피크로 인식
+				iHighCount++;
+				if (iHighCount > 5)	// 하강중에 상승이 연속해서 10회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
 					iPickCount++;
 					break;
 				}
 			}
-			
+			*/
 			
 			if (iFirstMaxVal < gSensorValue[idx][retry])	// 상승
 			{
 				iFirstMaxVal = gSensorValue[idx][retry];
-				iHighCount = 0;
+				iLowCount = 1;
 			}
-			else
+			else if(iLowCount > 0)
 			{
-				if (iHighCount > 10) // 상승중에 하강이 연속해서 10회 이상 나타날때.. 피크로 인식
+        iLowCount++;
+				if (iLowCount > 3) // 상승중에 하강이 연속해서 10회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
-					iPickCount++;
+					iPickCount++;    
 					break;
 				}
 			}
 		}
 	}
 
-	if (iPickCount < gSensorCount)
+	if (iPickCount < gSensorCount)    // 발견된 pick의 수.
 		return false;
 
 	return true;
@@ -267,8 +269,8 @@ void loop()
 			if (gImpactStartTime == 0)
 				return;
 
-			if (CalculateMaxSensingTime() == false)
-			//if(CalculateFirstPickTime() == false)
+			//if(CalculateMaxSensingTime() == false)
+			if(CalculateFirstPickTime() == false)
 			{
 				//Serial.println("=== failed impact sensing ======");
 				clear();
