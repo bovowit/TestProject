@@ -1,6 +1,6 @@
 const int gSensorCount = 3;
-const int gImpactGap = 100;		        // 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 50;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gImpactGap = 80;		        // 충격판단값 - 기준값에서 +- 변화폭
+const int gInvalidSensingValue = 10;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 //const int gImpactGap = 30;           // 자이로센서의 경우 적용
 //const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
 
@@ -10,10 +10,10 @@ unsigned long gImpactStartTime = 0;
 int gAverageSensingTime = 0;	// 센서값을 읽는데 소요된 시간, 소요시간/센싱횟수 ===================> 오차 줄이기위한 부동소숫점 연산 체크
 int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인덱스 (시간 = index * gAverageSensingTime)
 
-const int gOslioCount = 100;
+const int gOslioCount = 200;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
-int gRunMode = MODE_IMPACT;
+int gRunMode = MODE_OSILLO;
 
 void setup() 
 {
