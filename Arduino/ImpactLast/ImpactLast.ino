@@ -1,6 +1,6 @@
 const int gSensorCount = 3;
 const int gImpactGap = 80;		        // 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 10;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gInvalidSensingValue = 30;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 //const int gImpactGap = 30;           // 자이로센서의 경우 적용
 //const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
 
@@ -237,12 +237,16 @@ bool CalculateFirstPickTime()
 			if (iFirstMaxVal < gSensorValue[idx][retry])	// 상승
 			{
 				iFirstMaxVal = gSensorValue[idx][retry];
-				iLowCount = 1;
+				iLowCount = 1;								// 최대값이 갱신되면 리셋
+				continue;
 			}
-			else if(iLowCount > 0)
+			
+			if(iLowCount > 0)
 			{
-        iLowCount++;
-				if (iLowCount > 3) // 상승중에 하강이 연속해서 10회 이상 나타날때.. 피크로 인식
+				if (iFirstMaxVal - gSensorValue[idx][retry] < gInvalidSensingValue)		// 노이즈 제거
+					continue;
+				iLowCount++;
+				if (iLowCount > 5) // 상승중에 하강이 연속해서 5회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
 					iPickCount++;    
@@ -276,11 +280,11 @@ void loop()
 				clear();
 				return;
 			}
-      char buff[30] = {0, };
-      sprintf(buff, "%3d:%3d:%3d:", gArrImpactSensingIndex[0]*4, gArrImpactSensingIndex[1]*4, gArrImpactSensingIndex[2]*4);
-      Serial.write(buff, 12);
-      //Serial.println(buff);
-      delay(100);
+		  char buff[30] = {0, };
+		  sprintf(buff, "%3d:%3d:%3d:", gArrImpactSensingIndex[0]*4, gArrImpactSensingIndex[1]*4, gArrImpactSensingIndex[2]*4);
+		  Serial.write(buff, 12);
+		  //Serial.println(buff);
+		  delay(100);
 			/*_rcnt++;
 			Serial.print(_rcnt);
 			Serial.print(" : ");
