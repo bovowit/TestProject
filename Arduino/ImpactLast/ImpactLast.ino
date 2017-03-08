@@ -1,6 +1,6 @@
 const int gSensorCount = 3;
 const int gImpactGap = 80;		        // 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 30;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gInvalidSensingValue = 10;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 //const int gImpactGap = 30;           // 자이로센서의 경우 적용
 //const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
 
@@ -20,7 +20,7 @@ void setup()
 	Serial.begin(115200);
 	//Serial.begin(250000);
 	//calibration();      
-  empty();            // 잔류 전류 제거 목적
+	empty();            // 잔류 전류 제거 목적
 	calibration();      // 실제 평균값 측정
   
 }
@@ -40,18 +40,18 @@ void clear()
 }
 void empty()
 {
-      int idx = 0;
-  for (int retry = 0; retry < 100; retry++)
-  {
-    for (idx = 0; idx < gSensorCount-1; idx++)
-    {
-      gBaseValue[idx] = analogRead(idx);
-      Serial.print(gBaseValue[idx]);
-      Serial.print(" ");
-    }
-      gBaseValue[idx] = analogRead(idx);
-    Serial.println(gBaseValue[idx]);
-  }
+	int idx = 0;
+	for (int retry = 0; retry < 100; retry++)
+	{
+		for (idx = 0; idx < gSensorCount-1; idx++)
+		{
+		  gBaseValue[idx] = analogRead(idx);
+		  Serial.print(gBaseValue[idx]);
+		  Serial.print(" ");
+		}
+		gBaseValue[idx] = analogRead(idx);
+		Serial.println(gBaseValue[idx]);
+	}
 }
 
 void calibration()
@@ -65,7 +65,7 @@ void calibration()
 			//delay(1);
 		}
 		gBaseValue[idx] = int(_totalvalue / 100);
-    //gBaseValue[idx] = 80;
+		//gBaseValue[idx] = 80;
     
 		if (gRunMode == MODE_IMPACT)
 		{
@@ -210,8 +210,10 @@ bool CalculateFirstPickTime()
 	int iPickCount = 0;
 	for (int idx = 0; idx < gSensorCount; idx++)
 	{
-		int iFirstMinVal = gBaseValue[idx] - 50;
-		int iFirstMaxVal = gBaseValue[idx] + 80;
+		//int iFirstMinVal = 0;
+		//if(gBaseValue[idx] - 50 > 0)
+		//	iFirstMinVal = gBaseValue[idx] - 50;
+		int iFirstMaxVal = gBaseValue[idx];// +80;
 		int iLowCount = 0;
 		int iHighCount = 0;
 		for (int retry = 0; retry < gOslioCount; retry++)
@@ -246,7 +248,7 @@ bool CalculateFirstPickTime()
 				if (iFirstMaxVal - gSensorValue[idx][retry] < gInvalidSensingValue)		// 노이즈 제거
 					continue;
 				iLowCount++;
-				if (iLowCount > 5) // 상승중에 하강이 연속해서 5회 이상 나타날때.. 피크로 인식
+				if (iLowCount > 3) // 상승중에 하강이 연속해서 3회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
 					iPickCount++;    
