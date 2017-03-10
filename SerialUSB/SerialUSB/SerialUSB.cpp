@@ -12,11 +12,11 @@
 boost::mutex io_mutex; // The iostreams are not guaranteed to be thread-safe!
 using namespace std;
 
-void func_serialthread(int a, boost::shared_ptr<CSerialComm> pSerialComm)
+void func_serialthread(int iPort, boost::shared_ptr<CSerialComm> pSerialComm)
 {
 	//boost::unique_lock<boost::mutex> scoped_lock(io_mutex);
-	std::cout << "count == " << a << std::endl;
-	pSerialComm->SerialCommRun();
+	std::cout << "Port == " << iPort << std::endl;
+	pSerialComm->SerialCommRun(iPort);
 }
 
 void second_thread()
@@ -35,8 +35,8 @@ int main()
 	char buffer;
 	CSerialComm serialComm; //SerialComm °´Ã¼ »ý¼º
 
-	int icnt = 8;
-	boost::shared_ptr<CSerialComm> pCount(new CSerialComm);
+	int iPort = 8;
+	boost::shared_ptr<CSerialComm> pSComm(new CSerialComm);
 
 	//boost::thread_group threads;
 	////for (int i = 0; i < 1; ++i)
@@ -45,7 +45,7 @@ int main()
 	////thrds.interrupt_all();
 	//threads.join_all();
 
-	boost::thread thread1(boost::bind(func_serialthread, boost::cref(icnt), boost::cref(pCount)));
+	boost::thread thread1(boost::bind(func_serialthread, boost::cref(iPort), boost::cref(pSComm)));
 	boost::thread thread2(second_thread);
 	thread1.join();
 	thread2.join();

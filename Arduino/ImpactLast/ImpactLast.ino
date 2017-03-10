@@ -1,6 +1,6 @@
 const int gSensorCount = 3;
 const int gImpactGap = 80;		        // 충격판단값 - 기준값에서 +- 변화폭
-const int gInvalidSensingValue = 30;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
+const int gInvalidSensingValue = 15;	// 센서의 평균값으로부터 차이가 너무 작을 경우, 센싱 실패한 것으로 처리.
 //const int gImpactGap = 30;           // 자이로센서의 경우 적용
 //const int gInvalidSensingValue = 20;  // 자이로센서의 경우 적용
 
@@ -13,7 +13,7 @@ int gArrImpactSensingIndex[gSensorCount] = { 0, }; // 최대값을 기록한 인
 const int gOslioCount = 200;
 int gSensorValue[gSensorCount][gOslioCount]; // 센서에서 측정한값. => 실제 모드에서는 필요하지 않음. 최대값만 필요.
 enum { MODE_IMPACT, MODE_OSILLO, MODE_STREAM};// 0 : first impact, 1 : osillo, 2 : stream
-int gRunMode = MODE_OSILLO;
+int gRunMode = MODE_IMPACT;
 
 void setup() 
 {
@@ -210,7 +210,7 @@ bool CalculateFirstPickTime()
 	int iPickCount = 0;
 	for (int idx = 0; idx < gSensorCount; idx++)
 	{
-		int iFirstMinVal = gBaseValue[idx] - 50;
+		//int iFirstMinVal = gBaseValue[idx] - 50;
 		int iFirstMaxVal = gBaseValue[idx] + 80;
 		int iLowCount = 0;
 		int iHighCount = 0;
@@ -246,7 +246,7 @@ bool CalculateFirstPickTime()
 				if (iFirstMaxVal - gSensorValue[idx][retry] < gInvalidSensingValue)		// 노이즈 제거
 					continue;
 				iLowCount++;
-				if (iLowCount > 5) // 상승중에 하강이 연속해서 5회 이상 나타날때.. 피크로 인식
+				if (iLowCount > 3) // 상승중에 하강이 연속해서 5회 이상 나타날때.. 피크로 인식
 				{
 					gArrImpactSensingIndex[idx] = retry;
 					iPickCount++;    

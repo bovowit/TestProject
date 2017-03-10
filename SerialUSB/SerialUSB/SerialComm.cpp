@@ -115,14 +115,14 @@ bool CSerialComm::readCommand(char * pBuff, UINT length)
 }
 
 static TdEye oTE;
-void CSerialComm::SerialCommRun()
+void CSerialComm::SerialCommRun(int iPortNo)
 {
 	string sComPort = "";
 	//for (int i = 2; i < 10; i++)	 //COM1~COM9 번의 포트를 오픈한다. 10초 동안 반복 -> 무한 반복?????
 	for (int i = 0; i < 10; i++)
 	{
-		cout << "COM" << 8 << "  : try connection" << endl;
-		sComPort = "COM" + to_string(8);
+		cout << "COM" << iPortNo << "  : try connection" << endl;
+		sComPort = "COM" + to_string(iPortNo);
 		//if (TryConnect(sComPort))
 		if(TryConnectSimple(sComPort))
 		{

@@ -26,5 +26,5 @@ public:
 	void	disconnect();
 	bool	readCommand(char * pBuff, UINT length);
 
-	void SerialCommRun();
+	void SerialCommRun(int iPortNo);
 };
