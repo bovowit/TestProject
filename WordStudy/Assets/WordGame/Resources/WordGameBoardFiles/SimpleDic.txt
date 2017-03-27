@@ -1,6 +1,80 @@
-﻿cat;고양이;
-dog;강아지;
-pig;돼지;
-arm;팔, 무기;
-swan;백조;
-rat;쥐 (생쥐(mouse)보다 큰)
+PIG;돼지;
+DOG;개;
+RAT;쥐, 큰쥐;
+COW;젖소, 암소;
+CAT;고양이;
+APE;유인원, 흉내내다;
+HORSE;말;
+DUCK;오리;
+SNAKE;뱀;
+SWAN;백조;
+ELK;엘크, 큰사슴;
+FOX;여우;
+EMU;에뮤(호주,날지못하는 새);
+FERRET;흰담비, 뒤지다;
+BAT;방망이, 박쥐;
+GUINEAPIG;기니피그;
+GOOSE;거위;
+HAWK;매;
+RABBIT;토끼;
+YAK;야크;
+CHIHUAHUA;치와와;
+
+DRAW;그리다, 무승부;
+CRAYON;크레용;
+MUSEUM;박물관;
+SCULPTOR;조각가;
+CHARCOAL;숯, 목탄;
+INK;잉크;
+PASTEL;파스텔;
+STENCIL;스텐실;
+FILM;필름;
+MODEL;모델;
+PALETTE;팔레트;
+CANVAS;캔버스;
+PAINT;페인트;
+ERASE;지우다;
+MASTERPIECE;명작, 걸작;
+COLOR;색깔;
+BRUSH;붓, 붓질;
+CHALK;분필;
+ARTIST;화가, 예술가;
+PHOTO;사진;
+CRAFT;공예;
+PENCIL;연필;
+WATERCOLOR;수채화;
+MARKER;표시;
+CREATIVITY;창조성;
+MARBLE;대리석;
+
+SAND;모래;
+KAYAK;카약;
+HAT;모자;
+BIKINI;비키니;
+SEA;바다;
+FAMILY;가족;
+WAVES;파도;
+BOAT;보트;
+SCUBA;스쿠버;
+SHIP;배;
+TAN;햇볕에 태우다;
+ISLAND;섬;
+TOWEL;수건;
+SWIM;수영;
+BEACH;해변;
+SURF;파도, 파도타기;
+SURFBOARD;서핑보드;
+SUNSCREEN;자외선차단제;
+
+
+
+
+
+
+
+
+
+
+
+
+

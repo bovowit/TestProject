@@ -41,8 +41,11 @@ public class SimpleDic : ScriptableObject
 
     public string GetWordKor(string sKey)
     {
-        string rValue = gSimpleDic[sKey];
-        return rValue;
+        string rValue = "";
+        if (gSimpleDic.TryGetValue(sKey, out rValue))
+            return rValue;
+        else
+           return rValue;
     }
 
     public bool LoadSimpleDicJson()

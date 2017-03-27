@@ -281,15 +281,10 @@ public class GameManager : SingletonComponent<GameManager>
     {
         if (ActiveBoardState != null && CurrentHints > 0)
         {
-            // Call DisplayNextHint in wordGrid, giving it the last hint index that was displayed. DisplayNextHint will return the word and letter that was displayed
-            // Check if a hint was actually displayed
-            // Decrement the amount of hints
-            CurrentHints--;
-
-            //string korText = wordGrid.CheckDisplayKorHint(ref ActiveBoardState.nextHintIndex);
+            //CurrentHints--;
 
             List<string> vecHintWord = new List<string>();
-            for (int i = 0; i < ActiveBoardState.wordBoardSize; i++)
+            for (int i = 0; i < ActiveBoardState.words.Length; i++)
             {
                 string _temp = ActiveBoardState.words[i];
                 string _korword = gSimpleDic.GetWordKor(_temp);
@@ -298,19 +293,31 @@ public class GameManager : SingletonComponent<GameManager>
 
             StartCoroutine(WaitThenHintScreen());
 
-            Save();
+            //Save();
         }
     }
 
     private IEnumerator WaitThenHintScreen()
     {
         string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
-        bool awardHint = true;
 
-        UIScreenController.Instance.Show(UIScreenController.MainScreenId, true, false);
-        //UIScreenController.Instance.Show(UIScreenController.CompleteScreenId, false, true, true, Tween.TweenStyle.EaseOut, null/*OnCompleteScreenShown*/, awardHint);
+        // 힌트 텍스트 변경.
+        string hintWords = "";
+        for (int i = 0; i < ActiveBoardState.words.Length; i++)
+        {
+            string _temp = gSimpleDic.GetWordKor(ActiveBoardState.words[i]);
+            if (_temp == null)
+                _temp = "? ? ?";
 
-        yield return new WaitForSeconds(2f);
+            hintWords += _temp;
+            hintWords += "\r\n";
+        }
+
+        UIScreenController.Instance.Show(UIScreenController.HintScreenId, true, true, true, Tween.TweenStyle.EaseIn, null/*OnCompleteScreenShown*/, hintWords);
+
+        yield return new WaitForSeconds(3f);
+
+       UIScreenController.Instance.HideOverlay(UIScreenController.HintScreenId, true, Tween.TweenStyle.EaseIn);
     }
 
     /// <summary>

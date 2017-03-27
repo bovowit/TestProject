@@ -19,6 +19,7 @@ public class UIScreenController : SingletonComponent<UIScreenController>
 	public const string CategoryLevelsScreenId	= "category_levels";
 	public const string GameScreenId			= "game";
 	public const string CompleteScreenId		= "complete";
+    public const string HintScreenId        = "hint";
 
 	// The screen that is currently being shown
 	private UIScreen	currentUIScreen;
@@ -77,6 +78,13 @@ public class UIScreenController : SingletonComponent<UIScreenController>
 			}
 		}
 	}
+
+
+    //public void ShowHint()
+    //{
+
+    //}
+
 
 	/// <summary>
 	/// Hides the UI screen that was shown as an overlay
