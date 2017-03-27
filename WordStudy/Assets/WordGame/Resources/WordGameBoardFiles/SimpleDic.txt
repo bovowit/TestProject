@@ -1,0 +1,6 @@
+﻿cat;고양이;
+dog;강아지;
+pig;돼지;
+arm;팔, 무기;
+swan;백조;
+rat;쥐 (생쥐(mouse)보다 큰)
