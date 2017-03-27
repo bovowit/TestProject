@@ -61,6 +61,15 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Advertisements">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -82,6 +91,7 @@
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenCompleteOverlay.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenController.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenGame.cs" />
+    <Compile Include="Assets\WordGame\Scripts\UI\UIScreenHintOverlay.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenMain.cs" />
     <Compile Include="Assets\WordGame\Scripts\Utilities\ObjectPool.cs" />
     <Compile Include="Assets\WordGame\Scripts\Utilities\SimpleDic.cs" />
