@@ -32,15 +32,8 @@ public class UIScreenHintOverlay : UIScreen
 		categoryIconImage.sprite	= categoryInfo.icon;
 		categoryNameText.text		= GameManager.Instance.ActiveCategory;
 
-		if (GameManager.Instance.ActiveCategory == GameManager.dailyPuzzleId)
-		{
-			categoryLevelText.gameObject.SetActive(false);
-		}
-		else
-		{
-			categoryLevelText.gameObject.SetActive(true);
-			categoryLevelText.text = "Level " + (GameManager.Instance.ActiveLevelIndex + 1).ToString();
-		}
+		categoryLevelText.gameObject.SetActive(true);
+		categoryLevelText.text = "Level " + (GameManager.Instance.ActiveLevelIndex + 1).ToString();
 
         hintText.gameObject.SetActive(true);
         hintText.text = (string)data;

@@ -171,7 +171,9 @@ public class GameManager : SingletonComponent<GameManager>
 			CurrentHints				= startingHints;
 			LevelsToCompleteBeforeAd	= adLevelCompleteAmount;
 			ActiveDailyPuzzleIndex		= -1;
-		}
+            NextDailyPuzzleAt = new System.DateTime(System.DateTime.Now.Year, System.DateTime.Now.Month, System.DateTime.Now.Day);
+
+        }
 
 		// Initialize all our important things
 		letterBoard.Initialize();
@@ -551,7 +553,7 @@ public class GameManager : SingletonComponent<GameManager>
         else
         {
             // Set the next daily puzzle to start at the start of the next day
-            NextDailyPuzzleAt = new System.DateTime(System.DateTime.Now.Year, System.DateTime.Now.Month, System.DateTime.Now.Day).AddDays(1);
+            NextDailyPuzzleAt = new System.DateTime(System.DateTime.Now.Year, System.DateTime.Now.Month, System.DateTime.Now.Day, System.DateTime.Now.Hour, System.DateTime.Now.Minute, System.DateTime.Now.Second).AddHours(1);//.AddDays(1);
         }
 
         // Award a hint for completing the category or daily puzzle

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,9 +20,11 @@ public class SimpleDic : ScriptableObject
 
     public bool LoadSimpleDic()
     {
-        string path = Application.dataPath + "/WordGame" + "/Resources/" + Utilities.BoardFilesDirectory + "/" + "SimpleDic.txt";
-        StreamReader r = new StreamReader(path);
-        string rData = r.ReadToEnd();
+        //string path = Application.dataPath + /*"/WordGame" + */"/Resources/" + Utilities.BoardFilesDirectory + "/" + "SimpleDic.txt";
+        TextAsset path = Resources.Load<TextAsset>(Utilities.BoardFilesDirectory + "/" + "SimpleDic");
+        //StreamReader r = new StreamReader(path.text);
+        //string rData = r.ReadToEnd();
+        string rData = path.text;
         rData = rData.Replace("\r\n", "");
         rData = rData.ToUpper();
 
