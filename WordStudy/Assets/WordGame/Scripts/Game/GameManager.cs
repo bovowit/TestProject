@@ -301,18 +301,31 @@ public class GameManager : SingletonComponent<GameManager>
 
     private IEnumerator WaitThenHintScreen()
     {
-        string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
-
-        // 힌트 텍스트 변경.
         string hintWords = "";
-        for (int i = 0; i < ActiveBoardState.words.Length; i++)
-        {
-            string _temp = gSimpleDic.GetWordKor(ActiveBoardState.words[i]);
-            if (_temp == null)
-                _temp = "? ? ?";
 
-            hintWords += _temp;
-            hintWords += "\r\n";
+        if (ActiveCategory == dailyPuzzleId)
+        {
+            string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
+            WordBoard wordBoard = Utilities.LoadWordBoard(boardId);
+            hintWords = gSimpleDic.GetWordKor(wordBoard.words[0]);
+            if (hintWords == null)
+                hintWords = "? ? ?";
+        }
+        else
+        {
+            string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
+
+            // 힌트 텍스트 변경.
+
+            for (int i = 0; i < ActiveBoardState.words.Length; i++)
+            {
+                string _temp = gSimpleDic.GetWordKor(ActiveBoardState.words[i]);
+                if (_temp == null)
+                    _temp = "? ? ?";
+
+                hintWords += _temp;
+                hintWords += "\r\n";
+            }
         }
 
         UIScreenController.Instance.Show(UIScreenController.HintScreenId, true, true, true, Tween.TweenStyle.EaseIn, null/*OnCompleteScreenShown*/, hintWords);
