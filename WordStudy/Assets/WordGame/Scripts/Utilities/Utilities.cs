@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public static class Utilities
 {
-    public static WordBoard[] gWordBoard = new WordBoard[100];
+    public static List<WordBoard> gWordBoard = new List<WordBoard>();
 
     #region Member Variables
 
@@ -82,13 +83,18 @@ public static class Utilities
 	}
     public static bool LoadWordBoardEx(string category)
     {
-        if (gWordBoard.Length > 0 && category == gWordBoard[0].category)
-            return true;
+        if (gWordBoard.Count > 0)
+        {
+            if (category == gWordBoard[0].category)
+                return true;
+            else
+                gWordBoard.Clear();
+        }
 
         TextAsset gCategoryText = Resources.Load<TextAsset>(Utilities.BoardFilesDirectory + "/" + category);
 
-        gCategoryText.text.Replace("/r/n", "|");
-        string[] textAsset = gCategoryText.text.Split('|');
+        string _text = gCategoryText.text.Replace("\r\n", "|");
+        string[] textAsset = _text.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
         if (textAsset.Length == 0)
             return false;
 
@@ -98,7 +104,7 @@ public static class Utilities
             {
                 string[] text = textAsset[idx].Split(',');
 
-                WordBoard wordBoard = gWordBoard[idx];
+                WordBoard wordBoard = new WordBoard();
                 wordBoard.category = category;
                 wordBoard.id = text[0];
                 wordBoard.size = System.Convert.ToInt32(text[1]);
@@ -119,7 +125,7 @@ public static class Utilities
                     // Remove the first 3 characters of text[3]
                     text[3] = text[3].Substring(3, text[3].Length - 3);
                 }
-
+                gWordBoard.Add(wordBoard);
             }
         }
         return true;
