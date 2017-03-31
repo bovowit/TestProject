@@ -4,9 +4,11 @@ using System.Collections.Generic;
 
 public static class Utilities
 {
-	#region Member Variables
+    public static WordBoard[] gWordBoard = new WordBoard[100];
 
-	public const string BoardFilesDirectory = "WordGameBoardFiles"; // This should be a non-empty string with no leading or trailing slashes (ie. /)
+    #region Member Variables
+
+    public const string BoardFilesDirectory = "WordGameBoardFiles"; // This should be a non-empty string with no leading or trailing slashes (ie. /)
 
 	#endregion
 
@@ -78,8 +80,57 @@ public static class Utilities
 		stream.Close();
 		#endif
 	}
+    public static bool LoadWordBoardEx(string category)
+    {
+        if (gWordBoard.Length > 0 && category == gWordBoard[0].category)
+            return true;
 
-	public static WordBoard LoadWordBoard(string boardId)
+        TextAsset gCategoryText = Resources.Load<TextAsset>(Utilities.BoardFilesDirectory + "/" + category);
+
+        gCategoryText.text.Replace("/r/n", "|");
+        string[] textAsset = gCategoryText.text.Split('|');
+        if (textAsset.Length == 0)
+            return false;
+
+        for(int idx = 0; idx < textAsset.Length; idx++)
+        {
+            if (textAsset[idx] != null)
+            {
+                string[] text = textAsset[idx].Split(',');
+
+                WordBoard wordBoard = gWordBoard[idx];
+                wordBoard.category = category;
+                wordBoard.id = text[0];
+                wordBoard.size = System.Convert.ToInt32(text[1]);
+                wordBoard.words = text[2].Split('_');
+
+                wordBoard.wordTiles = new WordBoard.WordTile[text[3].Length / 3];
+
+                for (int i = 0; i < wordBoard.wordTiles.Length; i++)
+                {
+                    WordBoard.WordTile wordTile = new WordBoard.WordTile();
+
+                    wordTile.used = text[3][0] == '1';
+                    wordTile.hasLetter = text[3][1] == '1';
+                    wordTile.letter = text[3][2];
+
+                    wordBoard.wordTiles[i] = wordTile;
+
+                    // Remove the first 3 characters of text[3]
+                    text[3] = text[3].Substring(3, text[3].Length - 3);
+                }
+
+            }
+        }
+        return true;
+    }
+
+    public static WordBoard GetCurrentWordBoard(int index)
+    {
+        return gWordBoard[index];
+    }
+
+    public static WordBoard LoadWordBoard(string boardId)
 	{
 		TextAsset textAsset = Resources.Load<TextAsset>(Utilities.BoardFilesDirectory + "/" + boardId);
 
