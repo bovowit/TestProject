@@ -29,10 +29,10 @@ public class WordBoard
 		Restart
 	}
 
-	#endregion
+    #endregion
 
-	#region Member Variables
-
+    #region Member Variables
+    public string category;
 	public string			id;
 	public int				size;		// The length of one side of a board (eg. a 7x7 board, the size would be 7)
 	public string[]			words;		// The array of string words that are on this board

@@ -193,14 +193,15 @@ public class GameManager : SingletonComponent<GameManager>
 
     public void StartLevel(string category, int levelIndex)
 	{
-		ActiveCategory		= category;
-		ActiveLevelIndex	= levelIndex;
+        ActiveCategory = category;
+        Utilities.LoadWordBoardEx(category);
+  		ActiveLevelIndex	= levelIndex;
+       
+        string		boardId		= Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
+        WordBoard wordBoard = Utilities.GetCurrentWordBoard(levelIndex);
+ 
 
-		// Get the board id for the level and load the WordBoard from Resources
-		string		boardId		= Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
-		WordBoard	wordBoard	= Utilities.LoadWordBoard(boardId);
-		
-		if (wordBoard == null)
+        if (wordBoard == null)
 		{
 			Debug.LogError("Could not load WordBoard with the boardId: " + boardId);
 			return;
