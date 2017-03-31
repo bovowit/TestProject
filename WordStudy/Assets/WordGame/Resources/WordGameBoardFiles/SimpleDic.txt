@@ -1,4 +1,4 @@
-PIG;돼지;
+﻿PIG;돼지;
 DOG;개;
 RAT;쥐, 큰쥐;
 COW;젖소, 암소;
@@ -19,7 +19,6 @@ HAWK;매;
 RABBIT;토끼;
 YAK;야크;
 CHIHUAHUA;치와와;
-
 DRAW;그리다, 무승부;
 CRAYON;크레용;
 MUSEUM;박물관;
@@ -36,7 +35,6 @@ PAINT;페인트;
 ERASE;지우다;
 MASTERPIECE;명작, 걸작;
 COLOR;색깔;
-BRUSH;붓, 붓질;
 CHALK;분필;
 ARTIST;화가, 예술가;
 PHOTO;사진;
@@ -46,7 +44,6 @@ WATERCOLOR;수채화;
 MARKER;표시;
 CREATIVITY;창조성;
 MARBLE;대리석;
-
 SAND;모래;
 KAYAK;카약;
 HAT;모자;
@@ -61,12 +58,9 @@ TAN;햇볕에 태우다;
 ISLAND;섬;
 TOWEL;수건;
 SWIM;수영;
-BEACH;해변;
 SURF;파도, 파도타기;
 SURFBOARD;서핑보드;
 SUNSCREEN;자외선차단제;
-
-
 a. an;하나의;
 about;~에관하여;
 across;~을 가로질러;
@@ -151,7 +145,7 @@ bright;밝은;
 bring;가져오다;
 brother;형제;
 brown;갈색;
-brush;솔;
+brush;붓,솔;
 build;건설하다;
 burn;불타다;
 bus;버스;
@@ -401,7 +395,7 @@ hotel;호텔;
 hour;시간;
 house;집;
 how;어떻게;
-hundred;백;100;
+hundred;백,100;
 hungry;배고픈;
 hurry;서두르다;
 hurt;다치게하다;
@@ -776,7 +770,7 @@ thing;사물;
 think;생각하다;
 thirsty;목마른/갈망;
 this;이것;
-thousand;천;1000;
+thousand;천, 1000;
 through;통해서;
 throw;던지다;
 ticket;표;
@@ -802,7 +796,7 @@ travel;여행하다;
 tree;나무;
 trip;여행;
 truck;화물차;
-;참된/진짜의;
+true;참된/진짜의;
 try;노력/시도하다;
 tulip;튤립;
 turn;돌다;
@@ -843,13 +837,13 @@ welcome;환영하다;
 well;상당히;
 west;서쪽;
 wet;젖은;
-what;무엇;의문사;
+what;무엇, 의문사;
 when;언제;
-where;어디;의문사;
-which;어느쪽;의문사;
+where;어디, 의문사;
+which;어느쪽, 의문사;
 white;백색;
-who;누구;의문사;
-why;왜;의문사;
+who;누구, 의문사;
+why;왜,의문사;
 wide;넓은;
 will;~할것이다;
 win;이기다;
@@ -869,28 +863,10 @@ wrong;나쁜;
 yeah;예;찬성/긍정;
 year;해/1년;
 yellow;노랑색;
-yes;네;대답;
+yes;네, 대답;
 yesterday;어제;
 yet;아직;
 you;당신;
 young;젊은;
-zero;영;0;
+zero;영, 0;
 zoo;동물원;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

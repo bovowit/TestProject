@@ -34,7 +34,14 @@ public class SimpleDic : ScriptableObject
             --iWordCount;
         for (int i = 0; i < iWordCount; i++)
         {
-            gSimpleDic.Add(result[i], result[++i]);
+            try
+            {
+                gSimpleDic.Add(result[i], result[++i]);
+            }
+            catch(ArgumentException)
+            {
+                Console.WriteLine("An element with Key = \"txt\" already exists.");
+            }
         }
 
         return true;
