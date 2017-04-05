@@ -96,7 +96,13 @@ public class UIScreenMain : UIScreen
 		}
 	}
 
-	public void OnCategoryButtonClicked()
+    public void OnExamButtonClicked()
+    {
+        // Show the main screen
+        UIScreenController.Instance.Show(UIScreenController.CategoriesScreenId);
+    }
+
+    public void OnCategoryButtonClicked()
 	{
 		// Show the main screen
 		UIScreenController.Instance.Show(UIScreenController.CategoriesScreenId);
