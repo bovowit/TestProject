@@ -18,7 +18,8 @@ public class UIScreenController : SingletonComponent<UIScreenController>
 	public const string CategoriesScreenId		= "categories";
 	public const string CategoryLevelsScreenId	= "category_levels";
 	public const string GameScreenId			= "game";
-	public const string CompleteScreenId		= "complete";
+    public const string ExamScreenId            = "exam";
+    public const string CompleteScreenId		= "complete";
     public const string HintScreenId        = "hint";
 
 	// The screen that is currently being shown

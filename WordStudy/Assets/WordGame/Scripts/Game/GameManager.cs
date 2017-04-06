@@ -97,6 +97,7 @@ public class GameManager : SingletonComponent<GameManager>
     public static string dailyPuzzleId = "Daily Puzzle";
 
 	private CategoryInfo dailyPuzzleInfo;
+    private int[][] arrExamScore;
 
 	#endregion
 
@@ -114,7 +115,6 @@ public class GameManager : SingletonComponent<GameManager>
 	public bool								AnimatingWord				{ get; private set; }
 	public System.DateTime					NextDailyPuzzleAt			{ get; private set; }
 	public int								LevelsToCompleteBeforeAd	{ get; private set; }
-
 
 	public List<CategoryInfo> CategoryInfos
 	{
@@ -223,10 +223,40 @@ public class GameManager : SingletonComponent<GameManager>
 		SetupActiveBoard();
 	}
 
-	/// <summary>
-	/// Starts the daily puzzle.
-	/// </summary>
-	public void StartDailyPuzzle()
+    public void RunExam()
+    {
+        while (true)
+        {
+            int max_complete_category = GameManager.Instance.GetMaxCategory();
+            int categoryindex = Random.Range(0, max_complete_category);// GameManager.Instance.CategoryInfos.Count);
+            string categoryName = GameManager.Instance.CategoryInfos[categoryindex].name;
+            int levelIndex = Random.Range(0, Utilities.gWordBoard.Count);
+            if (categoryName != "" && levelIndex >= 0 && levelIndex < 1000)
+            {
+                if (arrExamScore[categoryindex][levelIndex] < 10)
+                    StartLevel(categoryName, levelIndex);
+                else
+                    continue;
+            }
+        }
+    }
+
+    public int GetMaxCategory() // 최대 달성 레벨의 카테고리 인덱스 리턴.
+    {
+        int index = 0;
+        for(index = 0; index < CompletedLevels.Count; index++)
+        {
+            if (CompletedLevels[CategoryInfos[index].name] == false)
+                break;
+        }
+
+        return index;
+    }
+
+    /// <summary>
+    /// Starts the daily puzzle.
+    /// </summary>
+    public void StartDailyPuzzle()
 	{
 		if (dailyPuzzles.Count == 0)
 		{

@@ -18,11 +18,13 @@ public class UIScreenMain : UIScreen
 	private string	continueBtnCategory;
 	private int		continueBtnLevelIndex;
 
-	#endregion
+    #endregion
 
-	#region Public Methods
+    #region Public Methods
 
-	public override void OnShowing(object data)
+    Random rand = new Random();
+
+    public override void OnShowing(object data)
 	{
 		// Set the progress rings percentage to the number of completed levels from all categories
 		int totalNumberOfLevels				= 0;
@@ -98,8 +100,20 @@ public class UIScreenMain : UIScreen
 
     public void OnExamButtonClicked()
     {
-        // Show the main screen
-        UIScreenController.Instance.Show(UIScreenController.CategoriesScreenId);
+        GameManager.Instance.RunExam();
+
+        //int max_complete_category = GameManager.Instance.GetMaxCategory();
+        //int categoryindex = Random.Range(0, max_complete_category);// GameManager.Instance.CategoryInfos.Count);
+        //string categoryName = GameManager.Instance.CategoryInfos[categoryindex].name;
+        //int levelIndex = Random.Range(0, Utilities.gWordBoard.Count);
+        //// 랜덤 출제
+        //if(categoryName != "" && levelIndex >= 0 && levelIndex < 1000)
+        ////if (type != Type.Locked)
+        {
+            //GameManager.Instance.StartLevel(categoryName, levelIndex);
+            //UIScreenController.Instance.Show(UIScreenController.GameScreenId);
+            UIScreenController.Instance.Show(UIScreenController.ExamScreenId);
+        }
     }
 
     public void OnCategoryButtonClicked()
