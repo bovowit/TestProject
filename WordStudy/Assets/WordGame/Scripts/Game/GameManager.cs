@@ -97,7 +97,7 @@ public class GameManager : SingletonComponent<GameManager>
     public static string dailyPuzzleId = "Daily Puzzle";
 
 	private CategoryInfo dailyPuzzleInfo;
-    private int[][] arrExamScore;
+    private int[,] arrExamScore;
 
 	#endregion
 
@@ -164,6 +164,8 @@ public class GameManager : SingletonComponent<GameManager>
 		SavedBoardStates	= new Dictionary<string, BoardState>();
 		CompletedLevels		= new Dictionary<string, bool>();
 
+        arrExamScore = new int[20, 100];
+
 		// Load any save data
 		if (!LoadSave())
 		{
@@ -223,18 +225,25 @@ public class GameManager : SingletonComponent<GameManager>
 		SetupActiveBoard();
 	}
 
-    public void RunExam()
+    public void RunExam()               // 
     {
-        while (true)
+        bool bExamed = false;
+        int iRetry = 0;
+        while (!bExamed && iRetry < 100)            
         {
+            iRetry++;
             int max_complete_category = GameManager.Instance.GetMaxCategory();
             int categoryindex = Random.Range(0, max_complete_category);// GameManager.Instance.CategoryInfos.Count);
             string categoryName = GameManager.Instance.CategoryInfos[categoryindex].name;
             int levelIndex = Random.Range(0, Utilities.gWordBoard.Count);
             if (categoryName != "" && levelIndex >= 0 && levelIndex < 1000)
             {
-                if (arrExamScore[categoryindex][levelIndex] < 10)
+                if (arrExamScore[categoryindex, levelIndex] < 10)
+                {
+                    arrExamScore[categoryindex, levelIndex]++;          // 플레이하면 1점 추가
                     StartLevel(categoryName, levelIndex);
+                    bExamed = true;
+                }
                 else
                     continue;
             }
