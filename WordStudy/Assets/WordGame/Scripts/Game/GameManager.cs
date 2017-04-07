@@ -107,6 +107,7 @@ public class GameManager : SingletonComponent<GameManager>
 	public ObjectPool						LetterTilePool				{ get; private set; }
 	public int								CurrentHints				{ get; private set; }
 	public string							ActiveCategory				{ get; private set; }
+    public bool     g_bExam;// { get; private set; }
 	public int								ActiveLevelIndex			{ get; private set; }
 	public int								ActiveDailyPuzzleIndex		{ get; private set; }
 	public BoardState						ActiveBoardState			{ get; private set; }
@@ -227,6 +228,8 @@ public class GameManager : SingletonComponent<GameManager>
 
     public void RunExam()               // 
     {
+        g_bExam = true;
+
         bool bExamed = false;
         int iRetry = 0;
         while (!bExamed && iRetry < 100)            
@@ -255,7 +258,8 @@ public class GameManager : SingletonComponent<GameManager>
         int index = 0;
         for(index = 0; index < CompletedLevels.Count; index++)
         {
-            if (CompletedLevels[CategoryInfos[index].name] == false)
+            string _indexstring = CategoryInfos[index].name + "_" + index.ToString();
+            if (CompletedLevels[_indexstring] == false)
                 break;
         }
 

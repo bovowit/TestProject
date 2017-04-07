@@ -59,7 +59,12 @@ public class UIScreenGame : UIScreen
 	{
 		if (!GameManager.Instance.AnimatingWord)
 		{
-			if (GameManager.Instance.ActiveCategory == GameManager.dailyPuzzleId)
+            if(GameManager.Instance.g_bExam == true)
+            {
+                UIScreenController.Instance.Show(UIScreenController.MainScreenId, true);
+                GameManager.Instance.g_bExam = false;
+            }
+			else if (GameManager.Instance.ActiveCategory == GameManager.dailyPuzzleId)
 			{
 				UIScreenController.Instance.Show(UIScreenController.MainScreenId, true);
 			}
