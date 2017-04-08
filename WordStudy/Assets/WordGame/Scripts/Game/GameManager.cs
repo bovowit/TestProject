@@ -97,13 +97,14 @@ public class GameManager : SingletonComponent<GameManager>
     public static string dailyPuzzleId = "Daily Puzzle";
 
 	private CategoryInfo dailyPuzzleInfo;
-    private int[,] arrExamScore;
+    public int[,] arrExamScore;
+    public int g_iExamCount = 0;
 
-	#endregion
+    #endregion
 
-	#region Properties
+    #region Properties
 
-	public static string					SaveDataPath				{ get { return Application.persistentDataPath + "/save.dat"; } }
+    public static string					SaveDataPath				{ get { return Application.persistentDataPath + "/save.dat"; } }
 	public ObjectPool						LetterTilePool				{ get; private set; }
 	public int								CurrentHints				{ get; private set; }
 	public string							ActiveCategory				{ get; private set; }
@@ -164,8 +165,6 @@ public class GameManager : SingletonComponent<GameManager>
 		LetterTilePool		= new ObjectPool(letterTilePrefab.gameObject, 16, transform);
 		SavedBoardStates	= new Dictionary<string, BoardState>();
 		CompletedLevels		= new Dictionary<string, bool>();
-
-        arrExamScore = new int[20, 100];
 
 		// Load any save data
 		if (!LoadSave())
@@ -228,8 +227,6 @@ public class GameManager : SingletonComponent<GameManager>
 
     public void RunExam()               // 
     {
-        g_bExam = true;
-
         bool bExamed = false;
         int iRetry = 0;
         while (!bExamed && iRetry < 100)            
@@ -255,15 +252,24 @@ public class GameManager : SingletonComponent<GameManager>
 
     public int GetMaxCategory() // 최대 달성 레벨의 카테고리 인덱스 리턴.
     {
-        int index = 0;
-        for(index = 0; index < CompletedLevels.Count; index++)
+        int category_index = 0;
+        for(category_index = 0; category_index < CompletedLevels.Count; category_index++)
         {
-            string _indexstring = CategoryInfos[index].name + "_" + index.ToString();
-            if (CompletedLevels[_indexstring] == false)
+            string _categorystring = CategoryInfos[category_index].name;
+            int level_index = 0;
+            for (level_index = 0; level_index < GameManager.Instance.CategoryInfos[category_index].levelInfos.Count; level_index++)
+            {
+                string _indexstring = _categorystring  + "_" + level_index.ToString();
+                if (CompletedLevels.ContainsKey(_indexstring))
+                    continue;
+                else
+                    break;
+            }
+            if (level_index < /*GameManager.Instance.CategoryInfos[category_index].levelInfos.Count / */2)    //특정 카테고리의 레벨이 해당 수준을 해결하면 시험으로 출제..
                 break;
         }
 
-        return index;
+        return category_index;
     }
 
     /// <summary>
@@ -561,31 +567,47 @@ public class GameManager : SingletonComponent<GameManager>
 
 	private void OnCompleteScreenShown()
 	{
-		CategoryInfo	categoryInfo	= GetCategoryInfo(ActiveCategory);
-		int				nextLevelIndex	= ActiveLevelIndex + 1;
+        if (g_bExam)    // for exam
+        {
+            RunExam();
+            if (g_iExamCount >= 10)
+            {
 
-		// Check if the category has been completed or it was the daily puzzle
-		if (ActiveCategory == dailyPuzzleId || nextLevelIndex >= categoryInfo.levelInfos.Count)
-		{
-			
-			// If we completed the daily puzzle then move back to the main screen else move to the categories screen
-			string screenToShow = (ActiveCategory == dailyPuzzleId) ? UIScreenController.MainScreenId : UIScreenController.CategoriesScreenId;
+                g_bExam = false;
 
-			// Set the active category to nothing
-			ActiveCategory		= "";
-			ActiveLevelIndex	= -1;
+            }
+            else
+            {
+                g_iExamCount++;
+             }
+        }
+        else            // for normal mode
+        {
+            CategoryInfo categoryInfo = GetCategoryInfo(ActiveCategory);
+            int nextLevelIndex = ActiveLevelIndex + 1;
 
-			Save();
+            // Check if the category has been completed or it was the daily puzzle
+            if (ActiveCategory == dailyPuzzleId || nextLevelIndex >= categoryInfo.levelInfos.Count)
+            {
 
-            // Force the category screen to show right away (behind the now showing overlay)
-            UIScreenController.Instance.Show(screenToShow, true, false);
-		}
-		else
-		{
-			// Start the next level
-			StartLevel(ActiveCategory, nextLevelIndex);
-		}
+                // If we completed the daily puzzle then move back to the main screen else move to the categories screen
+                string screenToShow = (ActiveCategory == dailyPuzzleId) ? UIScreenController.MainScreenId : UIScreenController.CategoriesScreenId;
 
+                // Set the active category to nothing
+                ActiveCategory = "";
+                ActiveLevelIndex = -1;
+
+                Save();
+
+                // Force the category screen to show right away (behind the now showing overlay)
+                UIScreenController.Instance.Show(screenToShow, true, false);
+            }
+            else
+            {
+                // Start the next level
+                StartLevel(ActiveCategory, nextLevelIndex);
+            }
+        }
 		StartCoroutine(WaitThenHideCompleteScreen());
 	}
 

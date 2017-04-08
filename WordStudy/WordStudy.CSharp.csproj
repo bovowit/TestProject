@@ -90,6 +90,7 @@
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenCategoryLevels.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenCompleteOverlay.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenController.cs" />
+    <Compile Include="Assets\WordGame\Scripts\UI\UIScreenExam.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenGame.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenHintOverlay.cs" />
     <Compile Include="Assets\WordGame\Scripts\UI\UIScreenMain.cs" />

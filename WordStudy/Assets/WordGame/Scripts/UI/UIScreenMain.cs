@@ -100,6 +100,11 @@ public class UIScreenMain : UIScreen
 
     public void OnExamButtonClicked()
     {
+        GameManager.Instance.g_bExam = true;
+        GameManager.Instance.g_iExamCount = 0;
+        GameManager.Instance.arrExamScore = null;
+        GameManager.Instance.arrExamScore = new int[20, 100];
+
         GameManager.Instance.RunExam();
 
         //GameManager.Instance.StartLevel("Animals", 0);// categoryName, levelIndex);
