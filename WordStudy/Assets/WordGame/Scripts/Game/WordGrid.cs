@@ -259,14 +259,7 @@ public class WordGrid : MonoBehaviour
 		return false;
 	}
 
-    public string CheckDisplayKorHint(ref int nextHintIndex)
-    {
-        int a = nextHintIndex;
-        string korText = "한글의미";
-        return korText;
-    }
-
-    /// <summary>
+     /// <summary>
     /// Reset the board by removing all the GridTiles
     /// </summary>
     public void Reset()

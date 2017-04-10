@@ -97,7 +97,7 @@ public class GameManager : SingletonComponent<GameManager>
     public static string dailyPuzzleId = "Daily Puzzle";
 
 	private CategoryInfo dailyPuzzleInfo;
-    public int[,] arrExamScore;
+    public int[,] arrExamScore;             // 시험에 출제된 문제 체크
     public int g_iExamCount = 0;
 
     #endregion
@@ -108,7 +108,6 @@ public class GameManager : SingletonComponent<GameManager>
 	public ObjectPool						LetterTilePool				{ get; private set; }
 	public int								CurrentHints				{ get; private set; }
 	public string							ActiveCategory				{ get; private set; }
-    public bool     g_bExam;// { get; private set; }
 	public int								ActiveLevelIndex			{ get; private set; }
 	public int								ActiveDailyPuzzleIndex		{ get; private set; }
 	public BoardState						ActiveBoardState			{ get; private set; }
@@ -117,8 +116,19 @@ public class GameManager : SingletonComponent<GameManager>
 	public bool								AnimatingWord				{ get; private set; }
 	public System.DateTime					NextDailyPuzzleAt			{ get; private set; }
 	public int								LevelsToCompleteBeforeAd	{ get; private set; }
+    public bool g_bExam { get; set; }
 
-	public List<CategoryInfo> CategoryInfos
+    public int g_iTotalScore { get; set; }          // 획득한 모든 점수의 합
+    public int g_iPlayedCount { get; set; }         // 일반 플레이 반복 횟수
+    public int g_iGainScore { get; set; }           // 임시 획득 점수, 시험 포함 모든 플레이
+    public int g_iExamScroeHighest { get; set; }    // 시험에서 얻은 최고 점수
+    public int g_iExamScroe { get; set; }           // 현재 시험 진행중에 얻은 점수
+
+    public int iDragedCount { get; set; }           // 긋기 시도 횟수
+    public int iHintUsedCount { get; set; }         // 힌트 사용횟수
+    public int bKrHintUsed { get; set; }      // 번역 힌트 사용 여부
+
+    public List<CategoryInfo> CategoryInfos
 	{
 		get
 		{
@@ -195,6 +205,9 @@ public class GameManager : SingletonComponent<GameManager>
 
     public void StartLevel(string category, int levelIndex)
 	{
+        bKrHintUsed = 0;
+        iHintUsedCount = 0;
+
         ActiveCategory = category;
         Utilities.LoadWordBoardEx(category);
   		ActiveLevelIndex	= levelIndex;
@@ -325,6 +338,8 @@ public class GameManager : SingletonComponent<GameManager>
 
 				// Save the game
 				Save();
+
+                iHintUsedCount++;
 			}
 		}
 	}
@@ -345,6 +360,7 @@ public class GameManager : SingletonComponent<GameManager>
 
             StartCoroutine(WaitThenHintScreen());
 
+            bKrHintUsed = 1;                    // 사용 여부만 체크.
             //Save();
         }
     }
@@ -510,7 +526,10 @@ public class GameManager : SingletonComponent<GameManager>
 			wordGrid.FoundWord(word, letterTile, (GameObject obj, object[] objs) => {
 				AnimatingWord = false;
 			});
-		}
+
+            iDragedCount++;
+
+        }
 	}
 
 	/// <summary>
@@ -569,17 +588,31 @@ public class GameManager : SingletonComponent<GameManager>
 	{
         if (g_bExam)    // for exam
         {
+            // 점수 계산
+            int _dragSubtract = (iDragedCount - ActiveBoardState.wordBoardSize) * 10;
+            int _hintSubtract = iHintUsedCount * 5;
+            int _krhintSubtract = bKrHintUsed * 15;
+
+            g_iGainScore = 100 - (_dragSubtract + _hintSubtract + _krhintSubtract);
+            if (g_iGainScore < 0)
+                g_iGainScore = 0;
+
+            g_iExamScroe += g_iGainScore;       // 해당 시험에서 획득한 점수.. 시험이 끝나면 리셋.
+
             RunExam();
-            if (g_iExamCount >= 10)
+
+            if (g_iExamCount >= 10)             // 시험 시작하면 .. 10개의 문제 출제.
             {
-
                 g_bExam = false;
-
+                if (g_iExamScroe > g_iExamScroeHighest)
+                    g_iExamScroeHighest = g_iExamScroe;     // 최고 점수 갱신, save에서 저장할것.
             }
             else
             {
                 g_iExamCount++;
-             }
+            }
+
+            iDragedCount = 0;
         }
         else            // for normal mode
         {

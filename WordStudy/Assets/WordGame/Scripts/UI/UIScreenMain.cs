@@ -105,7 +105,9 @@ public class UIScreenMain : UIScreen
         GameManager.Instance.arrExamScore = null;
         GameManager.Instance.arrExamScore = new int[20, 100];
 
-        GameManager.Instance.RunExam();
+        GameManager.Instance.g_iExamScroe = 0;      
+
+        GameManager.Instance.RunExam();     // 시험 시작
 
         //GameManager.Instance.StartLevel("Animals", 0);// categoryName, levelIndex);
         UIScreenController.Instance.Show(UIScreenController.GameScreenId);
