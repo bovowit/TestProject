@@ -134,6 +134,8 @@
     <Compile Include="Assets\WordGame\Editor\GroupWords.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\WordGameBoardFiles\Daily_Puzzle.txt" />
+    <None Include="Assets\Resources\WordGameBoardFiles\SimpleDic.txt" />
     <None Include="Assets\WordGame\AssetFiles\Sprites\CategoryIcons\_attributions.txt" />
     <None Include="Assets\WordGame\Resources\WordGameBoardFiles\Daily_Puzzle.txt" />
     <None Include="Assets\WordGame\Resources\WordGameBoardFiles\SimpleDic.txt" />

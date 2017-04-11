@@ -588,7 +588,9 @@ public class GameManager : SingletonComponent<GameManager>
         if (g_bExam)    // for exam
         {
             // 점수 계산
-            int _dragSubtract = (iDragedCount - ActiveBoardState.wordBoardSize) * 10;
+            if(iDragedCount < 3)
+                    iDragedCount = 3;
+            int _dragSubtract = iDragedCount - 3 * 10;
             int _hintSubtract = iHintUsedCount * 5;
             int _krhintSubtract = bKrHintUsed * 15;
 
@@ -644,14 +646,14 @@ public class GameManager : SingletonComponent<GameManager>
         }
 
 
-        string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
-        // Set the completed flag on the level
-        CompletedLevels[boardId] = true;
-        // The board has been completed, we no longer need to save it
-        ActiveBoardState = null;
-        // Remove the BoardState from the list of saved BoardStates
-        SavedBoardStates.Remove(boardId);
-        Save();
+        //string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
+        //// Set the completed flag on the level
+        //CompletedLevels[boardId] = true;
+        //// The board has been completed, we no longer need to save it
+        //ActiveBoardState = null;
+        //// Remove the BoardState from the list of saved BoardStates
+        //SavedBoardStates.Remove(boardId);
+        //Save();
 
 
         StartCoroutine(WaitThenHideCompleteScreen());
@@ -687,13 +689,13 @@ public class GameManager : SingletonComponent<GameManager>
             AddHint();
         }
 
-        //// Set the completed flag on the level
-        //CompletedLevels[boardId] = true;
-        //// The board has been completed, we no longer need to save it
-        //ActiveBoardState = null;
-        //// Remove the BoardState from the list of saved BoardStates
-        //SavedBoardStates.Remove(boardId);
-        //Save();
+        // Set the completed flag on the level
+        CompletedLevels[boardId] = true;
+        // The board has been completed, we no longer need to save it
+        ActiveBoardState = null;
+        // Remove the BoardState from the list of saved BoardStates
+        SavedBoardStates.Remove(boardId);
+        Save();
         //LevelsToCompleteBeforeAd -= 1;
 
         UIScreenController.Instance.Show(UIScreenController.CompleteScreenId, false, true, true, Tween.TweenStyle.EaseOut, OnCompleteScreenShown, awardHint);
