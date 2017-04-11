@@ -512,8 +512,10 @@ public class GameManager : SingletonComponent<GameManager>
 		// Cannot transition screens while a word is animating or bad things happen
 		AnimatingWord = true;
 
-		// Trasition the LetterTiles from the board to the word grid
-		if (foundAllWords)
+        iDragedCount++;
+
+        // Trasition the LetterTiles from the board to the word grid
+        if (foundAllWords)
 		{
 			// If we found all the words then when the tile animation is finished call BoardComplete
 			wordGrid.FoundWord(word, letterTile, (GameObject obj, object[] objs) => {
@@ -526,9 +528,6 @@ public class GameManager : SingletonComponent<GameManager>
 			wordGrid.FoundWord(word, letterTile, (GameObject obj, object[] objs) => {
 				AnimatingWord = false;
 			});
-
-            iDragedCount++;
-
         }
 	}
 
@@ -616,6 +615,8 @@ public class GameManager : SingletonComponent<GameManager>
         }
         else            // for normal mode
         {
+            LevelsToCompleteBeforeAd -= 1;
+
             CategoryInfo categoryInfo = GetCategoryInfo(ActiveCategory);
             int nextLevelIndex = ActiveLevelIndex + 1;
 
@@ -630,7 +631,7 @@ public class GameManager : SingletonComponent<GameManager>
                 ActiveCategory = "";
                 ActiveLevelIndex = -1;
 
-                Save();
+                //Save();
 
                 // Force the category screen to show right away (behind the now showing overlay)
                 UIScreenController.Instance.Show(screenToShow, true, false);
@@ -641,7 +642,19 @@ public class GameManager : SingletonComponent<GameManager>
                 StartLevel(ActiveCategory, nextLevelIndex);
             }
         }
-		StartCoroutine(WaitThenHideCompleteScreen());
+
+
+        string boardId = Utilities.FormatBoardId(ActiveCategory, ActiveLevelIndex);
+        // Set the completed flag on the level
+        CompletedLevels[boardId] = true;
+        // The board has been completed, we no longer need to save it
+        ActiveBoardState = null;
+        // Remove the BoardState from the list of saved BoardStates
+        SavedBoardStates.Remove(boardId);
+        Save();
+
+
+        StartCoroutine(WaitThenHideCompleteScreen());
 	}
 
     private IEnumerator WaitThenCompleteScreen()
@@ -674,18 +687,14 @@ public class GameManager : SingletonComponent<GameManager>
             AddHint();
         }
 
-        // Set the completed flag on the level
-        CompletedLevels[boardId] = true;
-
-        // The board has been completed, we no longer need to save it
-        ActiveBoardState = null;
-
-        // Remove the BoardState from the list of saved BoardStates
-        SavedBoardStates.Remove(boardId);
-
-        Save();
-
-        LevelsToCompleteBeforeAd -= 1;
+        //// Set the completed flag on the level
+        //CompletedLevels[boardId] = true;
+        //// The board has been completed, we no longer need to save it
+        //ActiveBoardState = null;
+        //// Remove the BoardState from the list of saved BoardStates
+        //SavedBoardStates.Remove(boardId);
+        //Save();
+        //LevelsToCompleteBeforeAd -= 1;
 
         UIScreenController.Instance.Show(UIScreenController.CompleteScreenId, false, true, true, Tween.TweenStyle.EaseOut, OnCompleteScreenShown, awardHint);
 
@@ -935,6 +944,11 @@ public class GameManager : SingletonComponent<GameManager>
 
 		return boardState;
 	}
+
+    public void ResetGame()
+    {
+        System.IO.File.Delete(GameManager.SaveDataPath);
+    }
 
 	#endregion
 }
