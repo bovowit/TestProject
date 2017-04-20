@@ -263,7 +263,7 @@ public class WordBoardCreator : MonoBehaviour
 		{
 			for (int j = 0; j < coreBoardSize; j++)
 			{
-				board.wordTiles[i * boardSize + j].used = true;
+                board.wordTiles[i * boardSize + j].iUseCount++;// = true;
 			}
 		}
 
@@ -313,12 +313,12 @@ public class WordBoardCreator : MonoBehaviour
 			int bottomIndex	= board.size * (board.size - 1) + i;
 			int rightIndex	= i * board.size + board.size - 1;
 
-			if (!board.wordTiles[bottomIndex].used)
+			if (!(board.wordTiles[bottomIndex].iUseCount > 0))
 			{
 				unusedBottomIndexes.Add(bottomIndex);
 			}
 
-			if (!board.wordTiles[rightIndex].used)
+			if (!(board.wordTiles[rightIndex].iUseCount > 0))
 			{
 				unusedRightIndexes.Add(rightIndex);
 			}
@@ -347,8 +347,8 @@ public class WordBoardCreator : MonoBehaviour
 				unusedRightIndexes.RemoveAt(randIndex);
 			}
 
-			// Set the bool on the board to say we are going to use this tile
-			board.wordTiles[indexToTry].used = true;
+            // Set the bool on the board to say we are going to use this tile
+            board.wordTiles[indexToTry].iUseCount++;// = true;
 
 			// If CompleteBoard returns true then we found a completed board
 			if (CompleteBoard(board, extraTilesToPick - 1, words))
@@ -356,8 +356,8 @@ public class WordBoardCreator : MonoBehaviour
 				return true;
 			}
 
-			// We did not find a completed board with this board piece so set it back to false so we can pick another one
-			board.wordTiles[indexToTry].used = false;
+            // We did not find a completed board with this board piece so set it back to false so we can pick another one
+            board.wordTiles[indexToTry].iUseCount--;// false;
 		}
 
 		// Non of the pissible indexes lead to a completed board
@@ -441,7 +441,8 @@ public class WordBoardCreator : MonoBehaviour
 		{
 			for (int i = 0; i < validIndexes.Count; i++)
 			{
-				if (board.wordTiles[validIndexes[i]].used && !board.wordTiles[validIndexes[i]].hasLetter)
+				//if (board.wordTiles[validIndexes[i]].iUseCount && !board.wordTiles[validIndexes[i]].hasLetter)
+				if ((board.wordTiles[validIndexes[i]].iUseCount > 0) && !board.wordTiles[validIndexes[i]].hasLetter)
 				{
 					possibleIndexes.Add(validIndexes[i]);
 				}
@@ -474,8 +475,9 @@ public class WordBoardCreator : MonoBehaviour
 					int tileIndex = i * board.size + j;
 
 					if (tileIndex != fromTile && 					// Don't want to return the fromTile index
-						board.wordTiles[tileIndex].used && 			// The tile needs to be used
-						!board.wordTiles[tileIndex].hasLetter && 	// The tile cannot have a letter already on it
+						//board.wordTiles[tileIndex].iUseCount &&           // The tile needs to be used
+                        (board.wordTiles[tileIndex].iUseCount > 0) &&           // The tile needs to be used
+                        !board.wordTiles[tileIndex].hasLetter && 	// The tile cannot have a letter already on it
 						validIndexes.Contains(tileIndex))			// The index must exist in validIndexes
 					{
 						possibleIndexes.Add(tileIndex);
@@ -655,8 +657,9 @@ public class WordBoardCreator : MonoBehaviour
 	/// </summary>
 	private bool IsUnassignedRegion(WordBoard board, int i)
 	{
-		return board.wordTiles[i].used && !board.wordTiles[i].hasLetter && board.wordTiles[i].region == 0;
-	}
+        //return board.wordTiles[i].iUseCount && !board.wordTiles[i].hasLetter && board.wordTiles[i].region == 0;
+        return (board.wordTiles[i].iUseCount > 0) && !board.wordTiles[i].hasLetter && board.wordTiles[i].region == 0;
+    }
 
 	/// <summary>
 	/// Takes a single Board that has a number of regions defined in the wordTiles then returns a List of Boards whose

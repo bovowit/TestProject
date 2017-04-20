@@ -47,7 +47,8 @@ public static class Utilities
 		string wordTilesStr = "";
 		for (int i = 0; i < wordBoard.wordTiles.Length; i++)
 		{
-			string usedStr		= wordBoard.wordTiles[i].used ? "1" : "0";
+            //string usedStr		= wordBoard.wordTiles[i].iUseCount ? "1" : "0";
+            string usedStr = wordBoard.wordTiles[i].iUseCount.ToString();
 			string hasLetterStr	= wordBoard.wordTiles[i].hasLetter ? "1" : "0";
 
 			wordTilesStr += string.Format("{0}{1}{2}", usedStr, hasLetterStr, (hasLetterStr == "1") ? wordBoard.wordTiles[i].letter : '-');
@@ -116,7 +117,8 @@ public static class Utilities
                 {
                     WordBoard.WordTile wordTile = new WordBoard.WordTile();
 
-                    wordTile.used = text[3][0] == '1';
+                    //wordTile.iUseCount = text[3][0] == '1';
+                    wordTile.iUseCount = Int32.Parse(text[3][0].ToString());
                     wordTile.hasLetter = text[3][1] == '1';
                     wordTile.letter = text[3][2];
 
@@ -155,7 +157,8 @@ public static class Utilities
 			{
 				WordBoard.WordTile wordTile = new WordBoard.WordTile();
 
-				wordTile.used		= text[3][0] == '1';
+                //wordTile.iUseCount = text[3][0] == '1';
+                wordTile.iUseCount = Int32.Parse(text[3][0].ToString());
 				wordTile.hasLetter	= text[3][1] == '1';
 				wordTile.letter		= text[3][2];
 

@@ -8,8 +8,9 @@ public class WordBoard
 
 	public class WordTile
 	{
-		public bool used;			// Is this WordTile being used on the Board (ie. can a letter go here)
-		public bool hasLetter;		// Is there a letter assigned to this WordTile
+		//public bool iUseCount;      // Is this WordTile being used on the Board (ie. can a letter go here) : 이미 사용한거 .. 2중 표기위해 bool -> int 로 변경.
+        public int iUseCount;      // Is this WordTile being used on the Board (ie. can a letter go here) : 이미 사용한거 .. 2중 표기위해 bool -> int 로 변경.
+        public bool hasLetter;		// Is there a letter assigned to this WordTile  : 긋기에 사용된 것인지..
 		public char letter;			// The letter that is assigned to this WordTile if hasLetter is true
 
 		// The two variables below are only used by WordBoardCreator when generating the board.
@@ -69,7 +70,7 @@ public class WordBoard
 			newWordTile.letter			= wordTile.letter;
 			newWordTile.region			= wordTile.region;
 			newWordTile.regionLocked	= wordTile.regionLocked;
-			newWordTile.used			= wordTile.used;
+			newWordTile.iUseCount = wordTile.iUseCount;
 
 			newBoard.wordTiles[i] = newWordTile;
 		}
