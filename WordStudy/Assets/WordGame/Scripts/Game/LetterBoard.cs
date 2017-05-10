@@ -335,7 +335,7 @@ public class LetterBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	{
 		for (int i = 0; i < letterTiles.Count; i++)
 		{
-			if (letterTiles[i] != null && !letterTiles[i].Found && !(letterTiles[i].Letter == '?'))
+			if (letterTiles[i] != null && !letterTiles[i].Found && !(letterTiles[i].Letter == ' '))
 			{
 				return false;
 			}
