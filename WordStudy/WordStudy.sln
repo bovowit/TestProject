@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordStudy", "WordStudy.csproj", "{6F6F4FA6-F619-3822-C658-2A9BF38C5B2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordStudy.Editor", "WordStudy.Editor.csproj", "{FA8998C8-4B4A-2291-2C98-B440E8E8720F}"
