@@ -1,3 +1,8 @@
+// BlueTooth 연결, 통신모듈연결후 시리얼 입력 & 응답확인
+// AT -> Ok
+// AT+NAMENOVAARDU01 -> OKsetName
+// AT+PIN3333 -> OKsetPin
+
 #include <SoftwareSerial.h> //시리얼 통신 라이브러리 호출
  
 int blueTx=2;   //Tx (보내는핀 설정)
