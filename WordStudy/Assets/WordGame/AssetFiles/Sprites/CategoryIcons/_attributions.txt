@@ -1,0 +1,86 @@
+Attributions
+===============
+
+This file contains attributions for the images used in Word Game Template.
+It contains the links to the images used, the author that created the image, and the license.
+
+
+animals_icon.png
+------------------
+"White cat icon" by Lorc is licensed under CC BY 3.0
+
+image:		http://game-icons.net/lorc/originals/white-cat.html
+author:		http://lorcblog.blogspot.ca/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+art_icon.png
+------------------
+"Palette icon" by Delapouite is licensed under CC BY 3.0
+
+image:		http://game-icons.net/delapouite/originals/palette.html
+author:		http://delapouite.com/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+beach_icon.png
+------------------
+"Island icon" by Delapouite is licensed under CC BY 3.0
+
+image:		http://game-icons.net/delapouite/originals/island.html
+author:		http://delapouite.com/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+camping_icon.png
+------------------
+"Pine tree icon" by Lorc is licensed under CC BY 3.0
+
+image:		http://game-icons.net/lorc/originals/pine-tree.html
+author:		http://lorcblog.blogspot.ca/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+computers_icon.png
+------------------
+"Mouse icon" by Delapouite is licensed under CC BY 3.0
+
+image:		http://game-icons.net/delapouite/originals/mouse.html
+author:		http://delapouite.com/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+family_icon.png
+------------------
+"House icon" by Delapouite is licensed under CC BY 3.0
+
+image:		http://game-icons.net/delapouite/originals/house.html
+author:		http://delapouite.com/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+food_icon.png
+------------------
+"Chicken leg icon" by Lorc is licensed under CC BY 3.0
+
+image:		http://game-icons.net/lorc/originals/chicken-leg.html
+author:		http://lorcblog.blogspot.ca/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+monsters_icon.png
+------------------
+"Dinosaur Rex icon" by Lorc is licensed under CC BY 3.0
+
+image:		http://game-icons.net/lorc/originals/dinosaur-rex.html
+author:		http://lorcblog.blogspot.ca/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+science_icon.png
+------------------
+"Dripping tube icon" by Lorc is licensed under CC BY 3.0
+
+image:		http://game-icons.net/lorc/originals/dripping-tube.html
+author:		http://lorcblog.blogspot.ca/
+license:	https://creativecommons.org/licenses/by/3.0/
+
+sports_icon.png
+------------------
+"American football ball icon" by Delapouite is licensed under CC BY 3.0
+
+image:		http://game-icons.net/delapouite/sports/american-football-ball.html
+author:		http://delapouite.com/
+license:	https://creativecommons.org/licenses/by/3.0/
