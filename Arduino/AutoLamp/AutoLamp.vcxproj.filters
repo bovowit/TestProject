@@ -17,5 +17,9 @@
   <ItemGroup>
     <None Include="AutoLamp.ino" />
   </ItemGroup>
- 
+  <ItemGroup>
+    <ClInclude Include="__vm\.AutoLamp.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
