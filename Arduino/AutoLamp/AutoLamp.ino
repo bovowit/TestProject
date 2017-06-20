@@ -81,19 +81,18 @@ void loop()
 				{
 					digitalWrite(pinLamp, HIGH);
 					lampToggle = true;
+					Serial.println("Lamp On.........");
 				}
-				g_timeCountMotion = 0;
-				Serial.println("Lamp On.........");
-
 			}
+			g_timeCountMotion = 0;
+		}
 
-			if (g_timeCountMotion > g_delayTimeMotion)	// 움직임이 없으면 1분 후 전원 off
-			{
-				digitalWrite(pinLamp, LOW);
-				lampToggle = false;
-				g_moveFlag = LOW;
-				Serial.println("Lamp Off.........");
-			}
+		if (g_timeCountMotion > g_delayTimeMotion)	// 움직임이 없으면 1분 후 전원 off
+		{
+			digitalWrite(pinLamp, LOW);
+			lampToggle = false;
+			g_moveFlag = LOW;
+			Serial.println("Lamp Off.........");
 		}
 	}
 	
@@ -105,28 +104,30 @@ void timer()
 	g_timeCountSwitch++;
 	g_timeCountMotion++;
 	//if(g_timeCount % 60 == 1)
-	{
-		Serial.print(g_timeCountSwitch);
-		Serial.print(" : TIMER Switch : "); 
-		Serial.print(g_timeCountMotion);
-		Serial.println(" : TIMER Motion : ");
-	}
+	//{
+	//	Serial.print(g_timeCountSwitch);
+	//	Serial.print(" : TIMER Switch : "); 
+	//	Serial.print(g_timeCountMotion);
+	//	Serial.println(" : TIMER Motion : ");
+	//}
 }
 
-void motion()  // 움직임 감지, High만 체크
+void motion()  // 움직임 감지 High 일때만 타이머 리셋
 {
-	g_timeCountMotion = 0;
-	g_timeCountSwitch = 0;			// switch on 일때, 움직임감지되면 타이머 리셋.
-
 	g_moveFlag = digitalRead(pinMotionInterrupt);
+	if (g_moveFlag == HIGH)
+	{
+		g_timeCountMotion = 0;
+		//g_timeCountSwitch = 0;
+	}
 	Serial.print("MOTION : "); Serial.println(g_moveFlag);
 }
 
-void onoff()  // 스위치
+void onoff()  // 스위치 : 스위치를 직접 On 할때 무조건 Lamp On, 끌때는 지연 처리. 스위치 Off는 타이머만 리셋.
 {
 	g_timeCountSwitch = 0;
 	g_switchFlag = !digitalRead(pinSwitchInterrupt);
-	if (g_switchFlag && lampToggle == false)			// 스위치를 직접 On 할때 무조건 Lamp On, 끌때는 지연 처리.
+	if (g_switchFlag && lampToggle == false)			
 	{
 		digitalWrite(pinLamp, HIGH);
 		lampToggle = true;
