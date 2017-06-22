@@ -3,16 +3,17 @@
 #include "MsTimer2.h"
 
 // 기준값
-const unsigned int g_illumBase = 500;				// 기준 조도값, 어두운 밤 기준으로 측정후 셋팅.
-const unsigned int g_delayTimeSwitchOn = 10;		// 스위치 On일때, 움직임 없어 전원 Off 할때까지 지속시간
-const unsigned int g_delayTimeSwitchOff = 3;		// 스위치 Off할때 Lamp Off 대기시간
-const unsigned int g_delayTimeMotion = 6;			// 스위치 Off일때, 움직임 감지 후 전원 On 지속시간
+ unsigned int g_illumBase = 500;				// 기준 조도값, 어두운 밤 기준으로 측정후 셋팅.
+ unsigned int g_delayTimeSwitchOn = 10;		// 스위치 On일때, 움직임 없어 전원 Off 할때까지 지속시간
+ unsigned int g_delayTimeSwitchOff = 3;		// 스위치 Off할때 Lamp Off 대기시간
+ unsigned int g_delayTimeMotion = 6;			// 스위치 Off일때, 움직임 감지 후 전원 On 지속시간
 
 // 핀 정의
 int pinMotionInterrupt = 2;		// 동작감시
 int pinSwitchInterrupt = 3;		// On/Off 스위치
 int pinIlluminance = A0;		// 조도센서
 int pinLamp = 7;				// 램프제어 릴레이
+int pinLED = 8;         // 테스트용 LED
 
 // 상태
 volatile byte g_moveFlag = LOW;
@@ -29,7 +30,7 @@ void setup()
 	Serial.print("Start Setup... "); Serial.println(illumValue);
 
 	pinMode(pinMotionInterrupt, INPUT_PULLUP);
-	attachInterrupt(digitalPinToInterrupt(pinMotionInterrupt), motion, RISING);// CHANGE);
+	attachInterrupt(digitalPinToInterrupt(pinMotionInterrupt), motion, CHANGE);
 	pinMode(pinSwitchInterrupt, INPUT_PULLUP);
 	attachInterrupt(digitalPinToInterrupt(pinSwitchInterrupt), onoff, CHANGE);
 	
@@ -59,18 +60,26 @@ void loop()
 			g_moveFlag = LOW;
 			lampToggle = false;
 		}
+    if(g_moveFlag == HIGH && lampToggle == false)
+    {
+        digitalWrite(pinLamp, HIGH);
+        g_moveFlag = LOW;
+        lampToggle = true;    
+    }
 	}
 	// 스위치 Off 일 경우 : 움직임이 감지되고 조도가 기준 이하면 전원 On, 1분 지나면 전원 Off 
 	else
 	{
-		if (g_timeCountSwitch > g_delayTimeSwitchOff && lampToggle == true)	// 스위치 끄면 지정된 시간 지난후 일단 Lamp Off.
+		if (g_timeCountSwitch > g_delayTimeSwitchOff && g_timeCountMotion > g_delayTimeSwitchOff && lampToggle == true)	// 스위치 끄면 지정된 시간 지난후 일단 Lamp Off.
 		{
 			digitalWrite(pinLamp, LOW);
 			g_moveFlag = LOW;
 			lampToggle = false;
+     Serial.print(g_timeCountSwitch);
+      Serial.println(" Lamp Off.......switch off delay..");
 		}
 
-		if (g_moveFlag == HIGH && g_timeCountSwitch > g_delayTimeSwitchOff)
+		if (g_moveFlag == HIGH)// && g_timeCountSwitch > g_delayTimeSwitchOff)
 		{
 			unsigned int illumValue = 0;
 			illumValue = analogRead(pinIlluminance);
@@ -81,13 +90,14 @@ void loop()
 				{
 					digitalWrite(pinLamp, HIGH);
 					lampToggle = true;
+          g_moveFlag = LOW;
 					Serial.println("Lamp On.........");
 				}
 			}
 			g_timeCountMotion = 0;
 		}
 
-		if (g_timeCountMotion > g_delayTimeMotion)	// 움직임이 없으면 1분 후 전원 off
+		if (g_timeCountMotion > g_delayTimeMotion && lampToggle == HIGH)	// 움직임이 없으면 1분 후 전원 off
 		{
 			digitalWrite(pinLamp, LOW);
 			lampToggle = false;
@@ -118,19 +128,22 @@ void motion()  // 움직임 감지 High 일때만 타이머 리셋
 	if (g_moveFlag == HIGH)
 	{
 		g_timeCountMotion = 0;
-		//g_timeCountSwitch = 0;
+		g_timeCountSwitch = 0;
+    Serial.print("MOTION : "); Serial.println(g_moveFlag);  
 	}
-	Serial.print("MOTION : "); Serial.println(g_moveFlag);
+
 }
 
 void onoff()  // 스위치 : 스위치를 직접 On 할때 무조건 Lamp On, 끌때는 지연 처리. 스위치 Off는 타이머만 리셋.
 {
 	g_timeCountSwitch = 0;
+  g_timeCountMotion = 0;
 	g_switchFlag = !digitalRead(pinSwitchInterrupt);
 	if (g_switchFlag && lampToggle == false)			
 	{
 		digitalWrite(pinLamp, HIGH);
 		lampToggle = true;
+    Serial.println("Lamp On......switch on...");
 	}
 	Serial.print("SWITCH : "); Serial.println(g_switchFlag);
 	delay(1);
