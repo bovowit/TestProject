@@ -1,4 +1,4 @@
-/*
+﻿/*
  Name:		RFIDAlram.ino
  Created:	2017-06-22 오후 2:47:19
  Author:	nova
@@ -18,9 +18,6 @@ uchar fifoValue;
 
 AddicoreRFID myRFID; // create AddicoreRFID object to control the RFID module
 
-					 /////////////////////////////////////////////////////////////////////
-					 //set the pins
-					 /////////////////////////////////////////////////////////////////////
 const int chipSelectPin = 10;
 const int NRSTPD = 9;
 
@@ -30,12 +27,12 @@ const int NRSTPD = 9;
 void setup() {
 	Serial.begin(9600);                        // RFID reader SOUT pin connected to Serial RX pin at 9600bps
 
-											   // start the SPI library:
+   // start the SPI library:
 	SPI.begin();
 
-	pinMode(chipSelectPin, OUTPUT);              // Set digital pin 10 as OUTPUT to connect it to the RFID /ENABLE pin
-	digitalWrite(chipSelectPin, LOW);         // Activate the RFID reader
-	pinMode(NRSTPD, OUTPUT);                     // Set digital pin 10 , Not Reset and Power-down
+	pinMode(chipSelectPin, OUTPUT);             // Set digital pin 10 as OUTPUT to connect it to the RFID /ENABLE pin
+	digitalWrite(chipSelectPin, LOW);			// Activate the RFID reader
+	pinMode(NRSTPD, OUTPUT);                    // Set digital pin 10 , Not Reset and Power-down
 	digitalWrite(NRSTPD, HIGH);
 
 	myRFID.AddicoreRFID_Init();
@@ -63,7 +60,7 @@ void loop()
 	}
 
 	//Anti-collision, return tag serial number 4 bytes
-	status = myRFID.AddicoreRFID_Anticoll(str);
+	status = myRFID.AddicoreRFID_Anticoll(str);		// 선택한 ID의 카드 정보만 읽음 : 충돌방지 ?
 	if (status == MI_OK)
 	{
 		checksum1 = str[0] ^ str[1] ^ str[2] ^ str[3];
@@ -93,7 +90,7 @@ void loop()
 		delay(1000);
 	}
 
-	myRFID.AddicoreRFID_Halt();        //Command tag into hibernation             
+	myRFID.AddicoreRFID_Halt();        //Command tag into hibernation   : 최대 절전모드          
 
 }
 
