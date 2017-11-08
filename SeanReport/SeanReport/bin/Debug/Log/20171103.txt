@@ -1,0 +1,15 @@
+20171103 13:12:21:1221 	67T.S오a오i21오ic21Ban3wi3오1 | Ban3wi3오1 | 10000
+
+20171103 13:12:21:1221 	68T.S오a오i21오ic21Ban3wi3오1 | Ban3wi3오1 | 10000
+Touc1.68T.Ban3wi3오1 | Ban3wi3오1 | 10000
+
+20171103 13:13:55:1355 	74T.S오a오i55오ic55Ban3wi3오1 | Ban3wi3오1 | 10000
+
+20171103 13:13:56:1356 	94T.S오a오i56오ic56Ban3wi3오1 | Ban3wi3오1 | 10000
+Touc1.94T.Ban3wi3오1 | Ban3wi3오1 | 10000
+
+20171103 13:16:06:166 	FFT.StatisticsBandwidth | Bandwidth | 10000
+
+20171103 13:16:06:166 	FFT.StatisticsBandwidth | Bandwidth | 10000
+Touch.FFT.Bandwidth | Bandwidth | 10000
+

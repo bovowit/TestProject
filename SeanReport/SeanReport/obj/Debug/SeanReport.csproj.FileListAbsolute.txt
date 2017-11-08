@@ -1,0 +1,16 @@
+C:\ProjectZHO2015\SeanReport\SeanReport\bin\Debug\SeanReport.exe.config
+C:\ProjectZHO2015\SeanReport\SeanReport\bin\Debug\SeanReport.exe
+C:\ProjectZHO2015\SeanReport\SeanReport\bin\Debug\SeanReport.pdb
+C:\ProjectZHO2015\SeanReport\SeanReport\obj\Debug\SeanReport.csprojResolveAssemblyReference.cache
+C:\ProjectZHO2015\SeanReport\SeanReport\obj\Debug\SeanReport.Properties.Resources.resources
+C:\ProjectZHO2015\SeanReport\SeanReport\obj\Debug\SeanReport.csproj.GenerateResource.Cache
+C:\ProjectZHO2015\SeanReport\SeanReport\obj\Debug\SeanReport.exe
+C:\ProjectZHO2015\SeanReport\SeanReport\obj\Debug\SeanReport.pdb
+C:\ProjectZHO2015\SeanReport\SeanReport\bin\Debug\itextsharp.dll
+C:\ProjectZHO2015\SeanReport\SeanReport\bin\Debug\itextsharp.xml
+C:\ProjectZHO2015\SEANReport\SeanReport\obj\Debug\SeanReport.exe.licenses
+C:\ProjectZHO2015\SEANReport\SeanReport\obj\Debug\SeanReport.formReport.resources
+C:\ProjectZHO2015\SEANReport\SeanReport\obj\Debug\SeanReport.formLogin.resources
+C:\Nova\TestProject\SeanReport\SeanReport\bin\Debug\SeanReport.exe.config
+C:\Nova\TestProject\SeanReport\SeanReport\obj\Debug\SeanReport.exe
+C:\Nova\TestProject\SeanReport\SeanReport\obj\Debug\SeanReport.pdb

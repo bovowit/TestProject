@@ -1,0 +1,5 @@
+20171103 13:56:24:5624 	FFT.StatisticsBandwidth | Bandwidth | 10000
+
+20171103 13:56:24:5624 	FFT.StatisticsBandwidth | Bandwidth | 10000
+Touch.FFT.Bandwidth | Bandwidth | 10000
+
