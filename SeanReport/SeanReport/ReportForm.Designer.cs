@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formReport));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelDateStamp = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -39,7 +39,27 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.labelResultBandwidth = new System.Windows.Forms.Label();
+            this.labelResultCentFreq = new System.Windows.Forms.Label();
+            this.labelResultPeckFreq = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.labelConBlock = new System.Windows.Forms.Label();
+            this.labelConPRF = new System.Windows.Forms.Label();
+            this.labelConGain = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.labelInstCalDueDate = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.labelInstModel = new System.Windows.Forms.Label();
+            this.labelInstMaker = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -47,6 +67,12 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.labelProbeSize = new System.Windows.Forms.Label();
+            this.labelProbeShape = new System.Windows.Forms.Label();
+            this.labelProbeFrequency = new System.Windows.Forms.Label();
+            this.labelProbeSerialNo = new System.Windows.Forms.Label();
+            this.labelProbeModel = new System.Windows.Forms.Label();
+            this.labelProbeMaker = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -58,44 +84,29 @@
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.labelInstMaker = new System.Windows.Forms.Label();
-            this.labelInstModel = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.labelProbeMaker = new System.Windows.Forms.Label();
-            this.labelProbeModel = new System.Windows.Forms.Label();
-            this.labelProbeSerialNo = new System.Windows.Forms.Label();
-            this.labelProbeFrequency = new System.Windows.Forms.Label();
-            this.labelProbeShape = new System.Windows.Forms.Label();
-            this.labelProbeSize = new System.Windows.Forms.Label();
-            this.labelInstCalDueDate = new System.Windows.Forms.Label();
-            this.panel8 = new System.Windows.Forms.Panel();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.panel9 = new System.Windows.Forms.Panel();
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.label30 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
-            this.label29 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
+            this.panel9.SuspendLayout();
+            this.panel8.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.panel8.SuspendLayout();
-            this.panel9.SuspendLayout();
+            this.panel10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -167,6 +178,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.panel10);
             this.panel2.Controls.Add(this.panel9);
             this.panel2.Controls.Add(this.panel8);
             this.panel2.Controls.Add(this.panel7);
@@ -176,8 +188,172 @@
             this.panel2.Controls.Add(this.panel4);
             this.panel2.Location = new System.Drawing.Point(12, 145);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(645, 502);
+            this.panel2.Size = new System.Drawing.Size(645, 571);
             this.panel2.TabIndex = 1;
+            // 
+            // panel9
+            // 
+            this.panel9.Controls.Add(this.labelResultBandwidth);
+            this.panel9.Controls.Add(this.labelResultCentFreq);
+            this.panel9.Controls.Add(this.labelResultPeckFreq);
+            this.panel9.Controls.Add(this.label26);
+            this.panel9.Controls.Add(this.label27);
+            this.panel9.Controls.Add(this.label28);
+            this.panel9.Controls.Add(this.label29);
+            this.panel9.Location = new System.Drawing.Point(15, 370);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(302, 92);
+            this.panel9.TabIndex = 8;
+            // 
+            // labelResultBandwidth
+            // 
+            this.labelResultBandwidth.AutoSize = true;
+            this.labelResultBandwidth.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelResultBandwidth.Location = new System.Drawing.Point(169, 55);
+            this.labelResultBandwidth.Name = "labelResultBandwidth";
+            this.labelResultBandwidth.Size = new System.Drawing.Size(11, 14);
+            this.labelResultBandwidth.TabIndex = 7;
+            this.labelResultBandwidth.Text = "-";
+            // 
+            // labelResultCentFreq
+            // 
+            this.labelResultCentFreq.AutoSize = true;
+            this.labelResultCentFreq.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelResultCentFreq.Location = new System.Drawing.Point(169, 38);
+            this.labelResultCentFreq.Name = "labelResultCentFreq";
+            this.labelResultCentFreq.Size = new System.Drawing.Size(11, 14);
+            this.labelResultCentFreq.TabIndex = 6;
+            this.labelResultCentFreq.Text = "-";
+            // 
+            // labelResultPeckFreq
+            // 
+            this.labelResultPeckFreq.AutoSize = true;
+            this.labelResultPeckFreq.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelResultPeckFreq.Location = new System.Drawing.Point(169, 23);
+            this.labelResultPeckFreq.Name = "labelResultPeckFreq";
+            this.labelResultPeckFreq.Size = new System.Drawing.Size(11, 14);
+            this.labelResultPeckFreq.TabIndex = 5;
+            this.labelResultPeckFreq.Text = "-";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(13, 55);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(115, 12);
+            this.label26.TabIndex = 3;
+            this.label26.Text = "% Bandwidth(-6dB)";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(13, 39);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(138, 12);
+            this.label27.TabIndex = 2;
+            this.label27.Text = "Center frequency(MHz)";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(13, 24);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(129, 12);
+            this.label28.TabIndex = 1;
+            this.label28.Text = "Peak frequency(MHz)";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.BackColor = System.Drawing.Color.Transparent;
+            this.label29.Font = new System.Drawing.Font("Arimo", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label29.Location = new System.Drawing.Point(3, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(174, 19);
+            this.label29.TabIndex = 0;
+            this.label29.Text = "Measurement Results";
+            // 
+            // panel8
+            // 
+            this.panel8.Controls.Add(this.labelConBlock);
+            this.panel8.Controls.Add(this.labelConPRF);
+            this.panel8.Controls.Add(this.labelConGain);
+            this.panel8.Controls.Add(this.label21);
+            this.panel8.Controls.Add(this.label22);
+            this.panel8.Controls.Add(this.label23);
+            this.panel8.Controls.Add(this.label24);
+            this.panel8.Location = new System.Drawing.Point(15, 263);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(302, 92);
+            this.panel8.TabIndex = 6;
+            // 
+            // labelConBlock
+            // 
+            this.labelConBlock.AutoSize = true;
+            this.labelConBlock.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelConBlock.Location = new System.Drawing.Point(169, 55);
+            this.labelConBlock.Name = "labelConBlock";
+            this.labelConBlock.Size = new System.Drawing.Size(51, 14);
+            this.labelConBlock.TabIndex = 7;
+            this.labelConBlock.Text = "Rompas";
+            // 
+            // labelConPRF
+            // 
+            this.labelConPRF.AutoSize = true;
+            this.labelConPRF.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelConPRF.Location = new System.Drawing.Point(169, 38);
+            this.labelConPRF.Name = "labelConPRF";
+            this.labelConPRF.Size = new System.Drawing.Size(11, 14);
+            this.labelConPRF.TabIndex = 6;
+            this.labelConPRF.Text = "-";
+            // 
+            // labelConGain
+            // 
+            this.labelConGain.AutoSize = true;
+            this.labelConGain.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelConGain.Location = new System.Drawing.Point(169, 23);
+            this.labelConGain.Name = "labelConGain";
+            this.labelConGain.Size = new System.Drawing.Size(11, 14);
+            this.labelConGain.TabIndex = 5;
+            this.labelConGain.Text = "-";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(13, 55);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(117, 12);
+            this.label21.TabIndex = 3;
+            this.label21.Text = "Measurement block";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(13, 39);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(28, 12);
+            this.label22.TabIndex = 2;
+            this.label22.Text = "PRF";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(13, 24);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(31, 12);
+            this.label23.TabIndex = 1;
+            this.label23.Text = "Gain";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.BackColor = System.Drawing.Color.Transparent;
+            this.label24.Font = new System.Drawing.Font("Arimo", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(3, 0);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(200, 19);
+            this.label24.TabIndex = 0;
+            this.label24.Text = "Measurement Conditions";
             // 
             // panel7
             // 
@@ -194,6 +370,46 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(302, 92);
             this.panel7.TabIndex = 5;
+            // 
+            // labelInstCalDueDate
+            // 
+            this.labelInstCalDueDate.AutoSize = true;
+            this.labelInstCalDueDate.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelInstCalDueDate.Location = new System.Drawing.Point(169, 70);
+            this.labelInstCalDueDate.Name = "labelInstCalDueDate";
+            this.labelInstCalDueDate.Size = new System.Drawing.Size(11, 14);
+            this.labelInstCalDueDate.TabIndex = 8;
+            this.labelInstCalDueDate.Text = "-";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(169, 55);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(43, 14);
+            this.label10.TabIndex = 7;
+            this.label10.Text = "S23130";
+            // 
+            // labelInstModel
+            // 
+            this.labelInstModel.AutoSize = true;
+            this.labelInstModel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelInstModel.Location = new System.Drawing.Point(169, 38);
+            this.labelInstModel.Name = "labelInstModel";
+            this.labelInstModel.Size = new System.Drawing.Size(35, 14);
+            this.labelInstModel.TabIndex = 6;
+            this.labelInstModel.Text = "UI-23";
+            // 
+            // labelInstMaker
+            // 
+            this.labelInstMaker.AutoSize = true;
+            this.labelInstMaker.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelInstMaker.Location = new System.Drawing.Point(169, 23);
+            this.labelInstMaker.Name = "labelInstMaker";
+            this.labelInstMaker.Size = new System.Drawing.Size(66, 14);
+            this.labelInstMaker.TabIndex = 5;
+            this.labelInstMaker.Text = "MTSUBISHI";
             // 
             // label11
             // 
@@ -270,6 +486,66 @@
             this.panel6.Size = new System.Drawing.Size(302, 127);
             this.panel6.TabIndex = 2;
             // 
+            // labelProbeSize
+            // 
+            this.labelProbeSize.AutoSize = true;
+            this.labelProbeSize.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProbeSize.Location = new System.Drawing.Point(169, 103);
+            this.labelProbeSize.Name = "labelProbeSize";
+            this.labelProbeSize.Size = new System.Drawing.Size(11, 14);
+            this.labelProbeSize.TabIndex = 11;
+            this.labelProbeSize.Text = "-";
+            // 
+            // labelProbeShape
+            // 
+            this.labelProbeShape.AutoSize = true;
+            this.labelProbeShape.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProbeShape.Location = new System.Drawing.Point(169, 86);
+            this.labelProbeShape.Name = "labelProbeShape";
+            this.labelProbeShape.Size = new System.Drawing.Size(11, 14);
+            this.labelProbeShape.TabIndex = 10;
+            this.labelProbeShape.Text = "-";
+            // 
+            // labelProbeFrequency
+            // 
+            this.labelProbeFrequency.AutoSize = true;
+            this.labelProbeFrequency.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProbeFrequency.Location = new System.Drawing.Point(169, 70);
+            this.labelProbeFrequency.Name = "labelProbeFrequency";
+            this.labelProbeFrequency.Size = new System.Drawing.Size(11, 14);
+            this.labelProbeFrequency.TabIndex = 9;
+            this.labelProbeFrequency.Text = "-";
+            // 
+            // labelProbeSerialNo
+            // 
+            this.labelProbeSerialNo.AutoSize = true;
+            this.labelProbeSerialNo.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProbeSerialNo.Location = new System.Drawing.Point(169, 55);
+            this.labelProbeSerialNo.Name = "labelProbeSerialNo";
+            this.labelProbeSerialNo.Size = new System.Drawing.Size(11, 14);
+            this.labelProbeSerialNo.TabIndex = 8;
+            this.labelProbeSerialNo.Text = "-";
+            // 
+            // labelProbeModel
+            // 
+            this.labelProbeModel.AutoSize = true;
+            this.labelProbeModel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProbeModel.Location = new System.Drawing.Point(169, 39);
+            this.labelProbeModel.Name = "labelProbeModel";
+            this.labelProbeModel.Size = new System.Drawing.Size(11, 14);
+            this.labelProbeModel.TabIndex = 7;
+            this.labelProbeModel.Text = "-";
+            // 
+            // labelProbeMaker
+            // 
+            this.labelProbeMaker.AutoSize = true;
+            this.labelProbeMaker.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProbeMaker.Location = new System.Drawing.Point(169, 22);
+            this.labelProbeMaker.Name = "labelProbeMaker";
+            this.labelProbeMaker.Size = new System.Drawing.Size(11, 14);
+            this.labelProbeMaker.TabIndex = 6;
+            this.labelProbeMaker.Text = "-";
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -343,17 +619,17 @@
             // 
             // chart1
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(3, 28);
             this.chart1.Name = "chart1";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "Source";
-            this.chart1.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.Legend = "Legend1";
+            series1.Name = "Source";
+            this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(255, 117);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
@@ -362,7 +638,7 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.pictureBox3);
-            this.panel3.Location = new System.Drawing.Point(12, 653);
+            this.panel3.Location = new System.Drawing.Point(12, 722);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(645, 100);
             this.panel3.TabIndex = 2;
@@ -379,276 +655,91 @@
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
             // 
-            // labelInstMaker
+            // panel10
             // 
-            this.labelInstMaker.AutoSize = true;
-            this.labelInstMaker.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInstMaker.Location = new System.Drawing.Point(169, 23);
-            this.labelInstMaker.Name = "labelInstMaker";
-            this.labelInstMaker.Size = new System.Drawing.Size(66, 14);
-            this.labelInstMaker.TabIndex = 5;
-            this.labelInstMaker.Text = "MTSUBISHI";
+            this.panel10.Controls.Add(this.pictureBox6);
+            this.panel10.Controls.Add(this.pictureBox4);
+            this.panel10.Controls.Add(this.pictureBox5);
+            this.panel10.Controls.Add(this.label17);
+            this.panel10.Controls.Add(this.label16);
+            this.panel10.Controls.Add(this.label30);
+            this.panel10.Location = new System.Drawing.Point(15, 477);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(355, 91);
+            this.panel10.TabIndex = 9;
             // 
-            // labelInstModel
+            // label30
             // 
-            this.labelInstModel.AutoSize = true;
-            this.labelInstModel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInstModel.Location = new System.Drawing.Point(169, 38);
-            this.labelInstModel.Name = "labelInstModel";
-            this.labelInstModel.Size = new System.Drawing.Size(35, 14);
-            this.labelInstModel.TabIndex = 6;
-            this.labelInstModel.Text = "UI-23";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(169, 55);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(43, 14);
-            this.label10.TabIndex = 7;
-            this.label10.Text = "S23130";
-            // 
-            // labelProbeMaker
-            // 
-            this.labelProbeMaker.AutoSize = true;
-            this.labelProbeMaker.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelProbeMaker.Location = new System.Drawing.Point(169, 22);
-            this.labelProbeMaker.Name = "labelProbeMaker";
-            this.labelProbeMaker.Size = new System.Drawing.Size(11, 14);
-            this.labelProbeMaker.TabIndex = 6;
-            this.labelProbeMaker.Text = "-";
-            // 
-            // labelProbeModel
-            // 
-            this.labelProbeModel.AutoSize = true;
-            this.labelProbeModel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelProbeModel.Location = new System.Drawing.Point(169, 39);
-            this.labelProbeModel.Name = "labelProbeModel";
-            this.labelProbeModel.Size = new System.Drawing.Size(11, 14);
-            this.labelProbeModel.TabIndex = 7;
-            this.labelProbeModel.Text = "-";
-            // 
-            // labelProbeSerialNo
-            // 
-            this.labelProbeSerialNo.AutoSize = true;
-            this.labelProbeSerialNo.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelProbeSerialNo.Location = new System.Drawing.Point(169, 55);
-            this.labelProbeSerialNo.Name = "labelProbeSerialNo";
-            this.labelProbeSerialNo.Size = new System.Drawing.Size(11, 14);
-            this.labelProbeSerialNo.TabIndex = 8;
-            this.labelProbeSerialNo.Text = "-";
-            // 
-            // labelProbeFrequency
-            // 
-            this.labelProbeFrequency.AutoSize = true;
-            this.labelProbeFrequency.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelProbeFrequency.Location = new System.Drawing.Point(169, 70);
-            this.labelProbeFrequency.Name = "labelProbeFrequency";
-            this.labelProbeFrequency.Size = new System.Drawing.Size(11, 14);
-            this.labelProbeFrequency.TabIndex = 9;
-            this.labelProbeFrequency.Text = "-";
-            // 
-            // labelProbeShape
-            // 
-            this.labelProbeShape.AutoSize = true;
-            this.labelProbeShape.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelProbeShape.Location = new System.Drawing.Point(169, 86);
-            this.labelProbeShape.Name = "labelProbeShape";
-            this.labelProbeShape.Size = new System.Drawing.Size(11, 14);
-            this.labelProbeShape.TabIndex = 10;
-            this.labelProbeShape.Text = "-";
-            // 
-            // labelProbeSize
-            // 
-            this.labelProbeSize.AutoSize = true;
-            this.labelProbeSize.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelProbeSize.Location = new System.Drawing.Point(169, 103);
-            this.labelProbeSize.Name = "labelProbeSize";
-            this.labelProbeSize.Size = new System.Drawing.Size(11, 14);
-            this.labelProbeSize.TabIndex = 11;
-            this.labelProbeSize.Text = "-";
-            // 
-            // labelInstCalDueDate
-            // 
-            this.labelInstCalDueDate.AutoSize = true;
-            this.labelInstCalDueDate.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInstCalDueDate.Location = new System.Drawing.Point(169, 70);
-            this.labelInstCalDueDate.Name = "labelInstCalDueDate";
-            this.labelInstCalDueDate.Size = new System.Drawing.Size(11, 14);
-            this.labelInstCalDueDate.TabIndex = 8;
-            this.labelInstCalDueDate.Text = "-";
-            // 
-            // panel8
-            // 
-            this.panel8.Controls.Add(this.label17);
-            this.panel8.Controls.Add(this.label18);
-            this.panel8.Controls.Add(this.label19);
-            this.panel8.Controls.Add(this.label21);
-            this.panel8.Controls.Add(this.label22);
-            this.panel8.Controls.Add(this.label23);
-            this.panel8.Controls.Add(this.label24);
-            this.panel8.Location = new System.Drawing.Point(15, 263);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(302, 92);
-            this.panel8.TabIndex = 6;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(169, 55);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(51, 14);
-            this.label17.TabIndex = 7;
-            this.label17.Text = "Rompas";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label18.Location = new System.Drawing.Point(169, 38);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(11, 14);
-            this.label18.TabIndex = 6;
-            this.label18.Text = "-";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(169, 23);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(11, 14);
-            this.label19.TabIndex = 5;
-            this.label19.Text = "-";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(13, 55);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(117, 12);
-            this.label21.TabIndex = 3;
-            this.label21.Text = "Measurement block";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(13, 39);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(28, 12);
-            this.label22.TabIndex = 2;
-            this.label22.Text = "PRF";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(13, 24);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(31, 12);
-            this.label23.TabIndex = 1;
-            this.label23.Text = "Gain";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.BackColor = System.Drawing.Color.Transparent;
-            this.label24.Font = new System.Drawing.Font("Arimo", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.Location = new System.Drawing.Point(3, 0);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(200, 19);
-            this.label24.TabIndex = 0;
-            this.label24.Text = "Measurement Conditions";
-            // 
-            // panel9
-            // 
-            this.panel9.Controls.Add(this.label16);
-            this.panel9.Controls.Add(this.label20);
-            this.panel9.Controls.Add(this.label25);
-            this.panel9.Controls.Add(this.label26);
-            this.panel9.Controls.Add(this.label27);
-            this.panel9.Controls.Add(this.label28);
-            this.panel9.Controls.Add(this.label29);
-            this.panel9.Location = new System.Drawing.Point(15, 370);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(302, 92);
-            this.panel9.TabIndex = 8;
+            this.label30.AutoSize = true;
+            this.label30.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label30.Location = new System.Drawing.Point(15, 13);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(91, 12);
+            this.label30.TabIndex = 0;
+            this.label30.Text = "Measured by";
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(169, 55);
+            this.label16.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label16.Location = new System.Drawing.Point(15, 42);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(11, 14);
-            this.label16.TabIndex = 7;
-            this.label16.Text = "-";
+            this.label16.Size = new System.Drawing.Size(87, 12);
+            this.label16.TabIndex = 1;
+            this.label16.Text = "Approved by";
             // 
-            // label20
+            // label17
             // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label20.Location = new System.Drawing.Point(169, 38);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(11, 14);
-            this.label20.TabIndex = 6;
-            this.label20.Text = "-";
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label17.Location = new System.Drawing.Point(15, 70);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(91, 12);
+            this.label17.TabIndex = 2;
+            this.label17.Text = "Measured by";
             // 
-            // label25
+            // pictureBox4
             // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label25.Location = new System.Drawing.Point(169, 23);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(11, 14);
-            this.label25.TabIndex = 5;
-            this.label25.Text = "-";
+            this.pictureBox4.Image = global::SeanReport.Properties.Resources.line;
+            this.pictureBox4.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox4.InitialImage")));
+            this.pictureBox4.Location = new System.Drawing.Point(148, 54);
+            this.pictureBox4.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(182, 1);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox4.TabIndex = 10;
+            this.pictureBox4.TabStop = false;
             // 
-            // label26
+            // pictureBox5
             // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(13, 55);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(115, 12);
-            this.label26.TabIndex = 3;
-            this.label26.Text = "% Bandwidth(-6dB)";
+            this.pictureBox5.Image = global::SeanReport.Properties.Resources.line;
+            this.pictureBox5.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox5.InitialImage")));
+            this.pictureBox5.Location = new System.Drawing.Point(148, 25);
+            this.pictureBox5.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(182, 1);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox5.TabIndex = 11;
+            this.pictureBox5.TabStop = false;
             // 
-            // label27
+            // pictureBox6
             // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(13, 39);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(138, 12);
-            this.label27.TabIndex = 2;
-            this.label27.Text = "Center frequency(MHz)";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(13, 24);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(129, 12);
-            this.label28.TabIndex = 1;
-            this.label28.Text = "Peak frequency(MHz)";
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.BackColor = System.Drawing.Color.Transparent;
-            this.label29.Font = new System.Drawing.Font("Arimo", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label29.Location = new System.Drawing.Point(3, 0);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(174, 19);
-            this.label29.TabIndex = 0;
-            this.label29.Text = "Measurement Results";
+            this.pictureBox6.Image = global::SeanReport.Properties.Resources.line;
+            this.pictureBox6.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox6.InitialImage")));
+            this.pictureBox6.Location = new System.Drawing.Point(148, 80);
+            this.pictureBox6.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(182, 1);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox6.TabIndex = 12;
+            this.pictureBox6.TabStop = false;
             // 
             // formReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(674, 765);
+            this.ClientSize = new System.Drawing.Size(674, 834);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -661,6 +752,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel9.ResumeLayout(false);
+            this.panel9.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             this.panel6.ResumeLayout(false);
@@ -669,10 +764,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
-            this.panel9.ResumeLayout(false);
-            this.panel9.PerformLayout();
+            this.panel10.ResumeLayout(false);
+            this.panel10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -716,20 +812,27 @@
         private System.Windows.Forms.Label labelProbeModel;
         private System.Windows.Forms.Label labelProbeMaker;
         private System.Windows.Forms.Panel panel9;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label labelResultBandwidth;
+        private System.Windows.Forms.Label labelResultCentFreq;
+        private System.Windows.Forms.Label labelResultPeckFreq;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Panel panel8;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label labelConBlock;
+        private System.Windows.Forms.Label labelConPRF;
+        private System.Windows.Forms.Label labelConGain;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
     }
 }
