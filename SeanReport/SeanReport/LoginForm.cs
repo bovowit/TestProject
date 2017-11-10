@@ -41,6 +41,12 @@ namespace SeanReport
             EmailManager.Send("bovogoog@gmail.com", "email manager test from jsp C#", "so good !!!");
         }
 
+        // 로그인 폼 로딩때 사용자 정보 읽기..
+        private void formLogin_Load(object sender, EventArgs e)
+        {
+
+        }
+
         // 차트 테스트
         private void button1_Click(object sender, EventArgs e)
         {
@@ -58,17 +64,14 @@ namespace SeanReport
             this.chart1.Series["FFT"].Points.AddXY("0.6", 19);
         }
 
-
         private void btnSavePDF_Click(object sender, EventArgs e)
         {
             CaptureScreen();
-
             // 프린터 출력
             // printDocument1.Print();
 
             // PDF로 저장
             SavePDF();
-
         }
 
         private void SavePDF()
@@ -262,5 +265,6 @@ namespace SeanReport
             formReport form = new formReport();
             form.Show();
         }
+
     }
 }

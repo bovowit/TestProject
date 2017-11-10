@@ -186,6 +186,7 @@
             this.Controls.Add(this.label1);
             this.Name = "formLogin";
             this.Text = "사용자 설정";
+            this.Load += new System.EventHandler(this.formLogin_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
