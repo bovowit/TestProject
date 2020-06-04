@@ -1,0 +1,25 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="BLAST_LOGIC1/ReadMe.txt">
+    <Files>
+      <File FileName="BLAST_LOGIC1/TdEye.h" Line="30" Column="2" />
+      <File FileName="BLAST_LOGIC1/ReadMe.txt" Line="41" Column="4" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="BLAST_LOGIC1" expanded="True">
+            <Node name="BLAST_LOGIC1" expanded="True">
+              <Node name="ReadMe.txt" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

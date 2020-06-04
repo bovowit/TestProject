@@ -1,5 +1,5 @@
 ========================================================================
-    CONSOLE APPLICATION : BLAST_LOGIC1 Project Overview
+   Test CONSOLE APPLICATION : BLAST_LOGIC1 Project Overview
 ========================================================================
 
 AppWizard has created this BLAST_LOGIC1 application for you.
@@ -38,3 +38,4 @@ AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.
 
 /////////////////////////////////////////////////////////////////////////////
+   
